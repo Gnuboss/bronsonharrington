@@ -1,0 +1,43 @@
+---
+const phases = [
+  { num: '01', label: 'foundations', href: '/framework/foundations/' },
+  { num: '02', label: 'growth', href: '/framework/growth/' },
+  { num: '03', label: 'domination', href: '/framework/domination/' },
+];
+---
+<div class="phase-nav">
+  {phases.map((p, i) => (
+    <a href={p.href} class="phase" class:list={{ last: i === phases.length - 1 }}>
+      <span class="num">{p.num}_</span><span class="label-text">{p.label}</span>
+    </a>
+  ))}
+</div>
+
+<style>
+  .phase-nav {
+    display: flex;
+    border-top: 0.5px solid var(--hairline);
+    border-bottom: 0.5px solid var(--hairline);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+  }
+  .phase {
+    padding: var(--space-2) var(--space-3) var(--space-2) 0;
+    margin-right: var(--space-3);
+    border-right: 0.5px solid var(--hairline);
+    text-decoration: none;
+  }
+  .phase.last {
+    border-right: none;
+    margin-right: 0;
+  }
+  .num {
+    color: var(--ink-faint);
+  }
+  .label-text {
+    color: var(--ink);
+  }
+  .phase:hover .label-text {
+    color: var(--accent);
+  }
+</style>

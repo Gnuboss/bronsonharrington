@@ -1,0 +1,72 @@
+---
+const nav = [
+  { label: 'framework', href: '/framework/' },
+  { label: 'services', href: '/services/' },
+  { label: 'projects', href: '/projects/' },
+  { label: 'about', href: '/about/' },
+];
+---
+<header class="site-header">
+  <div class="container inner">
+    <a href="/" class="wordmark">Bronson Harrington</a>
+    <nav aria-label="Primary">
+      <ul>
+        {nav.map((item) => (
+          <li><a href={item.href}>{item.label}</a></li>
+        ))}
+        <li><a href="/contact/" class="cta">book a consultation</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    border-bottom: 0.5px solid var(--hairline);
+    background: var(--paper);
+  }
+  .inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: var(--space-3);
+    padding-bottom: var(--space-3);
+  }
+  .wordmark {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: var(--text-base);
+    text-decoration: none;
+    color: var(--ink);
+  }
+  nav ul {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  nav a {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    text-decoration: none;
+    color: var(--ink-muted);
+  }
+  nav a:hover {
+    color: var(--ink);
+  }
+  nav a.cta {
+    color: var(--paper);
+    background: var(--ink);
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius);
+  }
+  nav a.cta:hover {
+    background: var(--accent);
+    color: var(--paper);
+  }
+  @media (max-width: 720px) {
+    nav ul { gap: var(--space-2); flex-wrap: wrap; }
+  }
+</style>

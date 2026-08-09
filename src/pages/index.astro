@@ -1,0 +1,124 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PhaseNav from '../components/PhaseNav.astro';
+---
+<BaseLayout
+  title="Bronson Harrington — Growth Architect, Costa Rica"
+  description="25 years building organic growth systems inside iGaming, fintech, cannabis, and other regulated markets. I'll show you exactly where your traffic is leaking and the 90-day plan to fix it."
+>
+  <section class="hero container">
+    <p class="eyebrow">~/growth-architect/costa-rica</p>
+    <div class="hero-grid">
+      <div class="hero-rule" aria-hidden="true"></div>
+      <div>
+        <h1>Bronson Harrington</h1>
+        <p class="label subtitle">Growth Architect — 25 years, regulated markets</p>
+        <p class="lede">25 years building organic growth systems inside iGaming, fintech, cannabis, and other regulated and emerging markets. I'll show you exactly where your traffic is leaking and the 90-day plan to fix it.</p>
+        <PhaseNav />
+        <a href="/contact/" class="hero-cta">book a consultation →</a>
+      </div>
+    </div>
+  </section>
+
+  <hr class="hairline" />
+
+  <section class="framework container">
+    <p class="eyebrow">organic growth framework</p>
+    <h2>Growth OS — a sustainable business growth system.</h2>
+    <p class="lede">Organic growth moves through three stages, each building on the one before it.</p>
+
+    <div class="phases">
+      <article class="phase-card">
+        <p class="label">01_ i brand</p>
+        <h3>Foundations</h3>
+        <p>Build a solid foundation for your brand on which to build your marketing stack.</p>
+        <p class="detail">Foundations cover everything fully within your control: site design, technical health, on page structure, schema and structured data, and the content that lives on the site itself.</p>
+        <a href="/framework/foundations/" class="phase-link">read more →</a>
+      </article>
+      <article class="phase-card">
+        <p class="label">02_ i build</p>
+        <h3>Growth</h3>
+        <p>Grow your digital footprint and build your authority in the marketplace.</p>
+        <p class="detail">Content developed to close keyword gaps, a stronger presence across social platforms, and a hub and spoke structure that reinforces topical authority.</p>
+        <a href="/framework/growth/" class="phase-link">read more →</a>
+      </article>
+      <article class="phase-card">
+        <p class="label">03_ i boost</p>
+        <h3>Domination</h3>
+        <p>Dominate your marketplace by boosting your brand's unique authority signals.</p>
+        <p class="detail">A shift from being included in results to being recommended — across search rankings, answer engines and generative search. Built on EEAT.</p>
+        <a href="/framework/domination/" class="phase-link">read more →</a>
+      </article>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    padding-top: var(--space-6);
+    padding-bottom: var(--space-6);
+  }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1px 1fr;
+    gap: var(--space-4);
+    margin-top: var(--space-3);
+  }
+  .hero-rule {
+    background: var(--hairline);
+  }
+  .subtitle {
+    margin: var(--space-2) 0 var(--space-3);
+  }
+  .lede {
+    font-size: var(--text-lg);
+    color: var(--ink-soft);
+    max-width: 480px;
+  }
+  .hero-cta {
+    display: inline-block;
+    margin-top: var(--space-4);
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius);
+    text-decoration: none;
+  }
+  .hero-cta:hover {
+    background: var(--accent);
+  }
+  .framework {
+    padding-top: var(--space-6);
+    padding-bottom: var(--space-7);
+  }
+  .phases {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-4);
+    margin-top: var(--space-5);
+  }
+  .phase-card {
+    border-top: 2px solid var(--ink);
+    padding-top: var(--space-3);
+  }
+  .phase-card h3 {
+    margin: var(--space-1) 0 var(--space-2);
+  }
+  .phase-card .detail {
+    color: var(--ink-muted);
+    font-size: var(--text-sm);
+  }
+  .phase-link {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--accent);
+    text-decoration: none;
+  }
+  @media (max-width: 860px) {
+    .hero-grid { grid-template-columns: 1fr; }
+    .hero-rule { display: none; }
+    .phases { grid-template-columns: 1fr; }
+  }
+</style>

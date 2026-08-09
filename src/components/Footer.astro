@@ -1,0 +1,39 @@
+---
+const year = new Date().getFullYear();
+---
+<footer class="site-footer">
+  <hr class="hairline" />
+  <div class="container inner">
+    <span class="label">© {year} Bronson Harrington — Growth Architect, Costa Rica</span>
+    <div class="links">
+      <a href="https://www.linkedin.com/in/bronsonharrington/" class="label">linkedin</a>
+      <a href="mailto:im@bronson.co.za" class="label">im@bronson.co.za</a>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: var(--space-8);
+  }
+  .inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: var(--space-3);
+    padding-bottom: var(--space-4);
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .links {
+    display: flex;
+    gap: var(--space-3);
+  }
+  .links a {
+    text-decoration: none;
+    color: var(--ink-faint);
+  }
+  .links a:hover {
+    color: var(--accent);
+  }
+</style>
