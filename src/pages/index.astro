@@ -1,6 +1,8 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PhaseNav from '../components/PhaseNav.astro';
+
+const base = import.meta.env.BASE_URL;
 ---
 <BaseLayout
   title="Bronson Harrington — Growth Architect, Costa Rica"
@@ -15,7 +17,7 @@ import PhaseNav from '../components/PhaseNav.astro';
         <p class="label subtitle">Growth Architect — 25 years, regulated markets</p>
         <p class="lede">25 years building organic growth systems inside iGaming, fintech, cannabis, and other regulated and emerging markets. I'll show you exactly where your traffic is leaking and the 90-day plan to fix it.</p>
         <PhaseNav />
-        <a href="/contact/" class="hero-cta">book a consultation →</a>
+        <a href={`${base}contact/`} class="hero-cta">book a consultation →</a>
       </div>
     </div>
   </section>
@@ -33,21 +35,21 @@ import PhaseNav from '../components/PhaseNav.astro';
         <h3>Foundations</h3>
         <p>Build a solid foundation for your brand on which to build your marketing stack.</p>
         <p class="detail">Foundations cover everything fully within your control: site design, technical health, on page structure, schema and structured data, and the content that lives on the site itself.</p>
-        <a href="/framework/foundations/" class="phase-link">read more →</a>
+        <a href={`${base}framework/foundations/`} class="phase-link">read more →</a>
       </article>
       <article class="phase-card">
         <p class="label">02_ i build</p>
         <h3>Growth</h3>
         <p>Grow your digital footprint and build your authority in the marketplace.</p>
         <p class="detail">Content developed to close keyword gaps, a stronger presence across social platforms, and a hub and spoke structure that reinforces topical authority.</p>
-        <a href="/framework/growth/" class="phase-link">read more →</a>
+        <a href={`${base}framework/growth/`} class="phase-link">read more →</a>
       </article>
       <article class="phase-card">
         <p class="label">03_ i boost</p>
         <h3>Domination</h3>
         <p>Dominate your marketplace by boosting your brand's unique authority signals.</p>
         <p class="detail">A shift from being included in results to being recommended — across search rankings, answer engines and generative search. Built on EEAT.</p>
-        <a href="/framework/domination/" class="phase-link">read more →</a>
+        <a href={`${base}framework/domination/`} class="phase-link">read more →</a>
       </article>
     </div>
   </section>

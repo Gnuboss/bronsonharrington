@@ -1,8 +1,9 @@
 ---
+const base = import.meta.env.BASE_URL;
 const phases = [
-  { num: '01', label: 'foundations', href: '/framework/foundations/' },
-  { num: '02', label: 'growth', href: '/framework/growth/' },
-  { num: '03', label: 'domination', href: '/framework/domination/' },
+  { num: '01', label: 'foundations', href: `${base}framework/foundations/` },
+  { num: '02', label: 'growth', href: `${base}framework/growth/` },
+  { num: '03', label: 'domination', href: `${base}framework/domination/` },
 ];
 ---
 <div class="phase-nav">
