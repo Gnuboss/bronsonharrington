@@ -6,15 +6,32 @@ const phases = [
   { num: '03', label: 'domination', href: `${base}framework/domination/` },
 ];
 ---
-<div class="phase-nav">
-  {phases.map((p, i) => (
-    <a href={p.href} class="phase" class:list={{ last: i === phases.length - 1 }}>
-      <span class="num">{p.num}_</span><span class="label-text">{p.label}</span>
-    </a>
-  ))}
+<div class="phase-block">
+  <a href={`${base}framework/`} class="context-label">growth os framework</a>
+  <div class="phase-nav">
+    {phases.map((p, i) => (
+      <a href={p.href} class="phase" class:list={{ last: i === phases.length - 1 }}>
+        <span class="num">{p.num}_</span><span class="label-text">{p.label}</span>
+      </a>
+    ))}
+  </div>
 </div>
 
 <style>
+  .phase-block {
+    display: block;
+  }
+  .context-label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--ink-faint);
+    text-decoration: none;
+    margin-bottom: var(--space-1);
+  }
+  .context-label:hover {
+    color: var(--accent);
+  }
   .phase-nav {
     display: flex;
     border-top: 0.5px solid var(--hairline);

@@ -29,9 +29,10 @@
   --space-3: 1.5rem;
   --space-4: 2rem;
   --space-5: 3rem;
-  --space-6: 4rem;
-  --space-7: 6rem;
-  --space-8: 8rem;
+  --space-6: 5rem;
+  --space-7: 8rem;
+  --space-8: 11rem;
+  --space-9: 14rem;
 
   /* Layout */
   --content-width: 1080px;
@@ -101,6 +102,12 @@ a {
   padding: 0 var(--space-4);
 }
 
+@media (min-width: 980px) {
+  .container {
+    padding: 0 var(--space-6);
+  }
+}
+
 .hairline {
   border: none;
   border-top: 0.5px solid var(--hairline);
@@ -121,4 +128,23 @@ a:focus-visible,
 button:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
+}
+
+/* Fixed, paper-like vignette frame - e-reader style edge softening.
+   Sits above content but never blocks clicks (pointer-events: none),
+   and is purely decorative so screen readers skip it. */
+.crt-frame {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  border-radius: 22px;
+  box-shadow: inset 0 0 90px 26px rgba(20, 20, 20, 0.07);
+}
+
+@media (max-width: 720px) {
+  .crt-frame {
+    border-radius: 0;
+    box-shadow: inset 0 0 40px 14px rgba(20, 20, 20, 0.05);
+  }
 }
