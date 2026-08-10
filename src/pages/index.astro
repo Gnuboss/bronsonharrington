@@ -5,122 +5,418 @@ import PhaseNav from '../components/PhaseNav.astro';
 const base = import.meta.env.BASE_URL;
 ---
 <BaseLayout
-  title="Bronson Harrington — Growth Architect, Costa Rica"
-  description="25 years building organic growth systems inside iGaming, fintech, cannabis, and other regulated markets. I'll show you exactly where your traffic is leaking and the 90-day plan to fix it."
+ title="Bronson Harrington | Growth Architect Costa Rica"
+ description="Hi, I'm Bronson, growth architect in Costa Rica. 25 years of organic growth and SEO systems for iGaming, fintech, and cannabis."
 >
-  <section class="hero container">
-    <p class="eyebrow">~/growth-architect/costa-rica</p>
-    <div class="hero-grid">
-      <div class="hero-rule" aria-hidden="true"></div>
-      <div>
-        <h1>Bronson Harrington</h1>
-        <p class="label subtitle">Growth Architect — 25 years, regulated markets</p>
-        <p class="lede">25 years building organic growth systems inside iGaming, fintech, cannabis, and other regulated and emerging markets. I'll show you exactly where your traffic is leaking and the 90-day plan to fix it.</p>
-        <PhaseNav />
-        <a href={`${base}contact/`} class="hero-cta">book a consultation →</a>
-      </div>
-    </div>
-  </section>
+ <script type="application/ld+json" set:html={JSON.stringify({
+ "@context": "https://schema.org",
+ "@graph": [
+ {
+ "@type": ["Person", "Organization"],
+ "@id": "https://bronson.co.za/#/schema/person",
+ "name": "Bronson Harrington",
+ "description": "Growth Architect with 25 years of experience building organic growth systems for iGaming, fintech, cannabis, and other regulated and emerging markets.",
+ "jobTitle": "Growth Architect",
+ "url": "https://bronson.co.za",
+ "sameAs": [
+ "https://www.linkedin.com/in/bronsonharrington/",
+ "https://www.facebook.com/BronsonHarrington",
+ "https://www.instagram.com/bronson.harrington/"
+ ]
+ },
+ {
+ "@type": "WebSite",
+ "@id": "https://bronson.co.za/#website",
+ "url": "https://bronson.co.za",
+ "name": "Bronson Harrington",
+ "description": "Growth Architect, Costa Rica",
+ "publisher": { "@id": "https://bronson.co.za/#/schema/person" }
+ },
+ {
+ "@type": "ConsultingService",
+ "name": "Bronson Harrington - Growth Architecture",
+ "description": "Organic growth systems for iGaming, fintech, cannabis, and other regulated markets, delivered through a Foundations, Growth, Domination framework.",
+ "provider": { "@id": "https://bronson.co.za/#/schema/person" },
+ "areaServed": [
+ { "@type": "Place", "name": "Costa Rica" },
+ { "@type": "Place", "name": "LATAM" }
+ ],
+ "knowsAbout": [
+ "Technical SEO",
+ "AI Visibility Optimization",
+ "Topical Authority Development",
+ "Regulated Market SEO (iGaming, fintech, cannabis)",
+ "Content Strategy",
+ "Brand Strategy"
+ ]
+ }
+ ]
+ })} />
+ <section class="hero container">
+ <p class="eyebrow">~/growth-architect/costa-rica</p>
+ <div class="hero-grid">
+ <div class="hero-rule" aria-hidden="true"></div>
+ <div>
+ <h1>Bronson Harrington</h1>
+ <p class="label subtitle">Growth Architect - 25 years, regulated markets</p>
+ <p class="lede">25 years building organic growth systems inside iGaming, fintech, cannabis, and other regulated and emerging markets. I'll show you exactly where your traffic is leaking and the 90-day plan to fix it.</p>
+ <PhaseNav />
+ <a href={`${base}contact/`} class="hero-cta">book a consultation →</a>
+ </div>
+ </div>
+ </section>
 
-  <hr class="hairline" />
+ <section class="positioning container">
+ <p class="positioning-text">Sustainable growth isn't about chasing rankings. It's about building something that compounds - structurally sound, increasingly authoritative, and eventually difficult to compete with directly. That's the system I build for every client, regardless of vertical.</p>
+ </section>
 
-  <section class="framework container">
-    <p class="eyebrow">organic growth framework</p>
-    <h2>Growth OS — a sustainable business growth system.</h2>
-    <p class="lede">Organic growth moves through three stages, each building on the one before it.</p>
+ <hr class="hairline" />
 
-    <div class="phases">
-      <article class="phase-card">
-        <p class="label">01_ i brand</p>
-        <h3>Foundations</h3>
-        <p>Build a solid foundation for your brand on which to build your marketing stack.</p>
-        <p class="detail">Foundations cover everything fully within your control: site design, technical health, on page structure, schema and structured data, and the content that lives on the site itself.</p>
-        <a href={`${base}framework/foundations/`} class="phase-link">read more →</a>
-      </article>
-      <article class="phase-card">
-        <p class="label">02_ i build</p>
-        <h3>Growth</h3>
-        <p>Grow your digital footprint and build your authority in the marketplace.</p>
-        <p class="detail">Content developed to close keyword gaps, a stronger presence across social platforms, and a hub and spoke structure that reinforces topical authority.</p>
-        <a href={`${base}framework/growth/`} class="phase-link">read more →</a>
-      </article>
-      <article class="phase-card">
-        <p class="label">03_ i boost</p>
-        <h3>Domination</h3>
-        <p>Dominate your marketplace by boosting your brand's unique authority signals.</p>
-        <p class="detail">A shift from being included in results to being recommended — across search rankings, answer engines and generative search. Built on EEAT.</p>
-        <a href={`${base}framework/domination/`} class="phase-link">read more →</a>
-      </article>
-    </div>
-  </section>
+ <section class="framework container">
+ <p class="eyebrow">organic growth framework</p>
+ <h2>Growth OS - a sustainable business growth system.</h2>
+ <p class="lede">Organic growth moves through three stages, each building on the one before it.</p>
+
+ <div class="phases">
+ <article class="phase-card">
+ <p class="label">01_ i brand</p>
+ <h3>Foundations</h3>
+ <p>Build a solid foundation for your brand on which to build your marketing stack.</p>
+ <p class="detail">Foundations cover everything fully within your control: site design, technical health, on page structure, schema and structured data, and the content that lives on the site itself.</p>
+ <a href={`${base}framework/foundations/`} class="phase-link">read more →</a>
+ </article>
+ <article class="phase-card">
+ <p class="label">02_ i build</p>
+ <h3>Growth</h3>
+ <p>Grow your digital footprint and build your authority in the marketplace.</p>
+ <p class="detail">Content developed to close keyword gaps, a stronger presence across social platforms, and a hub and spoke structure that reinforces topical authority.</p>
+ <a href={`${base}framework/growth/`} class="phase-link">read more →</a>
+ </article>
+ <article class="phase-card">
+ <p class="label">03_ i boost</p>
+ <h3>Domination</h3>
+ <p>Dominate your marketplace by boosting your brand's unique authority signals.</p>
+ <p class="detail">A shift from being included in results to being recommended - across search rankings, answer engines and generative search. Built on EEAT.</p>
+ <a href={`${base}framework/domination/`} class="phase-link">read more →</a>
+ </article>
+ </div>
+ </section>
+
+ <hr class="hairline" />
+
+ <section class="competencies container">
+ <p class="eyebrow">engineered competencies</p>
+ <h2>System Ingredients.</h2>
+ <p class="lede">These competencies serve as the active system ingredients deployed across Foundations, Growth, and Domination.</p>
+
+ <div class="comp-grid">
+ <div class="comp-group">
+ <p class="label">strategy</p>
+ <ul>
+ <li>Website Strategy</li>
+ <li>Brand Strategy</li>
+ <li>SEO Consulting</li>
+ <li>Growth Strategy</li>
+ <li>Fractional Growth Leadership</li>
+ <li>Revenue System Diagnosis</li>
+ </ul>
+ </div>
+ <div class="comp-group">
+ <p class="label">search &amp; visibility</p>
+ <ul>
+ <li>Technical SEO Audit</li>
+ <li>Local SEO</li>
+ <li>SEO Recovery</li>
+ <li>SEO Second Opinion</li>
+ <li>AI Visibility Optimization</li>
+ </ul>
+ </div>
+ <div class="comp-group">
+ <p class="label">websites &amp; systems</p>
+ <ul>
+ <li>Website Development</li>
+ <li>Conversion Optimization</li>
+ <li>Marketing Automation</li>
+ </ul>
+ </div>
+ <div class="comp-group">
+ <p class="label">content &amp; authority</p>
+ <ul>
+ <li>Content Strategy</li>
+ <li>Content Production</li>
+ <li>Authority Building</li>
+ <li>Topical Authority Development</li>
+ <li>Competitive Gap Analysis</li>
+ </ul>
+ </div>
+ </div>
+ </section>
+
+ <hr class="hairline" />
+
+ <section class="qualifier container">
+ <p class="eyebrow">this is built for you if</p>
+ <h2>A Few Signs You're in the Right Place.</h2>
+ <p class="lede">If any of these sound familiar, we should talk.</p>
+
+ <div class="qualifier-grid">
+ <article class="qualifier-card">
+ <h4>Your organic traffic flatlined and nobody can tell you why.</h4>
+ <p>Rankings stalled, traffic is flat, and the usual explanations don't add up. A fresh set of experienced eyes on your data often finds what's invisible from the inside.</p>
+ </article>
+ <article class="qualifier-card">
+ <h4>You got hit by a core update and haven't recovered.</h4>
+ <p>Algorithm updates hit regulated and emerging verticals differently. Recovery starts with understanding exactly which signals changed, not guessing at a fix.</p>
+ </article>
+ <article class="qualifier-card">
+ <h4>You're scaling into a new market or licensed territory.</h4>
+ <p>New geography, new compliance requirements, and an organic channel that needs to be built right from day one, not patched later.</p>
+ </article>
+ <article class="qualifier-card">
+ <h4>You want senior strategy without hiring a full-time Head of SEO.</h4>
+ <p>25 years of experience, direct access, no account managers. The strategic capability of a senior hire without the cost or the ramp-up time.</p>
+ </article>
+ </div>
+ </section>
+
+ <hr class="hairline" />
+
+ <section class="testimonials container">
+ <p class="eyebrow">recommendations</p>
+ <h2>Selected Testimonials and Feedback on My Work.</h2>
+
+ <div class="testimonial-grid">
+ <blockquote class="testimonial">
+ <p>"I genuinely enjoyed the experience. He's incredibly sharp, always positive, and brings a level of strategic thinking that goes well beyond day-to-day execution. Bronson is constantly thinking long-term and building strategies that actually last, not just quick wins."</p>
+ <footer>
+ <span class="name">Tarsis Tochi</span>
+ <span class="label">Performance Marketing Manager</span>
+ </footer>
+ </blockquote>
+ <blockquote class="testimonial">
+ <p>"Nothing was impossible for Mr Harrington, merely challenges to overcome. He also was exceptionally well liked which meant that he could get the best out of others where others failed. Never a moment without a smile and a total 'can do' attitude."</p>
+ <footer>
+ <span class="name">Richard De Waal</span>
+ <span class="label">Founder</span>
+ </footer>
+ </blockquote>
+ <blockquote class="testimonial">
+ <p>"Bronson was an outstanding director while at Downtown Ecommerce. He brought great value, creativity, and insights to our organization, and specifically with link building for topical authority. Any team that has Bronson on their staff is a force to reckon with."</p>
+ <footer>
+ <span class="name">Patrick Tigue</span>
+ <span class="label">Founder</span>
+ </footer>
+ </blockquote>
+ </div>
+ </section>
+
+ <hr class="hairline" />
+
+ <section class="final-cta container">
+ <p class="eyebrow">not sure where to start?</p>
+ <h2>Three Free Ways to Work With a Veteran Growth Architect.</h2>
+ <p class="lede">Free blueprint, free audit, or a free 30-minute call. Pick whichever fits your situation and let's get your organic growth moving.</p>
+ <div class="cta-row">
+ <a href={`${base}contact/`} class="cta-btn">book a free consultation →</a>
+ <a href={`${base}services/90-day-engagement/`} class="cta-btn secondary">see the 90-day engagement →</a>
+ </div>
+ </section>
 </BaseLayout>
 
 <style>
-  .hero {
-    padding-top: var(--space-6);
-    padding-bottom: var(--space-6);
-  }
-  .hero-grid {
-    display: grid;
-    grid-template-columns: 1px 1fr;
-    gap: var(--space-4);
-    margin-top: var(--space-3);
-  }
-  .hero-rule {
-    background: var(--hairline);
-  }
-  .subtitle {
-    margin: var(--space-2) 0 var(--space-3);
-  }
-  .lede {
-    font-size: var(--text-lg);
-    color: var(--ink-soft);
-    max-width: 480px;
-  }
-  .hero-cta {
-    display: inline-block;
-    margin-top: var(--space-4);
-    background: var(--ink);
-    color: var(--paper);
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    padding: var(--space-2) var(--space-3);
-    border-radius: var(--radius);
-    text-decoration: none;
-  }
-  .hero-cta:hover {
-    background: var(--accent);
-  }
-  .framework {
-    padding-top: var(--space-6);
-    padding-bottom: var(--space-7);
-  }
-  .phases {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--space-4);
-    margin-top: var(--space-5);
-  }
-  .phase-card {
-    border-top: 2px solid var(--ink);
-    padding-top: var(--space-3);
-  }
-  .phase-card h3 {
-    margin: var(--space-1) 0 var(--space-2);
-  }
-  .phase-card .detail {
-    color: var(--ink-muted);
-    font-size: var(--text-sm);
-  }
-  .phase-link {
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    color: var(--accent);
-    text-decoration: none;
-  }
-  @media (max-width: 860px) {
-    .hero-grid { grid-template-columns: 1fr; }
-    .hero-rule { display: none; }
-    .phases { grid-template-columns: 1fr; }
-  }
+ .hero {
+ padding-top: var(--space-6);
+ padding-bottom: var(--space-6);
+ }
+ .hero-grid {
+ display: grid;
+ grid-template-columns: 1px 1fr;
+ gap: var(--space-4);
+ margin-top: var(--space-3);
+ }
+ .hero-rule {
+ background: var(--hairline);
+ }
+ .subtitle {
+ margin: var(--space-2) 0 var(--space-3);
+ }
+ .lede {
+ font-size: var(--text-lg);
+ color: var(--ink-soft);
+ max-width: 480px;
+ }
+ .hero-cta {
+ display: inline-block;
+ margin-top: var(--space-4);
+ background: var(--ink);
+ color: var(--paper);
+ font-family: var(--font-mono);
+ font-size: var(--text-sm);
+ padding: var(--space-2) var(--space-3);
+ border-radius: var(--radius);
+ text-decoration: none;
+ }
+ .hero-cta:hover {
+ background: var(--accent);
+ }
+ .positioning {
+ padding-bottom: var(--space-5);
+ }
+ .positioning-text {
+ font-size: var(--text-lg);
+ color: var(--ink-soft);
+ max-width: var(--content-narrow);
+ line-height: 1.6;
+ }
+
+ .framework {
+ padding-top: var(--space-6);
+ padding-bottom: var(--space-7);
+ }
+ .phases {
+ display: grid;
+ grid-template-columns: repeat(3, 1fr);
+ gap: var(--space-4);
+ margin-top: var(--space-5);
+ }
+ .phase-card {
+ border-top: 2px solid var(--ink);
+ padding-top: var(--space-3);
+ }
+ .phase-card h3 {
+ margin: var(--space-1) 0 var(--space-2);
+ }
+ .phase-card .detail {
+ color: var(--ink-muted);
+ font-size: var(--text-sm);
+ }
+ .phase-link {
+ font-family: var(--font-mono);
+ font-size: var(--text-sm);
+ color: var(--accent);
+ text-decoration: none;
+ }
+ .competencies {
+ padding-top: var(--space-6);
+ padding-bottom: var(--space-7);
+ }
+ .comp-grid {
+ display: grid;
+ grid-template-columns: repeat(4, 1fr);
+ gap: var(--space-4);
+ margin-top: var(--space-5);
+ }
+ .comp-group ul {
+ list-style: none;
+ margin: var(--space-2) 0 0;
+ padding: 0;
+ }
+ .comp-group li {
+ padding: var(--space-1) 0;
+ border-top: 0.5px solid var(--hairline);
+ font-size: var(--text-sm);
+ color: var(--ink-soft);
+ }
+
+ .qualifier {
+ padding-top: var(--space-6);
+ padding-bottom: var(--space-7);
+ }
+ .qualifier-grid {
+ display: grid;
+ grid-template-columns: repeat(2, 1fr);
+ gap: var(--space-4);
+ margin-top: var(--space-5);
+ }
+ .qualifier-card {
+ border-left: 2px solid var(--accent);
+ padding-left: var(--space-3);
+ }
+ .qualifier-card h4 {
+ margin-bottom: var(--space-1);
+ }
+ .qualifier-card p {
+ color: var(--ink-muted);
+ font-size: var(--text-sm);
+ }
+
+ .testimonials {
+ padding-top: var(--space-6);
+ padding-bottom: var(--space-7);
+ }
+ .testimonial-grid {
+ display: grid;
+ grid-template-columns: repeat(3, 1fr);
+ gap: var(--space-4);
+ margin-top: var(--space-5);
+ }
+ .testimonial {
+ margin: 0;
+ padding-top: var(--space-3);
+ border-top: 2px solid var(--ink);
+ }
+ .testimonial p {
+ font-size: var(--text-sm);
+ color: var(--ink-soft);
+ font-style: italic;
+ }
+ .testimonial footer {
+ display: flex;
+ flex-direction: column;
+ margin-top: var(--space-2);
+ }
+ .testimonial .name {
+ font-family: var(--font-display);
+ font-weight: 500;
+ font-size: var(--text-sm);
+ color: var(--ink);
+ }
+
+ .final-cta {
+ padding-top: var(--space-6);
+ padding-bottom: var(--space-8);
+ text-align: center;
+ }
+ .final-cta .lede {
+ max-width: 560px;
+ margin-left: auto;
+ margin-right: auto;
+ }
+ .cta-row {
+ display: flex;
+ gap: var(--space-3);
+ justify-content: center;
+ margin-top: var(--space-4);
+ }
+ .cta-btn {
+ font-family: var(--font-mono);
+ font-size: var(--text-sm);
+ padding: var(--space-2) var(--space-3);
+ border-radius: var(--radius);
+ text-decoration: none;
+ background: var(--ink);
+ color: var(--paper);
+ }
+ .cta-btn:hover {
+ background: var(--accent);
+ }
+ .cta-btn.secondary {
+ background: transparent;
+ color: var(--ink);
+ border: 0.5px solid var(--hairline);
+ }
+ .cta-btn.secondary:hover {
+ border-color: var(--accent);
+ color: var(--accent);
+ }
+
+ @media (max-width: 860px) {
+ .hero-grid { grid-template-columns: 1fr; }
+ .hero-rule { display: none; }
+ .phases { grid-template-columns: 1fr; }
+ .comp-grid { grid-template-columns: repeat(2, 1fr); }
+ .qualifier-grid { grid-template-columns: 1fr; }
+ .testimonial-grid { grid-template-columns: 1fr; }
+ .cta-row { flex-direction: column; }
+ }
 </style>
