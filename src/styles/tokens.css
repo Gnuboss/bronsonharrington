@@ -1,204 +1,158 @@
----
-import BaseLayout from '../layouts/BaseLayout.astro';
+:root {
+  /* Color: Swiss Terminal palette */
+  --paper: #F7F6F2;
+  --paper-dim: #EAE8E1;
+  --ink: #141414;
+  --ink-soft: #3A3833;
+  --ink-muted: #5A5850;
+  --ink-faint: #8A8880;
+  --hairline: #D8D5CC;
+  --accent: #2E6F5C;
+  --accent-dim: #DCE7E3;
 
-const base = import.meta.env.BASE_URL;
----
-<BaseLayout
-  title="Contact Bronson Harrington | Growth Architect"
-  description="Get in touch with Bronson Harrington, Growth Architect. Book a free discovery call, request a free blueprint, or send a direct message."
->
-  <script type="application/ld+json" set:html={JSON.stringify({
-    "@context": "https://schema.org",
-    "@type": "ContactPage",
-    "name": "Contact Bronson Harrington",
-    "url": "https://bronson.co.za/contact/",
-    "about": { "@id": "https://bronson.co.za/#/schema/person" }
-  })} />
+  /* Type */
+  --font-display: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', monospace;
 
-  <section class="hero container">
-    <p class="eyebrow">~/contact</p>
-    <h1>Let's talk.</h1>
-    <p class="lede">Send a message, or pick a time for a free 30-minute strategy call if you'd rather talk directly.</p>
-  </section>
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.75rem;
+  --text-2xl: 2.5rem;
+  --text-3xl: 3.5rem;
 
-  <hr class="hairline" />
+  /* Spacing (8px base) */
+  --space-1: 0.5rem;
+  --space-2: 1rem;
+  --space-3: 1.5rem;
+  --space-4: 2rem;
+  --space-5: 3rem;
+  --space-6: 5rem;
+  --space-7: 8rem;
+  --space-8: 11rem;
+  --space-9: 14rem;
 
-  <section class="form-section container">
-    <h2>Send a message</h2>
-    <form action="https://formsubmit.co/im@bronson.co.za" method="POST">
-      <input type="hidden" name="_subject" value="New enquiry from bronsonharrington.com" />
-      <input type="hidden" name="_template" value="table" />
-      <input type="hidden" name="_captcha" value="false" />
-      <input type="text" name="_honey" style="display:none" />
+  /* Layout */
+  --content-width: 1080px;
+  --content-narrow: 720px;
+  --radius: 2px;
+}
 
-      <label for="name">Name</label>
-      <input type="text" id="name" name="Name" required />
+* {
+  box-sizing: border-box;
+}
 
-      <label for="email">Email address</label>
-      <input type="email" id="email" name="Email" required />
+html {
+  background: var(--paper);
+}
 
-      <label for="website">Website URL</label>
-      <input type="text" id="website" name="Website" />
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  color: var(--ink-soft);
+  background: var(--paper);
+  font-size: var(--text-base);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
 
-      <label for="vertical">Your vertical / industry</label>
-      <input type="text" id="vertical" name="Vertical" placeholder="iGaming, fintech, cannabis..." />
+h1, h2, h3, h4, h5 {
+  font-family: var(--font-display);
+  color: var(--ink);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  margin: 0;
+  text-wrap: balance;
+}
 
-      <label for="goal">What are you looking to achieve?</label>
-      <textarea id="goal" name="Goal" rows="4" placeholder="Tell me more..."></textarea>
+h1 { font-size: var(--text-3xl); }
+h2 { font-size: var(--text-2xl); }
+h3 { font-size: var(--text-xl); }
+h4 { font-size: var(--text-lg); }
+h5 { font-size: var(--text-base); font-weight: 500; }
 
-      <button type="submit" class="submit-btn">send message &#8594;</button>
-    </form>
-  </section>
+p {
+  margin: 0 0 var(--space-3);
+  max-width: 65ch;
+}
 
-  <section class="info-strip container">
-    <div class="info-block">
-      <p class="label">email</p>
-      <a href="mailto:im@bronson.co.za" class="info-value">im@bronson.co.za</a>
-    </div>
-    <div class="info-block">
-      <p class="label">phone</p>
-      <a href="tel:+50661825718" class="info-value">+506 6182 5718</a>
-    </div>
-    <div class="info-block">
-      <p class="label">location</p>
-      <p class="info-value">San Jose, Costa Rica</p>
-    </div>
-    <div class="info-block">
-      <p class="label">social</p>
-      <a href="https://www.linkedin.com/in/bronsonharrington/" class="info-value">linkedin.com/in/bronsonharrington</a>
-    </div>
-  </section>
+/* Balances headings only - short display text benefits from even line
+   lengths. NOT applied to body paragraphs: balance actively narrows
+   the line box to equalize lines, which fights against filling the
+   available reading width. Normal wrap is the right default for
+   paragraph text once max-width is set correctly. */
 
-  <hr class="hairline" />
 
-  <section class="alt-cta container">
-    <p class="eyebrow">not ready to fill in a form?</p>
-    <h2>Book a free 30-minute strategy call instead.</h2>
-    <p class="lede">Pick a time that works for you and let's talk through your biggest organic growth challenge directly.</p>
-    <a href="mailto:im@bronson.co.za?subject=Strategy%20call%20request" class="cta-btn">request a call &#8594;</a>
-  </section>
-</BaseLayout>
+a {
+  color: inherit;
+}
 
-<style>
-  .hero {
-    padding-top: var(--space-6);
-    padding-bottom: var(--space-5);
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--accent);
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+.label {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--ink-faint);
+}
+
+.container {
+  max-width: var(--content-width);
+  margin: 0 auto;
+  padding: 0 var(--space-4);
+}
+
+@media (min-width: 980px) {
+  .container {
+    padding: 0 var(--space-6);
   }
-  .hero .lede {
-    font-size: var(--text-lg);
-    color: var(--ink-soft);
-    max-width: var(--content-narrow);
-    margin-top: var(--space-2);
+}
+
+.hairline {
+  border: none;
+  border-top: 0.5px solid var(--hairline);
+  margin: 0;
+}
+
+/* Reduced motion respected site-wide */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
-  .form-section {
-    padding-top: var(--space-6);
-    padding-bottom: var(--space-6);
+}
+
+/* Visible keyboard focus */
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Fixed, paper-like vignette frame - e-reader style edge softening.
+   Sits above content but never blocks clicks (pointer-events: none),
+   and is purely decorative so screen readers skip it. */
+.crt-frame {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  border-radius: 22px;
+  box-shadow: inset 0 0 90px 26px rgba(20, 20, 20, 0.07);
+}
+
+@media (max-width: 720px) {
+  .crt-frame {
+    border-radius: 0;
+    box-shadow: inset 0 0 40px 14px rgba(20, 20, 20, 0.05);
   }
-  .form-section h2 {
-    margin-bottom: var(--space-3);
-  }
-  form {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
-    max-width: var(--content-narrow);
-  }
-  label {
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    color: var(--ink-muted);
-    margin-top: var(--space-2);
-  }
-  input, textarea {
-    font-family: var(--font-body);
-    font-size: var(--text-base);
-    color: var(--ink);
-    background: var(--paper);
-    border: none;
-    border-bottom: 0.5px solid var(--hairline);
-    padding: var(--space-1) 0;
-    resize: vertical;
-  }
-  input:focus, textarea:focus {
-    outline: none;
-    border-bottom-color: var(--accent);
-  }
-  .submit-btn {
-    margin-top: var(--space-4);
-    align-self: flex-start;
-    background: var(--ink);
-    color: var(--paper);
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    padding: var(--space-2) var(--space-3);
-    border: none;
-    border-radius: var(--radius);
-    cursor: pointer;
-  }
-  .submit-btn:hover {
-    background: var(--accent);
-  }
-  .info-strip {
-    padding-top: var(--space-6);
-    padding-bottom: var(--space-7);
-    display: flex;
-    border-top: 0.5px solid var(--hairline);
-    border-bottom: 0.5px solid var(--hairline);
-  }
-  .info-block {
-    flex: 1;
-    padding: var(--space-3) var(--space-4) var(--space-3) 0;
-    border-right: 0.5px solid var(--hairline);
-  }
-  .info-block:last-child {
-    border-right: none;
-    padding-right: 0;
-  }
-  .info-value {
-    display: block;
-    font-size: var(--text-base);
-    color: var(--ink);
-    text-decoration: none;
-    margin-top: var(--space-1);
-  }
-  a.info-value:hover {
-    color: var(--accent);
-  }
-  .alt-cta {
-    padding-top: var(--space-6);
-    padding-bottom: var(--space-8);
-    text-align: center;
-  }
-  .alt-cta .lede {
-    max-width: var(--content-narrow);
-    margin: var(--space-2) auto var(--space-4);
-    color: var(--ink-soft);
-  }
-  .cta-btn {
-    display: inline-block;
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    padding: var(--space-2) var(--space-3);
-    border-radius: var(--radius);
-    text-decoration: none;
-    background: var(--ink);
-    color: var(--paper);
-  }
-  .cta-btn:hover {
-    background: var(--accent);
-  }
-  @media (max-width: 720px) {
-    .info-strip {
-      flex-direction: column;
-    }
-    .info-block {
-      border-right: none;
-      border-bottom: 0.5px solid var(--hairline);
-      padding: var(--space-3) 0;
-    }
-    .info-block:last-child {
-      border-bottom: none;
-      padding-bottom: 0;
-    }
-  }
-</style>
+}
