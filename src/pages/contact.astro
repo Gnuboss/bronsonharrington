@@ -1,0 +1,190 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const base = import.meta.env.BASE_URL;
+---
+<BaseLayout
+  title="Contact Bronson Harrington | Growth Architect"
+  description="Get in touch with Bronson Harrington, Growth Architect. Book a free discovery call, request a free blueprint, or send a direct message."
+>
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "ContactPage",
+    "name": "Contact Bronson Harrington",
+    "url": "https://bronson.co.za/contact/",
+    "about": { "@id": "https://bronson.co.za/#/schema/person" }
+  })} />
+
+  <section class="hero container">
+    <p class="eyebrow">~/contact</p>
+    <h1>Let's talk.</h1>
+    <p class="lede">Send a message, or pick a time for a free 30-minute strategy call if you'd rather talk directly.</p>
+  </section>
+
+  <hr class="hairline" />
+
+  <section class="contact-grid container">
+    <div class="form-col">
+      <h2>Send a message</h2>
+      <form action="https://formsubmit.co/im@bronson.co.za" method="POST">
+        <input type="hidden" name="_subject" value="New enquiry from bronsonharrington.com" />
+        <input type="hidden" name="_template" value="table" />
+        <input type="hidden" name="_captcha" value="false" />
+        <input type="text" name="_honey" style="display:none" />
+
+        <label for="name">Name</label>
+        <input type="text" id="name" name="Name" required />
+
+        <label for="email">Email address</label>
+        <input type="email" id="email" name="Email" required />
+
+        <label for="website">Website URL</label>
+        <input type="text" id="website" name="Website" />
+
+        <label for="vertical">Your vertical / industry</label>
+        <input type="text" id="vertical" name="Vertical" placeholder="iGaming, fintech, cannabis..." />
+
+        <label for="goal">What are you looking to achieve?</label>
+        <textarea id="goal" name="Goal" rows="4" placeholder="Tell me more..."></textarea>
+
+        <button type="submit" class="submit-btn">send message &#8594;</button>
+      </form>
+    </div>
+
+    <div class="info-col">
+      <div class="info-block">
+        <p class="label">email</p>
+        <a href="mailto:im@bronson.co.za" class="info-value">im@bronson.co.za</a>
+      </div>
+      <div class="info-block">
+        <p class="label">phone</p>
+        <a href="tel:+50661825718" class="info-value">+506 6182 5718</a>
+      </div>
+      <div class="info-block">
+        <p class="label">location</p>
+        <p class="info-value">San Jose, Costa Rica</p>
+      </div>
+      <div class="info-block">
+        <p class="label">social</p>
+        <a href="https://www.linkedin.com/in/bronsonharrington/" class="info-value">linkedin.com/in/bronsonharrington</a>
+      </div>
+    </div>
+  </section>
+
+  <hr class="hairline" />
+
+  <section class="alt-cta container">
+    <p class="eyebrow">not ready to fill in a form?</p>
+    <h2>Book a free 30-minute strategy call instead.</h2>
+    <p class="lede">Pick a time that works for you and let's talk through your biggest organic growth challenge directly.</p>
+    <a href="mailto:im@bronson.co.za?subject=Strategy%20call%20request" class="cta-btn">request a call &#8594;</a>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    padding-top: var(--space-6);
+    padding-bottom: var(--space-5);
+  }
+  .hero .lede {
+    font-size: var(--text-lg);
+    color: var(--ink-soft);
+    max-width: var(--content-narrow);
+    margin-top: var(--space-2);
+  }
+  .contact-grid {
+    padding-top: var(--space-6);
+    padding-bottom: var(--space-7);
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: var(--space-6);
+  }
+  .form-col h3 {
+    margin-bottom: var(--space-3);
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  label {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--ink-muted);
+    margin-top: var(--space-2);
+  }
+  input, textarea {
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    color: var(--ink);
+    background: var(--paper);
+    border: none;
+    border-bottom: 0.5px solid var(--hairline);
+    padding: var(--space-1) 0;
+    resize: vertical;
+  }
+  input:focus, textarea:focus {
+    outline: none;
+    border-bottom-color: var(--accent);
+  }
+  .submit-btn {
+    margin-top: var(--space-4);
+    align-self: flex-start;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    padding: var(--space-2) var(--space-3);
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+  }
+  .submit-btn:hover {
+    background: var(--accent);
+  }
+  .info-col {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+  .info-block {
+    border-top: 0.5px solid var(--hairline);
+    padding-top: var(--space-2);
+  }
+  .info-value {
+    display: block;
+    font-size: var(--text-base);
+    color: var(--ink);
+    text-decoration: none;
+    margin-top: var(--space-1);
+  }
+  a.info-value:hover {
+    color: var(--accent);
+  }
+  .alt-cta {
+    padding-top: var(--space-6);
+    padding-bottom: var(--space-8);
+    text-align: center;
+  }
+  .alt-cta .lede {
+    max-width: var(--content-narrow);
+    margin: var(--space-2) auto var(--space-4);
+    color: var(--ink-soft);
+  }
+  .cta-btn {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius);
+    text-decoration: none;
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .cta-btn:hover {
+    background: var(--accent);
+  }
+  @media (max-width: 860px) {
+    .contact-grid { grid-template-columns: 1fr; }
+  }
+</style>

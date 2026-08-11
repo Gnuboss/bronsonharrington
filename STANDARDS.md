@@ -1,6 +1,18 @@
 # Page Standards
 
-Applied to every page in this project before it ships. Not aspirational — checked against on every build.
+## Design decision principle
+
+Every visual or layout choice needs a stated functional justification before it ships - usability, page speed, SEO/AEO, accessibility, or genuine brand-signal reinforcement (e.g. the CRT vignette exists because it reinforces the Swiss/e-reader positioning at zero performance cost, not because it looks nice). "It looks more interesting" is not sufficient on its own.
+
+Corollary: **layout variation must be motivated by the content, not applied as decoration.** A set of genuine peer items (services in a category, qualifier cards) stays in a uniform grid. Asymmetry is earned only when the content itself is structurally different - a sequence, a hierarchy that actually exists, or items with genuinely different weight. Don't create visual hierarchy that isn't backed by real informational hierarchy.
+
+Applied to this build:
+- Framework section uses a diagram, not uniform cards, because Foundations to Growth to Domination is a real sequence, not three peer items.
+- Competencies stays a uniform 4-column grid because the four categories are genuine peers.
+- Testimonials use natural content height rather than forced-equal height, since the quotes are genuinely different lengths.
+- The CRT frame vignette is fixed-position, zero-image, `pointer-events: none`, and `aria-hidden` - it reinforces the paper/e-reader read without adding weight, blocking interaction, or confusing screen readers.
+
+Applied to every page in this project before it ships. Not aspirational - checked against on every build.
 
 ## Title tags
 
@@ -39,4 +51,4 @@ Every page that isn't a pure utility/thank-you page needs all of these present, 
 - [ ] CTA is specific to page intent
 - [ ] Schema present and validated (parses as JSON, correct `@type`)
 - [ ] Internal links use the `${base}` pattern, not hardcoded root paths
-- [ ] Heading hierarchy follows the locked convention: H1 hero / H3 section / H4 subtitle / H5 one-liner
+- [ ] Heading hierarchy is a perfect, unbroken sequence: H1 (once, page title) &#8594; H2 (major section headers) &#8594; H3 (sub-sections / component titles within a section) &#8594; H4 (finer detail within a subsection) &#8594; H5 (one-liners). Never skip a level. Small taxonomic labels (category tags, form field labels) don't need heading tags at all - only things that belong in the actual document outline get one.
