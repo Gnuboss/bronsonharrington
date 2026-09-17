@@ -1,11 +1,13 @@
 ---
+const base = import.meta.env.BASE_URL;
 const year = new Date().getFullYear();
 ---
 <footer class="site-footer">
   <hr class="hairline" />
   <div class="container inner">
-    <span class="label">© {year} Bronson Harrington — Growth Architect, Costa Rica</span>
+    <span class="label">© {year} Bronson Harrington - Growth Architect, Costa Rica</span>
     <div class="links">
+      <a href={`${base}growth-architect-costa-rica/`} class="label">growth architect costa rica</a>
       <a href="https://www.linkedin.com/in/bronsonharrington/" class="label">linkedin</a>
       <a href="mailto:im@bronson.co.za" class="label">im@bronson.co.za</a>
     </div>

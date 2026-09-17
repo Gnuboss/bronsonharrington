@@ -1,0 +1,228 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const base = import.meta.env.BASE_URL;
+
+const faqs = [
+  {
+    q: "How do you solve database constraints in white-label platforms?",
+    a: "We deploy edge-caching and asynchronous architectures to protect the primary PAM database from read/write bottlenecks. For operators running monolithic white-label stacks, this resolves destructive read/write fan-out bottlenecks during peak traffic spikes. By deploying edge-caching distribution layers, asynchronous Kafka event streaming pipelines, and micro-frontends, discovery browsing loads are decoupled entirely from the core transaction engine, protecting the primary PAM database and maintaining uninterrupted processing uptime."
+  },
+  {
+    q: "How do you solve the client-side JavaScript rendering blindspot?",
+    a: "We use server-side pre-rendering to create flat HTML visible to AI RAG crawlers. Standard white-label platforms rely on client-side rendered (CSR) JavaScript frameworks like Angular or React, which trigger crawler timeouts and fail to render during automated vector database ingestion by AI search agents. Our architecture bypasses this blindspot with a server-side pre-rendered (SSPR) content acquisition layer, converting game lobbies and live sports betting odds into flat, semantic HTML blocks served from edge caches, rendering them instantly visible to Retrieval-Augmented Generation (RAG) discovery pipelines."
+  }
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": faqs.map(f => ({
+    "@type": "Question",
+    "name": f.q,
+    "acceptedAnswer": { "@type": "Answer", "text": f.a }
+  }))
+};
+
+const serviceSchema = {
+  "@context": "https://schema.org",
+  "@type": "ConsultingService",
+  "name": "Enterprise iGaming Growth Architecture",
+  "description": "A proprietary, component-based strategic methodology split into Foundations, Growth, and Domination phases designed to scale distribution and optimize GGR for white-label operators.",
+  "provider": { "@id": "https://bronson.co.za/#/schema/person" },
+  "areaServed": [
+    { "@type": "AdministrativeArea", "name": "Costa Rica" },
+    { "@type": "AdministrativeArea", "name": "LATAM" }
+  ],
+  "knowsAbout": [
+    "iGaming turnkey software infrastructure",
+    "Player Account Management software scalability",
+    "Gross Gaming Revenue margin optimization",
+    "Headless iGaming API architecture",
+    "Server-Side Pre-Rendering (SSPR)",
+    "Retrieval-Augmented Generation discovery engines",
+    "Database fan-out bottleneck mitigation",
+    "Apache Kafka event streaming pipelines"
+  ]
+};
+---
+<BaseLayout
+  title="Growth Architect Costa Rica | Bronson Harrington"
+  description="Enterprise iGaming growth architecture from a Costa Rica hub. Component-based systems for SSPR, database resiliency, and AI-agent discoverability."
+>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+
+  <section class="hero container">
+    <p class="eyebrow">~/growth-architect/costa-rica</p>
+    <h1>Enterprise iGaming Growth Architecture | Costa Rica Hub</h1>
+    <p class="lede">Operating from a strategic localized hub node in Costa Rica, this enterprise consulting practice transitions organic user acquisition from search engine optimization to a component-based systems architecture. We design and deploy server-side pre-rendered satellite engines that sit directly on top of legacy player account management setups to maximize distribution velocity, lower blended player acquisition costs, and optimize long-tail visibility across modern AI retrieval ecosystems.</p>
+  </section>
+
+  <hr class="hairline" />
+
+  <section class="methodology container">
+    <p class="eyebrow">the component-based growth methodology</p>
+    <h2>Three operational vectors, one architecture.</h2>
+
+    <div class="method-list">
+      <article class="method-item">
+        <h3>Structural Foundations</h3>
+        <p>Integrating modular API payment aggregators for regional instant payments (PIX, SPEI) and utilizing edge caches to serve flat HTML to AI engines.</p>
+      </article>
+      <article class="method-item">
+        <h3>Distribution Growth</h3>
+        <p>Auditing software matrices for GGR reclamation and deploying dense, multi-language semantic clusters for organic long-tail traffic capture.</p>
+      </article>
+      <article class="method-item">
+        <h3>Infrastructure Domination</h3>
+        <p>Decoupling transactional databases from user-facing, read-heavy traffic using asynchronous edge micro-frontends and Kafka streams.</p>
+      </article>
+    </div>
+  </section>
+
+  <hr class="hairline" />
+
+  <section class="faq container">
+    <p class="eyebrow">deep semantic architecture faq</p>
+    <h2>Technical questions, answered directly.</h2>
+
+    <div class="faq-list">
+      {faqs.map((f) => (
+        <details class="faq-item">
+          <summary>{f.q}</summary>
+          <p>{f.a}</p>
+        </details>
+      ))}
+    </div>
+  </section>
+
+  <hr class="hairline" />
+
+  <section class="spec container">
+    <p class="eyebrow">technical specification repository</p>
+    <h2>Access the full framework documentation.</h2>
+    <p class="lede">Details the decoupling layer mechanics and server-side pre-rendering execution parameters.</p>
+    <a href={`${base}downloads/igaming-enterprise-growth-architecture-framework.pdf`} class="cta-btn" download>download structural specifications (PDF) &#8594;</a>
+  </section>
+
+  <hr class="hairline" />
+
+  <section class="final-cta container">
+    <p class="eyebrow">deployment directive</p>
+    <h2>An external acceleration layer, not a rebuild.</h2>
+    <p class="lede">This satellite framework requires no structural code modification to your underlying turnkey stack, secure PAM database, or active platform compliance certificates. Deployment is managed via DNS and edge CDN routing configurations.</p>
+    <a href={`${base}contact/`} class="cta-btn">book a consultation &#8594;</a>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    padding-top: var(--space-6);
+    padding-bottom: var(--space-5);
+  }
+  .hero .lede {
+    font-size: var(--text-lg);
+    color: var(--ink-soft);
+    max-width: var(--content-narrow);
+    margin-top: var(--space-2);
+  }
+  .methodology {
+    padding-top: var(--space-6);
+    padding-bottom: var(--space-6);
+  }
+  .method-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-5);
+    margin-top: var(--space-5);
+  }
+  .method-item {
+    border-top: 2px solid var(--ink);
+    padding-top: var(--space-3);
+  }
+  .method-item h3 {
+    margin-bottom: var(--space-2);
+  }
+  .method-item p {
+    font-size: var(--text-sm);
+    color: var(--ink-muted);
+  }
+  .faq {
+    padding-top: var(--space-6);
+    padding-bottom: var(--space-6);
+  }
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    margin-top: var(--space-5);
+  }
+  .faq-item {
+    border-top: 0.5px solid var(--hairline);
+    padding: var(--space-3) 0;
+  }
+  .faq-item:last-child {
+    border-bottom: 0.5px solid var(--hairline);
+  }
+  .faq-item summary {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: var(--text-base);
+    color: var(--ink);
+    cursor: pointer;
+    list-style: none;
+  }
+  .faq-item summary::-webkit-details-marker {
+    display: none;
+  }
+  .faq-item summary::before {
+    content: '+';
+    display: inline-block;
+    width: 1em;
+    color: var(--accent);
+    font-family: var(--font-mono);
+  }
+  .faq-item[open] summary::before {
+    content: '\2212';
+  }
+  .faq-item p {
+    font-size: var(--text-sm);
+    color: var(--ink-muted);
+    margin-top: var(--space-2);
+    padding-left: 1em;
+  }
+  .spec {
+    padding-top: var(--space-6);
+    padding-bottom: var(--space-6);
+  }
+  .spec .lede {
+    color: var(--ink-soft);
+    max-width: var(--content-narrow);
+    margin: var(--space-2) 0 var(--space-4);
+  }
+  .final-cta {
+    padding-top: var(--space-6);
+    padding-bottom: var(--space-8);
+  }
+  .final-cta .lede {
+    color: var(--ink-soft);
+    max-width: var(--content-narrow);
+    margin: var(--space-2) 0 var(--space-4);
+  }
+  .cta-btn {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius);
+    text-decoration: none;
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .cta-btn:hover {
+    background: var(--accent);
+  }
+  @media (max-width: 860px) {
+    .method-list { grid-template-columns: 1fr; }
+  }
+</style>
