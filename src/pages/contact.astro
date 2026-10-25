@@ -4,8 +4,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 const base = import.meta.env.BASE_URL;
 ---
 <BaseLayout
-  title="Contact Bronson Harrington | Growth Architect"
-  description="Get in touch with Bronson Harrington, Growth Architect. Book a free discovery call, request a free blueprint, or send a direct message."
+  title="Contact Bronson Harrington | Growth Architect, Costa Rica"
+  description="Get in touch with Bronson Harrington to compare notes on SEO and AEO, talk about a build, or follow up on something he wrote. Send a message."
 >
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
@@ -17,8 +17,8 @@ const base = import.meta.env.BASE_URL;
 
   <section class="hero container">
     <p class="eyebrow">~/contact</p>
-    <h1>Let's talk.</h1>
-    <p class="lede">Send a message, or pick a time for a free 30-minute strategy call if you'd rather talk directly.</p>
+    <h1>Contact</h1>
+    <p class="lede">Want to compare notes, talk about a build, or follow up on something I've written? Send a message or email me directly. I read everything, though replies can take a few days.</p>
   </section>
 
   <hr class="hairline" />
@@ -26,7 +26,7 @@ const base = import.meta.env.BASE_URL;
   <section class="form-section container">
     <h2>Send a message</h2>
     <form action="https://formsubmit.co/im@bronson.co.za" method="POST">
-      <input type="hidden" name="_subject" value="New enquiry from bronsonharrington.com" />
+      <input type="hidden" name="_subject" value="New message from bronson.co.za" />
       <input type="hidden" name="_template" value="table" />
       <input type="hidden" name="_captcha" value="false" />
       <input type="text" name="_honey" style="display:none" />
@@ -37,14 +37,8 @@ const base = import.meta.env.BASE_URL;
       <label for="email">Email address</label>
       <input type="email" id="email" name="Email" required />
 
-      <label for="website">Website URL</label>
-      <input type="text" id="website" name="Website" />
-
-      <label for="vertical">Your vertical / industry</label>
-      <input type="text" id="vertical" name="Vertical" placeholder="iGaming, fintech, cannabis..." />
-
-      <label for="goal">What are you looking to achieve?</label>
-      <textarea id="goal" name="Goal" rows="4" placeholder="Tell me more..."></textarea>
+      <label for="message">Message</label>
+      <textarea id="message" name="Message" rows="6" required></textarea>
 
       <button type="submit" class="submit-btn">send message &#8594;</button>
     </form>
@@ -56,27 +50,19 @@ const base = import.meta.env.BASE_URL;
       <a href="mailto:im@bronson.co.za" class="info-value">im@bronson.co.za</a>
     </div>
     <div class="info-block">
-      <p class="label">phone</p>
-      <a href="tel:+50661825718" class="info-value">+506 6182 5718</a>
-    </div>
-    <div class="info-block">
       <p class="label">location</p>
-      <p class="info-value">San Jose, Costa Rica</p>
+      <p class="info-value">San José, Costa Rica</p>
     </div>
     <div class="info-block">
-      <p class="label">social</p>
-      <a href="https://www.linkedin.com/in/bronsonharrington/" class="info-value">linkedin.com/in/bronsonharrington</a>
+      <p class="label">linkedin</p>
+      <a href="https://www.linkedin.com/in/bronsonharrington/" class="info-value">in/bronsonharrington</a>
+    </div>
+    <div class="info-block">
+      <p class="label">github</p>
+      <a href="https://github.com/Gnuboss" class="info-value">Gnuboss</a>
     </div>
   </section>
 
-  <hr class="hairline" />
-
-  <section class="alt-cta container">
-    <p class="eyebrow">not ready to fill in a form?</p>
-    <h2>Book a free 30-minute strategy call instead.</h2>
-    <p class="lede">Pick a time that works for you and let's talk through your biggest organic growth challenge directly.</p>
-    <a href="mailto:im@bronson.co.za?subject=Strategy%20call%20request" class="cta-btn">request a call &#8594;</a>
-  </section>
 </BaseLayout>
 
 <style>
@@ -140,7 +126,6 @@ const base = import.meta.env.BASE_URL;
   }
   .info-strip {
     padding-top: var(--space-6);
-    padding-bottom: var(--space-7);
     display: flex;
     border-top: 0.5px solid var(--hairline);
     border-bottom: 0.5px solid var(--hairline);
@@ -163,29 +148,6 @@ const base = import.meta.env.BASE_URL;
   }
   a.info-value:hover {
     color: var(--accent);
-  }
-  .alt-cta {
-    padding-top: var(--space-6);
-    padding-bottom: var(--space-8);
-    text-align: center;
-  }
-  .alt-cta .lede {
-    max-width: var(--content-narrow);
-    margin: var(--space-2) auto var(--space-4);
-    color: var(--ink-soft);
-  }
-  .cta-btn {
-    display: inline-block;
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    padding: var(--space-2) var(--space-3);
-    border-radius: var(--radius);
-    text-decoration: none;
-    background: var(--ink);
-    color: var(--paper);
-  }
-  .cta-btn:hover {
-    background: var(--accent);
   }
   @media (max-width: 720px) {
     .info-strip {

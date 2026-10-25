@@ -1,0 +1,47 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const base = import.meta.env.BASE_URL;
+---
+<BaseLayout title="Page Not Found | Bronson Harrington" description="This page doesn't exist, or it moved when the site was rebuilt. Try the notes, the lab or the home page instead.">
+  <meta name="robots" content="noindex" slot="head" />
+  <section class="container lost">
+    <p class="eyebrow">~/404</p>
+    <h1>Page not found.</h1>
+    <p class="lede">This page doesn't exist, or it moved when the site was rebuilt. Some older service pages were retired along the way.</p>
+    <ul class="paths">
+      <li><a href={base}>~/home</a></li>
+      <li><a href={`${base}notes/`}>~/notes</a></li>
+      <li><a href={`${base}lab/`}>~/lab</a></li>
+      <li><a href={`${base}framework/`}>~/framework</a></li>
+    </ul>
+  </section>
+</BaseLayout>
+
+<style>
+  .lost {
+    padding-top: var(--space-7);
+    padding-bottom: var(--space-6);
+  }
+  .lost h1 {
+    margin: var(--space-2) 0 var(--space-3);
+  }
+  .lede {
+    font-size: var(--text-lg);
+    max-width: var(--content-narrow);
+  }
+  .paths {
+    list-style: none;
+    margin: var(--space-4) 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+  .paths a {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--accent);
+    text-decoration: none;
+  }
+</style>

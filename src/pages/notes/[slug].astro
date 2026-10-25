@@ -16,8 +16,11 @@ const { note } = Astro.props;
 const { Content } = await note.render();
 const fmt = (d: Date) => d.toISOString().slice(0, 10);
 const url = `https://bronson.co.za/notes/${note.slug}/`;
+// Add the name suffix only while it keeps the title within ~60 characters
+const withName = `${note.data.title} | Bronson Harrington`;
+const pageTitle = note.data.seoTitle ?? (withName.length <= 60 ? withName : note.data.title);
 ---
-<BaseLayout title={`${note.data.title} | Bronson Harrington`} description={note.data.description}>
+<BaseLayout title={pageTitle} description={note.data.description}>
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "BlogPosting",

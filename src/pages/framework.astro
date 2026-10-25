@@ -3,202 +3,143 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 const base = import.meta.env.BASE_URL;
 
-const faqs = [
+// Each phase covers three peer disciplines (uniform grid), but the phases
+// themselves are a real sequence (numbered flow, stacked in order).
+const phases = [
   {
-    q: "What is a Growth Architect?",
-    a: "A Growth Architect helps businesses build the foundations, systems, and strategies required for sustainable growth. Unlike a traditional designer, SEO specialist, or consultant who focuses on a single discipline, a Growth Architect looks at how branding, websites, search visibility, content, automation, analytics, and business strategy work together to support long-term success. The goal isn't simply to deliver services, but to create the conditions that help businesses grow."
+    id: 'foundations',
+    num: '01',
+    name: 'Foundations',
+    headline: 'Where organic growth actually starts.',
+    lede: "Before content, before links, before anything compounds, the foundation has to be right. Foundations covers everything fully within your control: everything a search engine needs to find, crawl, understand and trust a site before new content or a single link has any meaningful effect.",
+    items: [
+      { title: 'Technical health', text: 'Crawl analysis, redirect chains, Core Web Vitals, structured data and platform-specific issues. In regulated verticals that includes white-label template duplication and geo-blocking that quietly suppresses indexation in licensed markets.' },
+      { title: 'Indexation repair', text: 'Crawl budget spent on the pages that matter rather than template junk. Canonicals clarified, redirect chains resolved, robots.txt and XML sitemaps validated.' },
+      { title: 'Content quality review', text: "Existing content checked against quality rater guidelines and E-E-A-T. In regulated markets, compliance language and disclaimers have to satisfy raters and regulators at the same time." },
+    ],
+    why: "You can't compound on a broken base. The most common pattern I see is heavy investment in content and links while the technical foundation actively suppresses the results: rankings that should move don't, and link equity leaks into redirect chains and orphaned URLs.",
   },
   {
-    q: "Should I invest in a new website, SEO, or business strategy first?",
-    a: "It depends on where your business is today. A business with no clear brand or website often benefits from strengthening its foundations first. A business with a strong website but limited visibility may benefit most from SEO and content strategy. An established organization with strong traffic and lead flow may see greater returns from automation, systems optimization, and strategic growth planning. The right answer isn't always more marketing, it's identifying the next constraint preventing growth."
+    id: 'growth',
+    num: '02',
+    name: 'Growth',
+    headline: 'Where the foundations start paying off.',
+    lede: "A clean technical foundation without content and authority is just a well-organised empty site. Growth is where topical authority gets built, a publishing rhythm gets established, and rankings start moving in ways that translate to real outcomes.",
+    items: [
+      { title: 'Topical authority', text: 'Mapping and building the full semantic territory a site needs to own, with hub-and-spoke clusters that signal genuine depth rather than isolated keyword targeting.' },
+      { title: 'Content velocity', text: 'A cadence that compounds rather than spikes. One well-structured piece a week that builds the cluster beats ten pieces dropped at once followed by silence.' },
+      { title: 'Link acquisition', text: 'Editorial links from sources that carry real authority in your market, and data-driven content that earns citations. No schemes or shortcuts that become a liability at the next algorithm update.' },
+    ],
+    why: "The relationship between Foundations and Growth is foundational: you can't build topical authority on a crawl-broken site. The relationship between Growth and Domination is multiplicative: every new cluster page keeps reinforcing the pages above it long after it's published.",
   },
   {
-    q: "How do I know whether I need Foundations, Growth, or Domination services?",
-    a: "Most businesses naturally fit into one of three stages. Foundations: you need a stronger brand, website, messaging, or online presence. Growth: you have a solid foundation but want more visibility, leads, and customers. Domination: you already have traction and need strategic guidance, automation, systems, or leadership support to scale effectively. If you're unsure, we'll identify the most appropriate starting point during an initial discovery conversation."
+    id: 'domination',
+    num: '03',
+    name: 'Domination',
+    headline: 'Where organic gains become permanent.',
+    lede: "Ranking is not the same as dominating. Domination is the shift from being included in results to being recommended, across search rankings, answer engines and generative search. It scales what Growth proved and builds the systems that make the gains hold.",
+    items: [
+      { title: 'Scale what works', text: "Doubling down on the content and authority angles that are actually gaining traction, like pushing page-two rankings to page one, where the traffic curve inflects sharply." },
+      { title: 'Compound authority', text: 'A fully interconnected cluster where every supporting page passes authority to the pages that matter, E-E-A-T signals reinforced at scale, and structured data marking up the right entities.' },
+      { title: 'Measurement systems', text: 'Tracking the signals that predict vulnerability, not just rankings and traffic: topical gaps, thin-page ratios and crawl health. When a core update lands, you know within days whether you are exposed.' },
+    ],
+    why: "Organic gains without measurement systems are temporary. Most SEO work stops before this phase, and the gains slowly erode as competitors catch up or an update hits without warning. Domination is what keeps the engine running afterwards.",
   },
-  {
-    q: "Do I need to start with Foundations?",
-    a: "Not necessarily. Many businesses already have a website, branding, or existing marketing assets in place. In those cases, we may begin with Growth or Domination services. Every engagement starts by evaluating where your business is today and identifying the opportunities that will have the greatest impact."
-  },
-  {
-    q: "Can I hire you for a single service?",
-    a: "Absolutely. While services are organized around business growth stages, many clients engage me for specific projects such as website development, SEO, content strategy, brand development, AI implementation, or business consulting. The framework simply helps ensure each service supports your broader business goals."
-  },
-  {
-    q: "What industries do you work with?",
-    a: "I work with a wide variety of businesses and organizations, including professional service firms, trades and contractors, local businesses, startups, e-commerce brands, non-profit organizations, tourism and hospitality businesses, and online gaming brands (casino, sportsbook, poker, bingo). The common factor isn't the industry, but a commitment to growth."
-  },
-  {
-    q: "How long does a typical project take?",
-    a: "Project timelines vary depending on scope and complexity. As a general guide: branding projects take 1 to 2 weeks, website projects take 2 to 12 weeks, SEO and growth engagements run 90 days plus ongoing support, and strategic consulting is tailored to business needs. A clear timeline and deliverables are established before any work begins."
-  },
-  {
-    q: "Do you offer ongoing support?",
-    a: "Yes. Many clients continue working with me after a project launch to maintain momentum and pursue new growth opportunities. Ongoing support may include website maintenance, SEO, content strategy, analytics and reporting, marketing automation, growth consulting, and strategic advisory."
-  },
-  {
-    q: "What makes your approach different from a traditional agency?",
-    a: "Most agencies focus on delivering marketing services. My approach focuses on business growth. That means every recommendation is evaluated through the lens of business outcomes rather than individual tactics. Instead of asking 'do you need SEO', I ask what is preventing your business from reaching its next stage of growth. The answer often involves a combination of branding, technology, marketing, automation, and strategy."
-  },
-  {
-    q: "Do you use AI in your process?",
-    a: "Yes, strategically. AI can improve efficiency, streamline workflows, accelerate content creation, and support decision-making when implemented correctly. I help businesses identify practical applications for AI that create measurable value rather than chasing trends. The goal is always better outcomes, not simply adopting new technology."
-  },
-  {
-    q: "How do you measure success?",
-    a: "Success depends on your goals. For some businesses, success means launching a professional brand and website. For others, it may mean increased search visibility, more qualified leads, improved conversion rates, greater operational efficiency, revenue growth, or stronger market positioning. Every project begins by defining clear objectives and identifying the metrics that matter most."
-  },
-  {
-    q: "Do you work with businesses outside your local area?",
-    a: "Yes. Many projects can be delivered remotely, allowing me to work with businesses across the USA, EU, LATAM, and internationally. Communication is managed through video calls, email, collaboration tools, and regular project updates."
-  },
-  {
-    q: "What does it cost to work together?",
-    a: "Every business is different. Foundations projects are generally structured around defined deliverables, while Growth and Domination engagements are often ongoing partnerships. After an initial conversation, I'll recommend the most appropriate approach based on your goals, challenges, and stage of growth."
-  }
 ];
 
-const faqSchema = {
+const faqs = [
+  {
+    q: 'What is a Growth Architect?',
+    a: "Someone who looks at how branding, websites, search visibility, content, automation, analytics and business strategy work together, rather than specialising in a single channel. The goal isn't to deliver a list of tactics but to create the conditions for sustainable growth.",
+  },
+  {
+    q: 'Do you have to start with Foundations?',
+    a: "Not always. Plenty of sites already have solid technical health and can move straight into Growth. But it's worth checking first: content and links built on a broken foundation produce a fraction of the results they should, and the problem is rarely visible from the surface.",
+  },
+  {
+    q: 'Is Growth OS only for regulated industries?',
+    a: "No. It was shaped in iGaming, fintech and other regulated verticals, where the bar for trust is highest and the cost of shortcuts is most visible. The principles are the same for any site, whatever its size: strong foundations, useful content, consistent optimisation and authority that's earned.",
+  },
+  {
+    q: 'How does AI search change the framework?',
+    a: "It raises the stakes on the same principles. Answer engines can only cite what they can crawl, parse and trust, so clean HTML, clear entities and genuine topical depth matter more, not less. The goal in Domination has shifted from being ranked to being recommended.",
+  },
+];
+
+const schema = {
   "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": faqs.map(f => ({
-    "@type": "Question",
-    "name": f.q,
-    "acceptedAnswer": { "@type": "Answer", "text": f.a }
-  }))
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "Growth OS: an organic growth framework",
+      "description": "A three-stage model for sustainable organic growth: Foundations, Growth and Domination.",
+      "url": "https://bronson.co.za/framework/",
+      "author": { "@id": "https://bronson.co.za/#/schema/person" },
+      "about": ["Search Engine Optimization", "Answer Engine Optimization", "Topical Authority", "Organic Growth"]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": faqs.map((f) => ({
+        "@type": "Question",
+        "name": f.q,
+        "acceptedAnswer": { "@type": "Answer", "text": f.a }
+      }))
+    }
+  ]
 };
 ---
 <BaseLayout
-  title="Organic Growth Framework by Bronson Harrington"
-  description="The Organic Growth Framework is a blueprint for enhancing your brand, building your authority, and boosting your business growth. Ready to grow? Let's go!"
+  title="Growth OS: An Organic Growth Framework | Bronson Harrington"
+  description="Growth OS is Bronson Harrington's three-stage model for sustainable organic growth: Foundations, Growth and Domination. See how each stage works."
 >
-  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
 
   <section class="hero container">
     <p class="eyebrow">~/framework</p>
-    <h1>Build your brand. Grow your business. Dominate your market.</h1>
-    <p class="lede">From strategic branding and high-converting websites to SEO and growth marketing, I help businesses create a stronger foundation, generate more opportunities, and achieve sustainable growth.</p>
+    <h1>Growth OS</h1>
+    <p class="label subtitle">an organic growth framework · foundations → growth → domination</p>
+    <p class="lede">Sustainable growth isn't about chasing rankings. It's about building something that compounds: structurally sound, increasingly authoritative, and eventually difficult to compete with directly. Growth OS is the model I've refined over 25 years for doing that, in three stages that each build on the one before.</p>
   </section>
 
   <hr class="hairline" />
 
-  <section class="phase-flow container" aria-hidden="true">
-    <div class="flow-node">01</div>
-    <div class="flow-line"></div>
-    <div class="flow-node">02</div>
-    <div class="flow-line"></div>
-    <div class="flow-node">03</div>
-  </section>
+  <nav class="phase-flow container" aria-label="Framework stages">
+    {phases.map((p, i) => (
+      <>
+        <a href={`#${p.id}`} class="flow-node-link">
+          <span class="flow-node">{p.num}</span>
+          <span class="flow-label">{p.name.toLowerCase()}</span>
+        </a>
+        {i < phases.length - 1 && <span class="flow-line" aria-hidden="true"></span>}
+      </>
+    ))}
+  </nav>
 
-  <section class="phase container" id="foundations">
-    <p class="eyebrow">01 / foundations</p>
-    <h2>Build a strong brand that creates clarity, credibility, and lasting impact.</h2>
-    <p class="lede">Every successful business starts with a solid foundation, one that helps customers understand who you are, what you do, and why they should choose you.</p>
-
-    <div class="service-list">
-      <article class="service-item">
-        <h3>Brand Strategy</h3>
-        <p class="tagline">Define your position before you promote it.</p>
-        <p>Create a clear strategic direction that aligns your business, audience, messaging, and market position. Brand strategy provides the foundation for every future marketing and growth initiative.</p>
-      </article>
-      <article class="service-item">
-        <h3>Brand Identity</h3>
-        <p class="tagline">Build a brand people recognise and remember.</p>
-        <p>Develop a professional visual identity that creates trust, strengthens recognition, and supports long-term growth across every touchpoint.</p>
-      </article>
-      <article class="service-item">
-        <h3>Brand Messaging</h3>
-        <p class="tagline">Communicate your value with confidence.</p>
-        <p>Craft clear, compelling messaging that connects with the right audience and inspires action, creating a consistent voice that builds trust.</p>
-      </article>
-    </div>
-  </section>
-
-  <hr class="hairline" />
-
-  <section class="phase container" id="growth">
-    <p class="eyebrow">02 / growth</p>
-    <h2>Build the digital assets, systems, and infrastructure that turn potential into performance.</h2>
-    <p class="lede">Once your brand foundation is established, it's time to build the platforms, processes, and content engines that support sustainable growth.</p>
-
-    <div class="service-list">
-      <article class="service-item">
-        <h3>Website Development</h3>
-        <p class="tagline">Build a digital presence that works as hard as you do.</p>
-        <p>Create a professional website designed to attract visitors, build trust, and generate opportunities, combining strong branding with conversion-focused design.</p>
-      </article>
-      <article class="service-item">
-        <h3>Content Systems</h3>
-        <p class="tagline">Create content that attracts, educates, and converts.</p>
-        <p>Develop scalable content frameworks that support visibility, engagement, and long-term growth through strategic planning and structured publishing.</p>
-      </article>
-      <article class="service-item">
-        <h3>Digital Systems</h3>
-        <p class="tagline">Build the infrastructure that powers growth.</p>
-        <p>Implement the systems needed to measure performance, improve experiences, and support growth through analytics, automation, and journey improvements.</p>
-      </article>
-    </div>
-  </section>
-
-  <hr class="hairline" />
-
-  <section class="phase container" id="domination">
-    <p class="eyebrow">03 / domination</p>
-    <h2>Increase visibility, strengthen authority, and accelerate growth.</h2>
-    <p class="lede">With the right foundations and systems in place, it's time to amplify your reach, expand your influence, and create sustainable competitive advantage.</p>
-
-    <div class="service-list">
-      <article class="service-item">
-        <h3>Search Optimisation</h3>
-        <p class="tagline">Increase visibility where your customers are searching.</p>
-        <p>Improve your presence across search engines and emerging AI-powered discovery platforms through technical SEO, content optimisation, and AI search readiness.</p>
-      </article>
-      <article class="service-item">
-        <h3>Authority Building</h3>
-        <p class="tagline">Become the trusted choice in your market.</p>
-        <p>Strengthen your reputation through strategic content, thought leadership, digital PR, and reputation-building initiatives that establish lasting credibility.</p>
-      </article>
-      <article class="service-item">
-        <h3>Growth Strategy</h3>
-        <p class="tagline">Turn insights into action and momentum.</p>
-        <p>Develop strategic roadmaps combining positioning, authority building, and sustained visibility to move beyond inclusion into market dominance.</p>
-      </article>
-    </div>
-  </section>
-
-  <hr class="hairline" />
-
-  <section class="process container">
-    <p class="eyebrow">how it works</p>
-    <h2>Turn insight into action.</h2>
-    <p class="lede">A simple process designed to uncover opportunities, prioritize growth initiatives, and create a clear path forward.</p>
-
-    <div class="process-grid">
-      <article class="process-step">
-        <p class="label">01 / request an audit</p>
-        <h3>Understand your business</h3>
-        <p>Book a free discovery call to request your free audit, discuss your business, your goals, and your current challenges. Growth starts here.</p>
-      </article>
-      <article class="process-step">
-        <p class="label">02 / receive your results</p>
-        <h3>Identify the opportunities</h3>
-        <p>Personalized audit and strategic growth blueprint highlighting opportunities across Foundations, Growth, and Domination.</p>
-      </article>
-      <article class="process-step">
-        <p class="label">03 / work the plan</p>
-        <h3>Build the roadmap</h3>
-        <p>Review the findings, recommendations, and next steps through a recorded presentation designed to help you take action.</p>
-      </article>
-    </div>
-  </section>
+  {phases.map((p) => (
+    <>
+      <hr class="hairline" />
+      <section class="phase container" id={p.id}>
+        <p class="eyebrow">{p.num} / {p.name.toLowerCase()}</p>
+        <h2>{p.name}: {p.headline}</h2>
+        <p class="lede">{p.lede}</p>
+        <div class="service-list">
+          {p.items.map((it) => (
+            <article class="service-item">
+              <h3>{it.title}</h3>
+              <p>{it.text}</p>
+            </article>
+          ))}
+        </div>
+        <p class="why"><span class="label">why it matters</span>{p.why}</p>
+      </section>
+    </>
+  ))}
 
   <hr class="hairline" />
 
   <section class="faq container">
-    <p class="eyebrow">frequently asked questions</p>
-    <h2>Questions about branding, websites, SEO, or business growth?</h2>
-    <p class="lede">Explore the answers below, and if you'd like tailored advice for your business, let's start a conversation.</p>
-
+    <p class="eyebrow">~/faq</p>
+    <h2>Questions About the Framework.</h2>
     <div class="faq-list">
       {faqs.map((f) => (
         <details class="faq-item">
@@ -211,11 +152,9 @@ const faqSchema = {
 
   <hr class="hairline" />
 
-  <section class="final-cta container">
-    <p class="eyebrow">free for igaming and regulated operators</p>
-    <h2>Get your 90-day growth plan.</h2>
-    <p class="lede">The Foundations, Growth, and Domination framework applied to your actual site. Personal video walkthrough built from your real data.</p>
-    <a href={`${base}contact/`} class="cta-btn">request your free blueprint &#8594;</a>
+  <section class="closing container">
+    <h2>Keep Reading.</h2>
+    <p>I write about how these ideas play out in practice in my <a href={`${base}notes/`}>notes</a>. If you want to argue with any of it, <a href={`${base}contact/`}>I'd like to hear from you</a>.</p>
   </section>
 </BaseLayout>
 
@@ -224,16 +163,29 @@ const faqSchema = {
     padding-top: var(--space-6);
     padding-bottom: var(--space-5);
   }
-  .hero .lede {
+  .subtitle {
+    margin: var(--space-2) 0 var(--space-3);
+  }
+  .lede {
     font-size: var(--text-lg);
     color: var(--ink-soft);
     max-width: var(--content-narrow);
-    margin-top: var(--space-2);
   }
+
+  /* Real sequence, so a connected flow rather than peer cards */
   .phase-flow {
     display: flex;
     align-items: center;
-    padding: var(--space-4) 0;
+    gap: var(--space-2);
+    padding-top: var(--space-4);
+    padding-bottom: var(--space-4);
+  }
+  .flow-node-link {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    text-decoration: none;
+    flex-shrink: 0;
   }
   .flow-node {
     font-family: var(--font-mono);
@@ -246,81 +198,70 @@ const faqSchema = {
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0;
+  }
+  .flow-label {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--ink);
+  }
+  .flow-node-link:hover .flow-node {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .flow-node-link:hover .flow-label {
+    color: var(--accent);
   }
   .flow-line {
     height: 0.5px;
     background: var(--hairline);
     flex: 1;
   }
+
   .phase {
     padding-top: var(--space-6);
     padding-bottom: var(--space-6);
+    scroll-margin-top: var(--space-3);
+  }
+  .phase h2 {
+    margin: var(--space-1) 0 var(--space-3);
   }
   .phase .lede {
-    color: var(--ink-soft);
-    max-width: var(--content-narrow);
-    margin: var(--space-2) 0 var(--space-5);
+    margin-bottom: var(--space-5);
   }
   .service-list {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: var(--space-5);
-    margin-bottom: var(--space-4);
   }
   .service-item {
     border-top: 2px solid var(--ink);
     padding-top: var(--space-3);
   }
-  .service-item .tagline {
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    color: var(--accent);
-    margin: var(--space-1) 0 var(--space-2);
+  .service-item h3 {
+    font-size: var(--text-lg);
+    margin-bottom: var(--space-2);
   }
-  .service-item p:not(.tagline) {
+  .service-item p {
     font-size: var(--text-sm);
     color: var(--ink-muted);
   }
-  .phase-link {
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    color: var(--accent);
-    text-decoration: none;
-  }
-  .process {
-    padding-top: var(--space-6);
-    padding-bottom: var(--space-7);
-  }
-  .process .lede {
-    color: var(--ink-soft);
+  .why {
+    margin-top: var(--space-5);
+    padding-left: var(--space-3);
+    border-left: 2px solid var(--accent);
     max-width: var(--content-narrow);
-    margin: var(--space-2) 0 var(--space-5);
   }
-  .process-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--space-5);
+  .why .label {
+    display: block;
+    margin-bottom: var(--space-1);
   }
-  .process-step h3 {
-    margin: var(--space-1) 0 var(--space-2);
-  }
-  .process-step p:not(.label) {
-    font-size: var(--text-sm);
-    color: var(--ink-muted);
-  }
+
   .faq {
     padding-top: var(--space-6);
-    padding-bottom: var(--space-7);
+    padding-bottom: var(--space-6);
   }
-  .faq .lede {
-    color: var(--ink-soft);
-    max-width: var(--content-narrow);
-    margin: var(--space-2) 0 var(--space-5);
-  }
-  .faq-list {
-    display: flex;
-    flex-direction: column;
+  .faq h2 {
+    margin: var(--space-1) 0 var(--space-4);
   }
   .faq-item {
     border-top: 0.5px solid var(--hairline);
@@ -332,7 +273,6 @@ const faqSchema = {
   .faq-item summary {
     font-family: var(--font-display);
     font-weight: 500;
-    font-size: var(--text-base);
     color: var(--ink);
     cursor: pointer;
     list-style: none;
@@ -353,34 +293,24 @@ const faqSchema = {
   .faq-item p {
     font-size: var(--text-sm);
     color: var(--ink-muted);
-    margin-top: var(--space-2);
+    margin: var(--space-2) 0 0;
     padding-left: 1em;
   }
-  .final-cta {
+
+  .closing {
     padding-top: var(--space-6);
-    padding-bottom: var(--space-8);
-    text-align: center;
   }
-  .final-cta .lede {
-    max-width: var(--content-narrow);
-    margin: var(--space-2) auto var(--space-4);
-    color: var(--ink-soft);
+  .closing h2 {
+    margin-bottom: var(--space-2);
   }
-  .cta-btn {
-    display: inline-block;
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    padding: var(--space-2) var(--space-3);
-    border-radius: var(--radius);
-    text-decoration: none;
-    background: var(--ink);
-    color: var(--paper);
+  .closing a {
+    color: var(--accent);
   }
-  .cta-btn:hover {
-    background: var(--accent);
-  }
+
   @media (max-width: 860px) {
     .service-list { grid-template-columns: 1fr; }
-    .process-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 560px) {
+    .flow-label { display: none; }
   }
 </style>

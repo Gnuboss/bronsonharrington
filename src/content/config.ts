@@ -6,6 +6,8 @@ const notes = defineCollection({
   type: 'content',
   schema: z.object({
     title: z.string(),
+    // Optional search title if the page title should differ from the heading (aim for 50-60 characters)
+    seoTitle: z.string().optional(),
     // Used as the meta description (aim for 120-155 characters)
     description: z.string(),
     date: z.coerce.date(),
