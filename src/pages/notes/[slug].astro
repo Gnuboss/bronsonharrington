@@ -1,0 +1,140 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const notes = await getCollection('notes', ({ data }) => !data.draft);
+  return notes.map((note) => ({ params: { slug: note.slug }, props: { note } }));
+}
+
+interface Props {
+  note: CollectionEntry<'notes'>;
+}
+
+const base = import.meta.env.BASE_URL;
+const { note } = Astro.props;
+const { Content } = await note.render();
+const fmt = (d: Date) => d.toISOString().slice(0, 10);
+const url = `https://bronson.co.za/notes/${note.slug}/`;
+---
+<BaseLayout title={`${note.data.title} | Bronson Harrington`} description={note.data.description}>
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": note.data.title,
+    "description": note.data.description,
+    "datePublished": fmt(note.data.date),
+    "dateModified": fmt(note.data.updated ?? note.data.date),
+    "url": url,
+    "mainEntityOfPage": url,
+    "keywords": note.data.tags.join(', '),
+    "author": { "@id": "https://bronson.co.za/#/schema/person" },
+    "isPartOf": { "@id": "https://bronson.co.za/notes/#blog" }
+  })} />
+
+  <article class="container note">
+    <header class="note-head">
+      <a href={`${base}notes/`} class="eyebrow back">~/notes</a>
+      <h1>{note.data.title}</h1>
+      <p class="label meta">
+        <time datetime={fmt(note.data.date)}>{fmt(note.data.date)}</time>
+        {note.data.updated && <> · updated <time datetime={fmt(note.data.updated)}>{fmt(note.data.updated)}</time></>}
+        {note.data.tags.length > 0 && <> · {note.data.tags.join(' / ')}</>}
+      </p>
+    </header>
+
+    <hr class="hairline" />
+
+    <div class="prose">
+      <Content />
+    </div>
+
+    <footer class="note-foot">
+      <a href={`${base}notes/`} class="label">← all notes</a>
+    </footer>
+  </article>
+</BaseLayout>
+
+<style>
+  .note {
+    max-width: calc(var(--content-narrow) + 2 * var(--space-6));
+    padding-top: var(--space-6);
+  }
+  .back {
+    text-decoration: none;
+  }
+  .note-head h1 {
+    font-size: var(--text-2xl);
+    margin: var(--space-2) 0 var(--space-2);
+  }
+  .meta {
+    margin-bottom: var(--space-4);
+  }
+  .prose {
+    padding-top: var(--space-4);
+    font-size: 1.0625rem;
+  }
+  /* Markdown body: authors start sections at ## so the outline stays H1 -> H2 -> H3 */
+  .prose :global(h2) {
+    font-size: var(--text-xl);
+    margin: var(--space-5) 0 var(--space-2);
+  }
+  .prose :global(h3) {
+    font-size: var(--text-lg);
+    margin: var(--space-4) 0 var(--space-2);
+  }
+  .prose :global(a) {
+    color: var(--accent);
+  }
+  .prose :global(ul),
+  .prose :global(ol) {
+    max-width: 65ch;
+    padding-left: var(--space-3);
+    margin: 0 0 var(--space-3);
+  }
+  .prose :global(li) {
+    margin-bottom: var(--space-1);
+  }
+  .prose :global(blockquote) {
+    margin: var(--space-4) 0;
+    padding-left: var(--space-3);
+    border-left: 2px solid var(--accent);
+    color: var(--ink-muted);
+  }
+  .prose :global(code) {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    background: var(--paper-dim);
+    padding: 0.1em 0.3em;
+    border-radius: var(--radius);
+  }
+  .prose :global(pre) {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    background: var(--ink);
+    color: var(--paper);
+    padding: var(--space-3);
+    overflow-x: auto;
+    border-radius: var(--radius);
+    margin: 0 0 var(--space-3);
+  }
+  .prose :global(pre code) {
+    background: none;
+    padding: 0;
+  }
+  .prose :global(img) {
+    max-width: 100%;
+    height: auto;
+  }
+  .note-foot {
+    margin-top: var(--space-6);
+    padding-top: var(--space-3);
+    border-top: 0.5px solid var(--hairline);
+  }
+  .note-foot a {
+    text-decoration: none;
+  }
+  .note-foot a:hover {
+    color: var(--accent);
+  }
+</style>

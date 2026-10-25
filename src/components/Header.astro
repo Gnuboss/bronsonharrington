@@ -1,7 +1,9 @@
 ---
 const base = import.meta.env.BASE_URL;
 const nav = [
+  { label: 'notes', href: `${base}notes/` },
   { label: 'framework', href: `${base}framework/` },
+  { label: 'contact', href: `${base}contact/` },
 ];
 ---
 <header class="site-header">
@@ -12,7 +14,6 @@ const nav = [
         {nav.map((item) => (
           <li><a href={item.href}>{item.label}</a></li>
         ))}
-        <li><a href={`${base}contact/`} class="cta">book a consultation</a></li>
       </ul>
     </nav>
   </div>
@@ -53,16 +54,6 @@ const nav = [
   }
   nav a:hover {
     color: var(--ink);
-  }
-  nav a.cta {
-    color: var(--paper);
-    background: var(--ink);
-    padding: var(--space-1) var(--space-2);
-    border-radius: var(--radius);
-  }
-  nav a.cta:hover {
-    background: var(--accent);
-    color: var(--paper);
   }
   @media (max-width: 720px) {
     nav ul { gap: var(--space-2); flex-wrap: wrap; }
