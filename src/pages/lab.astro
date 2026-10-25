@@ -1,0 +1,100 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { projects } from '../data/projects';
+---
+<BaseLayout
+  title="Lab: Local-First Tools and Experiments | Bronson Harrington"
+  description="Small, local-first tools and experiments built by Bronson Harrington, from a job tracker to an invoicing app. Open one up and try it."
+>
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "Lab - Bronson Harrington",
+    "url": "https://bronson.co.za/lab/",
+    "author": { "@id": "https://bronson.co.za/#/schema/person" },
+    "hasPart": projects.map((p) => ({
+      "@type": "SoftwareApplication",
+      "name": p.name,
+      "description": p.summary,
+      "url": p.href,
+      "applicationCategory": "WebApplication"
+    }))
+  })} />
+
+  <section class="container intro">
+    <p class="eyebrow">~/lab</p>
+    <h1>Lab</h1>
+    <p class="lede">Things I build on the side. Mostly small, mostly local-first, usually started because something I needed didn't exist or didn't work the way it should.</p>
+  </section>
+
+  <hr class="hairline" />
+
+  <section class="container">
+    <h2 class="visually-hidden">Projects</h2>
+    <div class="build-grid">
+      {projects.map((p) => (
+        <article class="build-card">
+          <h3>{p.name}</h3>
+          <p class="label">{p.stack}</p>
+          <p class="summary">{p.summary}</p>
+          <a href={p.href} class="build-link">{p.linkLabel} →</a>
+        </article>
+      ))}
+    </div>
+    <p class="more-note">More experiments live on <a href="https://github.com/Gnuboss">GitHub</a>.</p>
+  </section>
+</BaseLayout>
+
+<style>
+  .intro {
+    padding-top: var(--space-6);
+    padding-bottom: var(--space-5);
+  }
+  .intro h1 {
+    margin: var(--space-2) 0 var(--space-3);
+  }
+  .lede {
+    font-size: var(--text-lg);
+    max-width: var(--content-narrow);
+  }
+  /* Projects are genuine peers, so a uniform grid */
+  .build-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-5);
+    padding-top: var(--space-5);
+  }
+  .build-card {
+    border-top: 2px solid var(--ink);
+    padding-top: var(--space-3);
+    display: flex;
+    flex-direction: column;
+  }
+  .build-card h3 {
+    font-size: var(--text-lg);
+  }
+  .build-card .label {
+    margin: var(--space-1) 0 var(--space-2);
+  }
+  .build-card .summary {
+    font-size: var(--text-sm);
+    color: var(--ink-muted);
+  }
+  .build-link {
+    margin-top: auto;
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .more-note {
+    margin-top: var(--space-5);
+    font-size: var(--text-sm);
+  }
+  .more-note a {
+    color: var(--accent);
+  }
+  @media (max-width: 860px) {
+    .build-grid { grid-template-columns: 1fr; }
+  }
+</style>

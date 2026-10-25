@@ -58,7 +58,7 @@ const fmt = (d: Date) => d.toISOString().slice(0, 10);
       <div>
         <h1>Bronson Harrington</h1>
         <p class="label subtitle">Growth Architect · SEO / AEO · builder</p>
-        <p class="lede">I've spent 25 years building organic growth systems inside iGaming, fintech and other regulated markets. This is where I write about that work, think out loud about systems and digital sovereignty, and keep the tools I build on the side.</p>
+        <p class="lede">I've spent 25 years building organic growth systems inside iGaming, fintech and other regulated markets. This is where I write about that work, think out loud about systems and digital sovereignty, and keep the tools I build on the side. <a href={`${base}about-me/`}>More about me →</a></p>
       </div>
     </div>
   </section>
@@ -94,7 +94,7 @@ const fmt = (d: Date) => d.toISOString().slice(0, 10);
         <p class="eyebrow">~/lab</p>
         <h2>Things I've Built.</h2>
       </div>
-      <a href="https://github.com/Gnuboss" class="more">github →</a>
+      <a href={`${base}lab/`} class="more">the lab →</a>
     </div>
     <div class="build-grid">
       {projects.map((p) => (
@@ -177,6 +177,9 @@ const fmt = (d: Date) => d.toISOString().slice(0, 10);
     font-size: var(--text-lg);
     color: var(--ink-soft);
     max-width: var(--content-narrow);
+  }
+  .lede a {
+    color: var(--accent);
   }
 
   .notes,
