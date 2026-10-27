@@ -122,6 +122,20 @@ a {
   margin: 0;
 }
 
+/* Keeps a heading in the document outline (and for screen readers)
+   without showing it - used where a visible heading would be redundant. */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* Reduced motion respected site-wide */
 @media (prefers-reduced-motion: reduce) {
   * {

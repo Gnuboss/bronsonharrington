@@ -1,34 +1,33 @@
 # bronsonharrington
 
-Client-facing consultancy site. Astro, zero client-side JS by default, self-hosted fonts, static output for GitHub Pages.
+Personal site: notes, lab, and the Growth OS framework. Astro, zero client-side JS by default, self-hosted fonts, static output for GitHub Pages.
 
 ## Design system: "Swiss Terminal"
 
 - Palette: warm paper (#F7F6F2), ink (#141414), muted terminal-green accent (#2E6F5C)
 - Type: Inter (display/body) + JetBrains Mono (structural labels, phase markers, file-path eyebrows)
 - Layout: Swiss grid discipline, hairline rules, one vertical rule as the signature grid gesture
-- Heading hierarchy locked: H1 hero / H3 section / H4 subtitle / H5 one-liner (per Bronson's existing convention)
+- Heading hierarchy locked: H1 hero / H3 section / H4 subtitle / H5 one-liner (per Bronson'## Structure
+
+- `/` home: intro, latest notes, builds, framework teaser
+- `/notes/` writing. One markdown file per note in `src/content/notes/` (filename = URL; `draft: true` hides it). RSS at `/rss.xml`
+- `/lab/` builds, listed from `src/data/projects.ts` (also feeds the home page)
+- `/framework/` Growth OS, written as thinking rather than an offer
+- `/about-me/`, `/contact/`, `404`
+- Redirects (in `astro.config.mjs`): `/growth-architect-costa-rica/` now lives as a note; `/about/` points to `/about-me/`
+- Sitemap and robots.txt generated/served automatically
 
 ## Status
 
-Scaffolded and building clean:
-- [x] Design tokens (`src/styles/tokens.css`)
-- [x] Base layout, Header, Footer, PhaseNav component
-- [x] Homepage (hero + framework section) using real extracted copy
-- [ ] Font files — need Inter and JetBrains Mono variable woff2 binaries in `public/fonts/`
-       (self-hosted, subsetted; not fetched yet — network sandbox doesn't reach fonts.gstatic.com,
-       pull from Google Fonts or fontsource npm packages directly on your machine)
-- [ ] Remaining pages: About, Contact, Services (hub + 12 sub-pages), Framework (hub + 3 phases),
-       Projects (net-new, not migrated — see note below)
-- [ ] Growth Architect Costa Rica entity page (schema + FAQ reconciliation still pending from earlier audit)
-- [ ] Case studies (5, from backlog — not yet written as live pages)
-- [ ] CNAME file for custom domain once DNS is ready to point at GitHub Pages
+- [x] Design tokens, layout, header, footer
+- [x] Self-hosted fonts (Inter + JetBrains Mono variable, latin subset, from fontsource)
+- [x] Home, Notes, Lab, Framework, About, Contact, 404, RSS, sitemap
+- [ ] Publish real notes
+- [ ] CNAME file for bronson.co.za once DNS points at GitHub Pages
 
-## Content source
+The old consultancy service pages and the 90-Day Engagement were retired when the site stopped being acquisition-focused. Their copy stays in `content-source/` for reference.
 
-All page copy was extracted from the live bronson.co.za WordPress XML export (Divi 5 block JSON,
-decoded to clean markdown) — see the `extracted-content/` files shared earlier in this conversation.
-Not yet wired into these page components; homepage is the only one built out so far.
+ one built out so far.
 
 ## Local dev
 

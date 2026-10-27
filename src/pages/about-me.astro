@@ -1,0 +1,234 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const base = import.meta.env.BASE_URL;
+
+// Selected roles - a real chronological sequence, so shown as a timeline
+const roles = [
+  { years: '2025 - 2026', org: 'Disability Law Marketing', role: 'SEO & Growth Strategist', note: 'Organic growth strategy for a legal marketing firm.' },
+  { years: '2024 - 2025', org: 'WeezyBet', role: 'SEO Team Lead', note: 'Stabilized and launched a struggling sportsbook platform in three months.' },
+  { years: '2024', org: 'BetAnySports', role: 'SEO Lead', note: '200% organic traffic growth, 80% stronger engagement, and early GEO/AEO work for AI search visibility.' },
+  { years: '2019 - 2023', org: 'JazzSports Sportsbook & Casino', role: 'Organic acquisition', note: 'An organic system across a 17-property portfolio generating $20M+ a year, with about 75% of revenue coming from organic search.' },
+  { years: '2018 - 2019', org: 'Betcris', role: 'SEO Manager', note: 'Resolved 20,000+ technical issues across a 25,000-page network and more than doubled organic acquisition.' },
+  { years: '2015 - 2017', org: 'White Shark Media', role: 'Director of Web', note: 'Led a 20+ person team through 400+ SEO site builds and a 300% productivity uplift.' },
+];
+---
+<BaseLayout
+  title="About Bronson Harrington | Growth Architect, Costa Rica"
+  description="Bronson Harrington has built, optimized and grown things on the internet since 2000. His story, the work he's done, and what he's exploring now."
+>
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "ProfilePage",
+    "url": "https://bronson.co.za/about-me/",
+    "mainEntity": {
+      "@type": "Person",
+      "@id": "https://bronson.co.za/#/schema/person",
+      "name": "Bronson Harrington",
+      "jobTitle": "Growth Architect",
+      "homeLocation": { "@type": "Place", "name": "San José, Costa Rica" },
+      "alumniOf": { "@type": "CollegeOrUniversity", "name": "University of South Africa (UNISA)" },
+      "hasCredential": { "@type": "EducationalOccupationalCredential", "name": "Certified ScrumMaster" }
+    }
+  })} />
+
+  <section class="hero container">
+    <p class="eyebrow">~/about-me</p>
+    <div class="hero-grid">
+      <div class="hero-rule" aria-hidden="true"></div>
+      <div>
+        <h1>About Me</h1>
+        <p class="label subtitle">Growth Architect · San José, Costa Rica · online since 2000</p>
+        <p class="lede">I've been building, optimizing, and growing things on the internet since 2000. What started as curiosity on early home computers turned into a career across graphic design, web development, SEO, content strategy, analytics, team leadership and growth architecture.</p>
+        <p class="motto">Find what matters. Remove what's holding it back. Help it grow.</p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="hairline" />
+
+  <section class="container prose-section">
+    <h2>My Story.</h2>
+    <blockquote>My first website was so poorly optimized it wouldn't fit on a 1.44MB floppy disk.</blockquote>
+    <p>That mistake taught me something important: optimization isn't something you do at the end. It's something you build into everything from the beginning.</p>
+    <p>Long before search engines, smartphones, social media or AI, I was the kid spending hours in front of a computer connected to a cassette tape drive. I learned BASIC from books thicker than the computer's manual, experimented endlessly, and discovered that technology wasn't just something you used. It was something you could create with.</p>
+    <p>One of my earliest adventures was teaching myself graphic design on a 486 PC running Photoshop in 256 colours. Every pixel mattered. Every kilobyte mattered. Every limitation forced creativity.</p>
+    <p>I learned the web in the era of hand-coded HTML, PHP includes, CSS, Joomla and early WordPress. I watched search engines transform how people find information, then the rise of mobile, social, cloud, and now AI. The tools have changed dramatically. The mindset hasn't. I'm still driven by the same three questions:</p>
+    <ul class="questions">
+      <li>How does this work?</li>
+      <li>How can it be improved?</li>
+      <li>How can it create more value for the people using it?</li>
+    </ul>
+  </section>
+
+  <hr class="hairline" />
+
+  <section class="container prose-section">
+    <h2>Where SEO Became Serious.</h2>
+    <p>I'd been building websites for years, but online gaming is where SEO became a business discipline for me. As a poker webmaster, and later in senior SEO and growth roles, I saw firsthand how organic visibility shaped acquisition, retention and revenue.</p>
+    <p>I stopped looking only at rankings and started looking at customer journeys, user experience, conversion pathways and revenue impact. That's where I learned one of the most important lessons of my career: traffic is only valuable when it contributes to a meaningful outcome.</p>
+    <blockquote>Rankings are nice. Revenue is nicer.</blockquote>
+    <p>Over the years I've been a graphic designer, webmaster, web developer, SEO lead, SEO director, head of SEO and director of web. The title I've grown most fond of is Growth Architect, because it describes how I think: not as a specialist in one channel, but as someone who sees how websites, content, SEO, analytics, automation and operations work together.</p>
+  </section>
+
+  <hr class="hairline" />
+
+  <section class="container work">
+    <p class="eyebrow">~/work</p>
+    <h2>Selected Work.</h2>
+    <ol class="timeline">
+      {roles.map((r) => (
+        <li>
+          <span class="label years">{r.years}</span>
+          <div>
+            <h3>{r.org}</h3>
+            <p class="label role">{r.role}</p>
+            <p>{r.note}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+    <p class="earlier">Earlier: Found.co.uk, Downtown Ecommerce Partners, Forwardslash, Macrolan, Belle Rock Entertainment and CyberCapeTown.com. Co-founder of SEOreports.io. B.Comm in Business Economics (UNISA) and Certified ScrumMaster.</p>
+  </section>
+
+  <hr class="hairline" />
+
+  <section class="container prose-section">
+    <h2>What I Believe.</h2>
+    <p>Most businesses don't have a traffic problem. They have a foundation problem. Too many organizations chase more visitors before fixing the systems responsible for converting, retaining and delighting the customers they already have.</p>
+    <p>Most marketers chase tactics. The best ones build systems. Growth rarely comes from a single breakthrough; it comes from doing the right things consistently and improving them over time. I've written that thinking up as the <a href={`${base}framework/`}>Growth OS framework</a>.</p>
+    <blockquote>Everything else becomes easier when the foundations are solid.</blockquote>
+  </section>
+
+  <hr class="hairline" />
+
+  <section class="container prose-section">
+    <h2>What I'm Exploring Right Now.</h2>
+    <p>Much of my learning these days revolves around AI, automation, content systems and the future of search, especially how AI can help people create more value without sacrificing authenticity.</p>
+    <ul>
+      <li>Search and discovery in the age of AI</li>
+      <li>AI-assisted content and publishing workflows</li>
+      <li>Lightweight web applications and digital utilities</li>
+      <li>Personal and digital sovereignty, and modular, future-proof systems</li>
+      <li>Creative applications of generative AI in art, music and storytelling</li>
+    </ul>
+    <p>One ongoing passion project is the Misterio Studios universe, a creative sandbox where character design, worldbuilding, music and emerging technology come together. The things I build along the way end up in the <a href={`${base}lab/`}>lab</a>. For me, experimentation isn't separate from work. It's how I stay sharp.</p>
+  </section>
+
+  <hr class="hairline" />
+
+  <section class="container prose-section">
+    <h2>Beyond Work.</h2>
+    <p>I'm a lifelong fan of science fiction, martial arts films, technology, music, philosophy and spirituality. I've been part of the psytrance community for more than two decades, and I still believe music is one of the most powerful forms of therapy and connection we have.</p>
+    <p>I'm also an animal lover. My wife and I have fostered, adopted and cared for a lot of cats over the years, including moving six of them across international borders when life took us somewhere new. Our home has become a sanctuary for wandering creatures: cats, turtles, toads, geese. Somehow they always find us, and that's fine with me.</p>
+    <p>If you'd like to compare notes on any of this, <a href={`${base}contact/`}>say hello</a>.</p>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    padding-top: var(--space-6);
+    padding-bottom: var(--space-6);
+  }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1px 1fr;
+    gap: var(--space-5);
+    margin-top: var(--space-3);
+  }
+  .hero-rule {
+    background: var(--hairline);
+  }
+  .subtitle {
+    margin: var(--space-2) 0 var(--space-3);
+  }
+  .lede {
+    font-size: var(--text-lg);
+    max-width: var(--content-narrow);
+  }
+  .motto {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--accent);
+    margin-top: var(--space-3);
+  }
+
+  .prose-section,
+  .work {
+    padding-top: var(--space-6);
+    padding-bottom: var(--space-6);
+  }
+  .prose-section h2,
+  .work h2 {
+    margin-bottom: var(--space-4);
+  }
+  .work h2 {
+    margin-top: var(--space-1);
+  }
+  .prose-section a,
+  .earlier a {
+    color: var(--accent);
+  }
+  .prose-section ul {
+    max-width: 65ch;
+    padding-left: var(--space-3);
+    margin: 0 0 var(--space-3);
+  }
+  .prose-section li {
+    margin-bottom: var(--space-1);
+  }
+  .questions li {
+    font-style: italic;
+  }
+  blockquote {
+    margin: var(--space-4) 0;
+    padding-left: var(--space-3);
+    border-left: 2px solid var(--accent);
+    font-size: var(--text-lg);
+    color: var(--ink);
+    max-width: 60ch;
+  }
+
+  .timeline {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .timeline li {
+    display: grid;
+    grid-template-columns: 8rem 1fr;
+    gap: var(--space-3);
+    padding: var(--space-3) 0;
+    border-top: 0.5px solid var(--hairline);
+  }
+  .years {
+    padding-top: 0.4rem;
+  }
+  .timeline h3 {
+    font-size: var(--text-lg);
+  }
+  .role {
+    margin: 0.25rem 0 var(--space-1);
+  }
+  .timeline p:last-child {
+    margin: 0;
+    font-size: var(--text-sm);
+    color: var(--ink-muted);
+  }
+  .earlier {
+    margin-top: var(--space-4);
+    font-size: var(--text-sm);
+    color: var(--ink-muted);
+  }
+
+  @media (max-width: 860px) {
+    .hero-grid { grid-template-columns: 1fr; }
+    .hero-rule { display: none; }
+  }
+  @media (max-width: 720px) {
+    .timeline li {
+      grid-template-columns: 1fr;
+      gap: var(--space-1);
+    }
+  }
+</style>

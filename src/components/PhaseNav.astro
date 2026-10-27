@@ -58,4 +58,12 @@ const phases = [
   .phase:hover .label-text {
     color: var(--accent);
   }
+  /* Three phases side by side overflow a phone screen; tighten the spacing there */
+  @media (max-width: 480px) {
+    .phase {
+      padding-right: var(--space-1);
+      margin-right: var(--space-1);
+      font-size: var(--text-xs);
+    }
+  }
 </style>

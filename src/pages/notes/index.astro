@@ -1,0 +1,110 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const base = import.meta.env.BASE_URL;
+const notes = (await getCollection('notes', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+
+const fmt = (d: Date) => d.toISOString().slice(0, 10);
+---
+<BaseLayout
+  title="Field Notes on SEO, AEO and Growth | Bronson Harrington"
+  description="Field notes from Bronson Harrington on SEO, answer engine optimization, growth systems, digital sovereignty and the tools he builds. Read the latest."
+>
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "@id": "https://bronson.co.za/notes/#blog",
+    "name": "Field Notes - Bronson Harrington",
+    "url": "https://bronson.co.za/notes/",
+    "author": { "@id": "https://bronson.co.za/#/schema/person" },
+    "blogPost": notes.map((n) => ({
+      "@type": "BlogPosting",
+      "headline": n.data.title,
+      "url": `https://bronson.co.za/notes/${n.slug}/`,
+      "datePublished": fmt(n.data.date)
+    }))
+  })} />
+
+  <section class="container intro">
+    <p class="eyebrow">~/field-notes</p>
+    <h1>Field Notes</h1>
+    <p class="lede">Writing on SEO and AEO, growth systems, digital sovereignty, and the things I build.</p>
+  </section>
+
+  <hr class="hairline" />
+
+  <section class="container list">
+    <h2 class="visually-hidden">All field notes</h2>
+    {notes.length === 0 ? (
+      <p class="empty">Nothing published yet.</p>
+    ) : (
+      <ol class="note-list">
+        {notes.map((note) => (
+          <li>
+            <time class="label" datetime={fmt(note.data.date)}>{fmt(note.data.date)}</time>
+            <div>
+              <h3><a href={`${base}notes/${note.slug}/`}>{note.data.title}</a></h3>
+              <p>{note.data.description}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    )}
+  </section>
+</BaseLayout>
+
+<style>
+  .intro {
+    padding-top: var(--space-6);
+    padding-bottom: var(--space-5);
+  }
+  .intro h1 {
+    margin: var(--space-2) 0 var(--space-3);
+  }
+  .lede {
+    font-size: var(--text-lg);
+    max-width: var(--content-narrow);
+  }
+  .list {
+    padding-top: var(--space-4);
+  }
+  .note-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .note-list li {
+    display: grid;
+    grid-template-columns: 8rem 1fr;
+    gap: var(--space-3);
+    padding: var(--space-3) 0;
+    border-bottom: 0.5px solid var(--hairline);
+  }
+  .note-list time {
+    padding-top: 0.4rem;
+  }
+  .note-list h3 {
+    font-size: var(--text-lg);
+    margin-bottom: var(--space-1);
+  }
+  .note-list h3 a {
+    text-decoration: none;
+  }
+  .note-list h3 a:hover {
+    color: var(--accent);
+  }
+  .note-list p {
+    margin: 0;
+    color: var(--ink-muted);
+    font-size: var(--text-sm);
+  }
+  @media (max-width: 720px) {
+    .note-list li {
+      grid-template-columns: 1fr;
+      gap: var(--space-1);
+    }
+  }
+</style>
