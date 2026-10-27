@@ -37,7 +37,7 @@ const pageTitle = note.data.seoTitle ?? (withName.length <= 60 ? withName : note
 
   <article class="container note">
     <header class="note-head">
-      <a href={`${base}notes/`} class="eyebrow back">~/notes</a>
+      <a href={`${base}notes/`} class="eyebrow back">~/field-notes</a>
       <h1>{note.data.title}</h1>
       <p class="label meta">
         <time datetime={fmt(note.data.date)}>{fmt(note.data.date)}</time>
@@ -53,7 +53,7 @@ const pageTitle = note.data.seoTitle ?? (withName.length <= 60 ? withName : note
     </div>
 
     <footer class="note-foot">
-      <a href={`${base}notes/`} class="label">← all notes</a>
+      <a href={`${base}notes/`} class="label">← all field notes</a>
     </footer>
   </article>
 </BaseLayout>

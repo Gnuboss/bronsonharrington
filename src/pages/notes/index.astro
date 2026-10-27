@@ -10,14 +10,14 @@ const notes = (await getCollection('notes', ({ data }) => !data.draft)).sort(
 const fmt = (d: Date) => d.toISOString().slice(0, 10);
 ---
 <BaseLayout
-  title="Notes on SEO, AEO and Growth Systems | Bronson Harrington"
-  description="Notes from Bronson Harrington on SEO, answer engine optimization, growth systems, digital sovereignty and the tools he builds. Read the latest."
+  title="Field Notes on SEO, AEO and Growth | Bronson Harrington"
+  description="Field notes from Bronson Harrington on SEO, answer engine optimization, growth systems, digital sovereignty and the tools he builds. Read the latest."
 >
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "Blog",
     "@id": "https://bronson.co.za/notes/#blog",
-    "name": "Notes - Bronson Harrington",
+    "name": "Field Notes - Bronson Harrington",
     "url": "https://bronson.co.za/notes/",
     "author": { "@id": "https://bronson.co.za/#/schema/person" },
     "blogPost": notes.map((n) => ({
@@ -29,15 +29,15 @@ const fmt = (d: Date) => d.toISOString().slice(0, 10);
   })} />
 
   <section class="container intro">
-    <p class="eyebrow">~/notes</p>
-    <h1>Notes</h1>
+    <p class="eyebrow">~/field-notes</p>
+    <h1>Field Notes</h1>
     <p class="lede">Writing on SEO and AEO, growth systems, digital sovereignty, and the things I build.</p>
   </section>
 
   <hr class="hairline" />
 
   <section class="container list">
-    <h2 class="visually-hidden">All notes</h2>
+    <h2 class="visually-hidden">All field notes</h2>
     {notes.length === 0 ? (
       <p class="empty">Nothing published yet.</p>
     ) : (

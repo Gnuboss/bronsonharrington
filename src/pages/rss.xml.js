@@ -6,7 +6,7 @@ export async function GET(context) {
     (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
   );
   return rss({
-    title: 'Bronson Harrington - Notes',
+    title: 'Bronson Harrington - Field Notes',
     description: 'Notes on SEO and AEO, growth systems, digital sovereignty and the things I build.',
     site: context.site,
     items: notes.map((note) => ({
