@@ -4,10 +4,16 @@ Personal site: notes, lab, and the Growth OS framework. Astro, zero client-side 
 
 ## Design system: "Swiss Terminal"
 
-- Palette: warm paper (#F7F6F2), ink (#141414), muted terminal-green accent (#2E6F5C)
+- Palette: edition 01 "Swiss Terminal": warm paper (#F7F6F2), ink (#141414), muted terminal-green accent (#2E6F5C). See Palette below
 - Type: Inter (display/body) + JetBrains Mono (structural labels, phase markers, file-path eyebrows)
 - Layout: Swiss grid discipline, hairline rules, one vertical rule as the signature grid gesture
-- Heading hierarchy locked: H1 hero / H3 section / H4 subtitle / H5 one-liner (per Bronson'## Structure
+- Heading hierarchy locked: H1 hero / H3 section / H4 subtitle / H5 one-liner (per Bronson'## Palette (periodic reskin)
+
+All colour comes from one file: `src/config/palette.mjs`. Each edition has a number, a name, an optional coolors.co link, and five roles: `paper`, `ink`, `accent`, `rule`, `highlight`. Muted text, hairlines and tints are generated from those (`src/config/theme.mjs`), the favicon is drawn from them, and they're inlined into every page.
+
+To reskin: put the new colours in `palette`, move the old one into `history`, and run `npm run palette:check`. Any colour that would be hard to read is darkened only as far as needed to reach WCAG AA, and the check lists what it changed. The check also runs before every build and stops it only if ink and paper themselves don't contrast enough.
+
+## Structure
 
 - `/` home: intro, latest notes, builds, framework teaser
 - `/notes/` writing. One markdown file per note in `src/content/notes/` (filename = URL; `draft: true` hides it). RSS at `/rss.xml`

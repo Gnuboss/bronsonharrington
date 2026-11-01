@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "palette:check": "node scripts/check-palette.mjs",
+    "prebuild": "node scripts/check-palette.mjs"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.11",

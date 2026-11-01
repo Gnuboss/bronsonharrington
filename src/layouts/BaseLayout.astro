@@ -3,6 +3,10 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/tokens.css';
 import { GA_MEASUREMENT_ID, GSC_VERIFICATION } from '../config/site';
+import { palette } from '../config/palette.mjs';
+import { buildTokens, toCss } from '../config/theme.mjs';
+
+const tokens = buildTokens(palette);
 
 interface Props {
   title: string;
@@ -17,6 +21,9 @@ const { title, description } = Astro.props;
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="theme-color" content={tokens['--paper']} />
+  <!-- Palette {palette.edition}: {palette.name}. Inline so colours apply before any CSS file loads -->
+  <style is:inline set:html={toCss(tokens)}></style>
   <title>{title}</title>
   <meta name="description" content={description} />
   <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
