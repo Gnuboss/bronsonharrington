@@ -1,0 +1,249 @@
+---
+// Thumb nav: the "radial" arm of the mobile navigation test.
+//
+// Why (STANDARDS.md, usability): on phones the header nav sits in the
+// hardest-to-reach zone for one-handed use (Hoober 2013: 49% of phone use
+// is one-handed, ~75% thumb-driven). This puts a labelled menu button in the
+// bottom-right corner and opens the links in a callout right above it.
+//
+// The open state is an old-cartoon speech bubble. Not decoration: one
+// outlined shape groups the five links as a single unit (common region),
+// and the tail ties that unit back to the button that summoned it, so the
+// menu reads as "the button's answer" with no extra labels. Contact, the
+// site CTA, sits on the bottom row, closest to the thumb.
+//
+// Only shown at <=720px, and only when the head script has put the visitor
+// in the "radial" group (html[data-nav="radial"]). Without JS the normal
+// header nav stays, so nothing is ever unreachable.
+import { nav } from '../data/nav';
+---
+<div class="thumb-nav" data-track-location="thumb_nav" data-thumb-nav>
+  <div class="scrim" data-scrim aria-hidden="true"></div>
+  <div class="bubble-wrap">
+    <nav aria-label="Primary" id="thumb-nav-menu" class="bubble">
+      <ul>
+        {nav.map((item, i) => (
+          <li style={`--i:${i}`}>
+            <a href={item.href} class:list={{ cta: item.cta }}>
+              {item.label}{item.cta && <span aria-hidden="true">→</span>}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+    <!-- Tail: filled shape covers the bubble's border where they join,
+         the open stroke draws only its two sides -->
+    <svg class="tail" viewBox="0 0 46 40" width="46" height="40" aria-hidden="true" focusable="false">
+      <path class="tail-fill" d="M-2 0 H34 L46 40 Z" />
+      <path class="tail-line" d="M0 1.5 L46 40 L33.5 1.5" />
+    </svg>
+  </div>
+  <button type="button" class="toggle" aria-expanded="false" aria-controls="thumb-nav-menu">
+    <span class="bars" aria-hidden="true"><span></span><span></span><span></span></span>
+    <span class="word">menu</span>
+  </button>
+</div>
+
+<style>
+  .thumb-nav {
+    display: none;
+  }
+  @media (max-width: 720px) {
+    :global(html[data-nav='radial']) .thumb-nav {
+      display: block;
+    }
+    /* Room at the end of the page so the footer can scroll clear of the button */
+    :global(html[data-nav='radial'] body) {
+      padding-bottom: 92px;
+    }
+  }
+
+  /* Washes the page back so the bubble is the only thing in focus;
+     tapping it closes the menu */
+  .scrim {
+    position: fixed;
+    inset: 0;
+    z-index: 900;
+    background: color-mix(in srgb, var(--paper) 78%, transparent);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 160ms ease;
+  }
+  .thumb-nav.open .scrim {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .toggle {
+    position: fixed;
+    right: max(var(--space-2), env(safe-area-inset-right));
+    bottom: max(var(--space-2), env(safe-area-inset-bottom));
+    z-index: 902;
+    width: 60px;
+    height: 60px;
+    border-radius: var(--radius);
+    border: 2px solid var(--ink);
+    background: var(--ink);
+    color: var(--paper);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    cursor: pointer;
+    box-shadow: 3px 3px 0 var(--accent);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .toggle:active {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0 var(--accent);
+  }
+  .toggle:focus-visible {
+    outline: 2px solid var(--highlight);
+    outline-offset: 3px;
+  }
+  .bars {
+    position: relative;
+    width: 18px;
+    height: 12px;
+  }
+  .bars span {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 1.5px;
+    background: currentColor;
+    transition: transform 200ms ease, opacity 150ms ease;
+  }
+  .bars span:nth-child(1) { top: 0; }
+  .bars span:nth-child(2) { top: 5.25px; }
+  .bars span:nth-child(3) { top: 10.5px; }
+  .open .bars span:nth-child(1) { transform: translateY(5.25px) rotate(45deg); }
+  .open .bars span:nth-child(2) { opacity: 0; }
+  .open .bars span:nth-child(3) { transform: translateY(-5.25px) rotate(-45deg); }
+  /* A text label lifts menu-icon engagement over the icon alone */
+  .word {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    line-height: 1;
+    letter-spacing: 0.04em;
+  }
+
+  /* Bubble + tail move as one piece; the drop-shadow filter traces both,
+     giving the single hard cartoon shadow */
+  .bubble-wrap {
+    position: fixed;
+    right: max(var(--space-2), env(safe-area-inset-right));
+    bottom: calc(max(var(--space-2), env(safe-area-inset-bottom)) + 88px);
+    z-index: 901;
+    width: min(232px, calc(100vw - 2 * var(--space-2)));
+    filter: drop-shadow(4px 4px 0 var(--ink));
+    transform-origin: calc(100% - 14px) calc(100% + 37px); /* the tail tip */
+    transform: scale(0.4);
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      transform 240ms cubic-bezier(0.34, 1.56, 0.64, 1),
+      opacity 120ms ease,
+      visibility 0s linear 240ms;
+  }
+  .open .bubble-wrap {
+    transform: scale(1);
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 0s;
+  }
+  .bubble {
+    background: var(--paper);
+    border: 2.5px solid var(--ink);
+    border-radius: var(--radius);
+    padding: var(--space-1) var(--space-2);
+  }
+  .tail {
+    position: absolute;
+    top: calc(100% - 3px);
+    right: 14px;
+    overflow: visible;
+  }
+  .tail-fill {
+    fill: var(--paper);
+  }
+  .tail-line {
+    fill: none;
+    stroke: var(--ink);
+    stroke-width: 3;
+    stroke-linejoin: miter;
+  }
+  .bubble ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .bubble li + li {
+    border-top: 1.5px dashed var(--hairline);
+  }
+  .bubble a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 48px; /* comfortably over the 44px target minimum */
+    font-family: var(--font-mono);
+    font-size: var(--text-base);
+    color: var(--ink);
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .bubble a:active {
+    color: var(--accent);
+  }
+  /* Contact is the CTA: inked row on the bottom line, nearest the thumb */
+  .bubble a.cta {
+    margin: var(--space-1) calc(-1 * var(--space-1)) 0;
+    padding: 0 var(--space-2);
+    border-radius: var(--radius);
+    background: var(--accent);
+    color: var(--paper);
+  }
+  .bubble li:has(.cta) {
+    border-top: 0;
+    padding-bottom: 2px;
+  }
+  .bubble a:focus-visible {
+    outline: 2px solid var(--highlight);
+    outline-offset: 2px;
+    border-radius: var(--radius);
+  }
+</style>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-thumb-nav]');
+  if (root) {
+    const button = root.querySelector<HTMLButtonElement>('.toggle')!;
+    const scrim = root.querySelector<HTMLElement>('[data-scrim]')!;
+    const links = Array.from(root.querySelectorAll<HTMLAnchorElement>('.bubble a'));
+    const gtag = () => (window as any).gtag as ((...args: unknown[]) => void) | undefined;
+
+    const setOpen = (open: boolean, opts: { focus?: boolean } = {}) => {
+      root.classList.toggle('open', open);
+      button.setAttribute('aria-expanded', String(open));
+      if (open) {
+        gtag()?.('event', 'thumb_nav_open', { nav_variant: 'radial' });
+        if (opts.focus) links[0]?.focus();
+      } else if (opts.focus) {
+        button.focus();
+      }
+    };
+
+    button.addEventListener('click', (e) => {
+      const open = !root.classList.contains('open');
+      // Keyboard activation (detail 0) moves focus into the menu; taps don't
+      setOpen(open, { focus: (e as MouseEvent).detail === 0 });
+    });
+    scrim.addEventListener('click', () => setOpen(false));
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && root.classList.contains('open')) setOpen(false, { focus: true });
+    });
+    // Back/forward cache: don't come back to an open menu
+    window.addEventListener('pageshow', () => setOpen(false));
+  }
+</script>
