@@ -34,8 +34,8 @@ import { nav } from '../data/nav';
     <!-- Tail: filled shape covers the bubble's border where they join,
          the open stroke draws only its two sides -->
     <svg class="tail" viewBox="0 0 46 40" width="46" height="40" aria-hidden="true" focusable="false">
-      <path class="tail-fill" d="M-2 0 H36 Q36 24 46 40 Q20 30 -2 0 Z" />
-      <path class="tail-line" d="M0 1.5 Q20 30 46 40 Q35.5 24 34.5 1.5" />
+      <path class="tail-fill" d="M-2 0 H34 L46 40 Z" />
+      <path class="tail-line" d="M0 1.5 L46 40 L33.5 1.5" />
     </svg>
   </div>
   <button type="button" class="toggle" aria-expanded="false" aria-controls="thumb-nav-menu">
@@ -81,7 +81,7 @@ import { nav } from '../data/nav';
     z-index: 902;
     width: 60px;
     height: 60px;
-    border-radius: 50%;
+    border-radius: var(--radius);
     border: 2px solid var(--ink);
     background: var(--ink);
     color: var(--paper);
@@ -138,7 +138,7 @@ import { nav } from '../data/nav';
     z-index: 901;
     width: min(232px, calc(100vw - 2 * var(--space-2)));
     filter: drop-shadow(4px 4px 0 var(--ink));
-    transform-origin: calc(100% - 32px) calc(100% + 37px); /* the tail tip */
+    transform-origin: calc(100% - 14px) calc(100% + 37px); /* the tail tip */
     transform: scale(0.4);
     opacity: 0;
     visibility: hidden;
@@ -156,13 +156,13 @@ import { nav } from '../data/nav';
   .bubble {
     background: var(--paper);
     border: 2.5px solid var(--ink);
-    border-radius: 26px;
+    border-radius: var(--radius);
     padding: var(--space-1) var(--space-2);
   }
   .tail {
     position: absolute;
     top: calc(100% - 3px);
-    right: 32px;
+    right: 14px;
     overflow: visible;
   }
   .tail-fill {
@@ -172,7 +172,7 @@ import { nav } from '../data/nav';
     fill: none;
     stroke: var(--ink);
     stroke-width: 3;
-    stroke-linejoin: round;
+    stroke-linejoin: miter;
   }
   .bubble ul {
     list-style: none;
@@ -200,7 +200,7 @@ import { nav } from '../data/nav';
   .bubble a.cta {
     margin: var(--space-1) calc(-1 * var(--space-1)) 0;
     padding: 0 var(--space-2);
-    border-radius: 999px;
+    border-radius: var(--radius);
     background: var(--accent);
     color: var(--paper);
   }
@@ -212,9 +212,6 @@ import { nav } from '../data/nav';
     outline: 2px solid var(--highlight);
     outline-offset: 2px;
     border-radius: var(--radius);
-  }
-  .bubble a.cta:focus-visible {
-    border-radius: 999px;
   }
 </style>
 
