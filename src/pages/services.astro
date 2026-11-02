@@ -1,0 +1,192 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import Section from '../components/Section.astro';
+import { courses, chefsTable, steps, faqs } from '../data/services';
+
+const service = (d: { name: string; summary: string }) => ({
+  "@type": "Offer",
+  "itemOffered": { "@type": "Service", "name": d.name, "description": d.summary, "provider": { "@id": "https://bronson.co.za/#/schema/person" } },
+});
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "OfferCatalog",
+      "name": "Services by Bronson Harrington",
+      "url": "https://bronson.co.za/services/",
+      "itemListElement": [
+        ...courses.map((c) => ({
+          "@type": "OfferCatalog",
+          "name": `${c.num} ${c.stage}`,
+          "itemListElement": c.dishes.map(service),
+        })),
+        service(chefsTable),
+      ],
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": faqs.map((f) => ({
+        "@type": "Question",
+        "name": f.q,
+        "acceptedAnswer": { "@type": "Answer", "text": f.a },
+      })),
+    },
+  ],
+};
+---
+<BaseLayout
+  title="Services: SEO, AEO and Growth Strategy | Bronson Harrington"
+  description="The services menu, set out by Growth OS stage: diagnose, foundations, growth and domination. Find what fits, then start a conversation."
+>
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+  <PageHero eyebrow="~/services" title="Services" subtitle="the menu · diagnose → foundations → growth → domination">
+    <p class="lede">Set out like a menu, in the order Growth OS works: diagnose first, then build foundations, grow, and dominate. Most businesses only need a few dishes. There are no prices here; tell me what you're working on, using the form at the bottom of any page, and we'll find the right place to start.</p>
+  </PageHero>
+
+  <!-- Course index: the stages are a real sequence -->
+  <nav class="container courses" aria-label="Menu courses">
+    <ol class="hang">
+      <li class="hang-label label">courses</li>
+      <li class="hang-body course-links">
+        {courses.map((c) => (
+          <a href={`#${c.id}`}><span class="n">{c.num}</span> {c.stage}</a>
+        ))}
+        <a href="#leadership"><span class="n">∞</span> leadership</a>
+      </li>
+    </ol>
+  </nav>
+
+  {courses.map((c) => (
+    <>
+      <hr class="hairline" />
+      <Section eyebrow={`${c.num} / ${c.stage}`} title={c.title} id={c.id} intro={c.intro}>
+        <div class="hang">
+          <p class="hang-label label">{c.dishes.length} dishes</p>
+          <ul class="menu hang-body">
+            {c.dishes.map((d) => (
+              <li id={d.code.toLowerCase()}>
+                <h3 class="dish">{d.name}</h3>
+                <span class="leader" aria-hidden="true"></span>
+                <span class="for">{d.code}</span>
+                <p class="desc"><em>{d.tagline}.</em> {d.summary}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </Section>
+    </>
+  ))}
+
+  <hr class="hairline" />
+
+  <Section eyebrow="∞ / every stage" title="The Chef's Table." id="leadership" intro="One item spans the whole menu. For teams that want senior direction across every stage, rather than a single course.">
+    <div class="hang">
+      <p class="hang-label label">{chefsTable.code}</p>
+      <article class="hang-body chef">
+        <h3>{chefsTable.name}</h3>
+        <p class="tagline">{chefsTable.tagline}</p>
+        <p>{chefsTable.summary}</p>
+      </article>
+    </div>
+  </Section>
+
+  <hr class="hairline" />
+
+  <Section eyebrow="~/how-it-works" title="How It Works.">
+    <div class="rows">
+      {steps.map((s) => (
+        <div class="hang">
+          <p class="hang-label tag">{s.key}</p>
+          <div class="hang-body">
+            <h3>{s.title}</h3>
+            <p>{s.text}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </Section>
+
+  <hr class="hairline" />
+
+  <Section eyebrow="~/faq" title="Questions About the Menu.">
+    <div class="rows">
+      {faqs.map((f) => (
+        <div class="hang">
+          <h3 class="hang-label q">{f.q}</h3>
+          <p class="hang-body">{f.a}</p>
+        </div>
+      ))}
+    </div>
+  </Section>
+
+</BaseLayout>
+
+<style>
+  /* Course index */
+  .courses ol {
+    list-style: none;
+    margin: 0;
+    padding: var(--space-3) 0;
+    border-top: 0.5px solid var(--hairline);
+  }
+  .course-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1) var(--space-3);
+  }
+  .course-links a {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .course-links a:hover {
+    color: var(--accent);
+  }
+  .course-links .n {
+    color: var(--ink-faint);
+  }
+
+  /* Menu: dish name is an h3 for the outline, styled like the board's dish */
+  .menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 2px solid var(--rule-strong);
+  }
+  .menu li {
+    padding: var(--space-2) 0;
+    scroll-margin-top: var(--space-4);
+  }
+  .menu li + li {
+    border-top: 0.5px solid var(--hairline);
+  }
+  .menu h3.dish {
+    font-size: var(--text-base);
+    margin: 0;
+  }
+  .menu .desc em {
+    font-style: normal;
+    color: var(--ink);
+  }
+
+  /* Chef's table */
+  .chef {
+    border-top: 2px solid var(--rule-strong);
+    border-left: 2px solid var(--highlight);
+    padding: var(--space-3) 0 0 var(--space-3);
+  }
+  .chef h3 {
+    margin: 0;
+  }
+  .chef .tagline {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--accent);
+    margin: var(--space-1) 0 var(--space-2);
+  }
+
+</style>
