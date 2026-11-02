@@ -15,11 +15,13 @@
 // Colours come from the palette tokens (--grid-dot, --accent-rgb, --paper).
 ---
 <script>
+  import { SPOTLIGHT_WASH as WASH } from '../config/theme.mjs'; // tint on the paper; text contrast is checked against it
   // Grid settings. GAP = distance between pixels, DOT = pixel size (CSS px).
   // A fine grid reads as paper texture; the glow tints it as it passes.
   const GAP = 4;
   const DOT = 1;
-  const GLOW = 0.7; // spotlight strength, 0-1
+  const GLOW = 1; // spotlight strength, 0-1
+  const SIZE = 40; // spotlight diameter, in vmax (% of the larger screen side)
   const o = Math.floor((GAP - DOT) / 2);
   const PIXEL = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='${GAP}' height='${GAP}'%3E%3Cpath fill-rule='evenodd' d='M0 0h${GAP}v${GAP}H0zM${o} ${o}h${DOT}v${DOT}h-${DOT}z'/%3E%3C/svg%3E") 0 0 / ${GAP}px ${GAP}px repeat`;
 
@@ -32,9 +34,17 @@
     @keyframes grid-in { from { opacity: 0; } to { opacity: 1; } }
     .pixel-grid .glow {
       position: absolute; left: 0; top: 0;
-      width: 64vmax; height: 64vmax; margin: -32vmax 0 0 -32vmax; border-radius: 50%;
+      width: ${SIZE}vmax; height: ${SIZE}vmax; margin: -${SIZE / 2}vmax 0 0 -${SIZE / 2}vmax; border-radius: 50%;
       background: radial-gradient(circle closest-side,
         rgba(var(--accent-rgb), ${GLOW}) 0%, rgba(var(--accent-rgb), ${GLOW * 0.4}) 40%, rgba(var(--accent-rgb), 0) 100%);
+      transform: translate3d(70vw, 22vh, 0);
+      will-change: transform;
+    }
+    /* Same spotlight, cast faintly over the paper so it reads as light */
+    .pixel-grid .wash {
+      position: absolute; left: 0; top: 0; z-index: 1;
+      width: ${SIZE}vmax; height: ${SIZE}vmax; margin: -${SIZE / 2}vmax 0 0 -${SIZE / 2}vmax; border-radius: 50%;
+      background: radial-gradient(circle closest-side, rgba(var(--accent-rgb), ${WASH}) 0%, rgba(var(--accent-rgb), 0) 100%);
       transform: translate3d(70vw, 22vh, 0);
       will-change: transform;
     }
@@ -54,13 +64,13 @@
     const grid = document.createElement('div');
     grid.className = 'pixel-grid';
     grid.setAttribute('aria-hidden', 'true');
-    grid.innerHTML = '<div class="glow"></div><div class="mask"></div>';
+    grid.innerHTML = '<div class="glow"></div><div class="mask"></div><div class="wash"></div>';
     document.body.prepend(grid);
 
-    if (!reduced) animate(grid.querySelector('.glow') as HTMLElement);
+    if (!reduced) animate([...grid.querySelectorAll<HTMLElement>('.glow, .wash')]);
   }
 
-  function animate(glow: HTMLElement) {
+  function animate(layers: HTMLElement[]) {
     let w = innerWidth;
     let h = innerHeight;
     let x = w * 0.7;
@@ -107,7 +117,8 @@
         if (x < 0 || x > w) { vx = -vx; x = Math.max(0, Math.min(w, x)); }
         if (y < 0 || y > h) { vy = -vy; y = Math.max(0, Math.min(h, y)); }
       }
-      glow.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+      const t3d = `translate3d(${x}px, ${y}px, 0)`;
+      for (const el of layers) el.style.transform = t3d;
       requestAnimationFrame(frame); // browsers pause this when the tab is hidden
     };
     requestAnimationFrame(frame);

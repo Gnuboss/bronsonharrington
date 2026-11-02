@@ -40,14 +40,21 @@ export function ensureContrast(fg, bg, min, toward) {
   return toward;
 }
 
+// Strongest tint the background spotlight casts on the paper (PixelGrid uses this).
+// Text colours are checked against this tinted paper as well as plain paper.
+export const SPOTLIGHT_WASH = 0.06;
+
 // Records palette colours that were nudged for readability (shown by palette:check)
 export const adjustments = [];
 
 export function buildTokens({ roles }) {
   const { paper, ink, rule, highlight } = roles;
   adjustments.length = 0;
+  // Text has to read on plain paper and inside the spotlight's tint
+  const lit = mix(roles.accent, paper, SPOTLIGHT_WASH);
+  const harder = (c) => (contrast(c, lit) < contrast(c, paper) ? lit : paper);
   const fix = (name, colour, min) => {
-    const out = ensureContrast(colour, paper, min, ink);
+    const out = ensureContrast(colour, harder(colour), min, ink);
     if (out !== colour.toUpperCase() && out !== colour) adjustments.push({ name, from: colour, to: out, min });
     return out;
   };
@@ -67,7 +74,7 @@ export function buildTokens({ roles }) {
     '--rule-strong': fix('rule', rule, 3),
     '--highlight': fix('highlight', highlight, 3),
     '--ink-rgb': hexToRgb(ink).join(', '), // for the edge-shading vignette
-    '--grid-dot': mix(ink, paper, 0.07), // resting pixels in the background grid
+    '--grid-dot': mix(ink, paper, 0.05), // resting pixels in the background grid
     '--accent-rgb': hexToRgb(accent).join(', '), // background spotlight glow
   };
 }
@@ -82,6 +89,8 @@ export function contrastChecks(tokens) {
     { pair: 'ink-muted on paper (secondary copy)', fg: t['--ink-muted'], bg: t['--paper'], min: 4.5 },
     { pair: 'ink-faint on paper (labels, dates)', fg: t['--ink-faint'], bg: t['--paper'], min: 4.5 },
     { pair: 'accent on paper (links, eyebrows)', fg: t['--accent'], bg: t['--paper'], min: 4.5 },
+    { pair: 'ink-faint in spotlight (labels)', fg: t['--ink-faint'], bg: mix(t['--accent'], t['--paper'], SPOTLIGHT_WASH), min: 4.5 },
+    { pair: 'accent in spotlight (links)', fg: t['--accent'], bg: mix(t['--accent'], t['--paper'], SPOTLIGHT_WASH), min: 4.5 },
     { pair: 'ink on paper-dim (inline code)', fg: t['--ink'], bg: t['--paper-dim'], min: 4.5 },
     { pair: 'paper on ink (code blocks)', fg: t['--paper'], bg: t['--ink'], min: 4.5 },
     { pair: 'highlight vs paper (focus ring)', fg: t['--highlight'], bg: t['--paper'], min: 3 },
