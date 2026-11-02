@@ -62,13 +62,16 @@ export const BUSINESS = {
   name: 'Bronson Harrington, Growth Architect, Costa Rica',
   // Profile share link from Google. Swap for the Maps URL with ?cid= when available.
   profileUrl: 'https://share.google/xIzIqH90wLmnRsXaH',
+  // Categories exactly as listed on the profile, primary first. Schema has
+  // no category field, so they're expressed as the services offered.
+  categories: ['Media Consultant', 'Design agency', 'Marketing consultant'],
 };
 
 export const businessSchema = () => ({
   '@type': 'ProfessionalService',
   '@id': BUSINESS_ID,
   name: BUSINESS.name,
-  description: `${PERSON.name} is a Growth Architect in ${PERSON.locality}, ${PERSON.country}: growth architecture, SEO and AI search visibility.`,
+  description: `${PERSON.name} is a Growth Architect in ${PERSON.locality}, ${PERSON.country}: media and marketing consulting and design, focused on growth architecture, SEO and AI search visibility.`,
   url: SITE,
   email: `mailto:${CONTACT.email}`,
   telephone: CONTACT.phoneHref.replace('tel:', ''),
@@ -87,4 +90,18 @@ export const businessSchema = () => ({
   areaServed: { '@type': 'Place', name: 'Worldwide' },
   founder: { '@id': PERSON_ID },
   sameAs: [BUSINESS.profileUrl],
+  knowsAbout: PERSON.knowsAbout,
+  // Mirrors the profile's categories (Media Consultant, Design agency, Marketing consultant)
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: 'Services',
+    itemListElement: [
+      { name: 'Media consulting', category: BUSINESS.categories[0] },
+      { name: 'Design', category: BUSINESS.categories[1] },
+      { name: 'Marketing consulting', category: BUSINESS.categories[2] },
+    ].map((sv) => ({
+      '@type': 'Offer',
+      itemOffered: { '@type': 'Service', name: sv.name, serviceType: sv.category, provider: { '@id': BUSINESS_ID }, areaServed: { '@type': 'Place', name: 'Worldwide' } },
+    })),
+  },
 });
