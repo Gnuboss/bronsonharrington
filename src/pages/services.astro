@@ -2,11 +2,12 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHero from '../components/PageHero.astro';
 import Section from '../components/Section.astro';
-import { courses, chefsTable, steps, faqs } from '../data/services';
+import { ingredients, byCode, shelves, starters, dishes, chefsTable, usedIn, steps, faqs } from '../data/services';
 
-const service = (d: { name: string; summary: string }) => ({
+const chef = byCode[chefsTable];
+const offer = (code: string) => ({
   "@type": "Offer",
-  "itemOffered": { "@type": "Service", "name": d.name, "description": d.summary, "provider": { "@id": "https://bronson.co.za/#/schema/person" } },
+  "itemOffered": { "@type": "Service", "name": byCode[code].name, "description": byCode[code].summary, "provider": { "@id": "https://bronson.co.za/#/schema/person" } },
 });
 
 const schema = {
@@ -14,66 +15,89 @@ const schema = {
   "@graph": [
     {
       "@type": "OfferCatalog",
-      "name": "Services by Bronson Harrington",
+      "name": "Growth OS solutions and services by Bronson Harrington",
       "url": "https://bronson.co.za/services/",
       "itemListElement": [
-        ...courses.map((c) => ({
+        { "@type": "OfferCatalog", "name": "Starters: audits", "itemListElement": starters.map((u) => offer(u.code)) },
+        ...dishes.map((d) => ({
           "@type": "OfferCatalog",
-          "name": `${c.num} ${c.stage}`,
-          "itemListElement": c.dishes.map(service),
+          "name": `Growth OS ${d.name}`,
+          "description": d.promise,
+          "itemListElement": d.uses.map((u) => offer(u.code)),
         })),
-        service(chefsTable),
+        offer(chefsTable),
       ],
     },
     {
       "@type": "FAQPage",
-      "mainEntity": faqs.map((f) => ({
-        "@type": "Question",
-        "name": f.q,
-        "acceptedAnswer": { "@type": "Answer", "text": f.a },
-      })),
+      "mainEntity": faqs.map((f) => ({ "@type": "Question", "name": f.q, "acceptedAnswer": { "@type": "Answer", "text": f.a } })),
     },
   ],
 };
 ---
 <BaseLayout
-  title="Services: SEO, AEO and Growth Strategy | Bronson Harrington"
-  description="The services menu, set out by Growth OS stage: diagnose, foundations, growth and domination. Find what fits, then start a conversation."
+  title="Services: Growth OS Solutions Menu | Bronson Harrington"
+  description="Growth OS solutions served like a menu: audits to start, then Foundations, Growth and Domination, each made from the services that fit."
 >
   <script type="application/ld+json" set:html={JSON.stringify(schema)} />
 
-  <PageHero eyebrow="~/services" title="Services" subtitle="the menu · diagnose → foundations → growth → domination">
-    <p class="lede">Set out like a menu, in the order Growth OS works: diagnose first, then build foundations, grow, and dominate. Most businesses only need a few dishes. There are no prices here; tell me what you're working on, using the form at the bottom of any page, and we'll find the right place to start.</p>
+  <PageHero eyebrow="~/services" title="Services" subtitle="the menu · starters → foundations → growth → domination">
+    <p class="lede">Read this like a menu. The Growth OS stages are the dishes: complete solutions I execute. The services are the ingredients each one is made from, and the best ones turn up in more than one dish. There are no prices; tell me what you're working on and we'll find the right place to start.</p>
   </PageHero>
 
-  <!-- Course index: the stages are a real sequence -->
-  <nav class="container courses" aria-label="Menu courses">
+  <nav class="container courses" aria-label="Menu sections">
     <ol class="hang">
-      <li class="hang-label label">courses</li>
+      <li class="hang-label label">on the menu</li>
       <li class="hang-body course-links">
-        {courses.map((c) => (
-          <a href={`#${c.id}`}><span class="n">{c.num}</span> {c.stage}</a>
-        ))}
-        <a href="#leadership"><span class="n">∞</span> leadership</a>
+        <a href="#starters"><span class="n">00</span> starters</a>
+        {dishes.map((d) => <a href={`#${d.id}`}><span class="n">{d.num}</span> {d.name.toLowerCase()}</a>)}
+        <a href="#chefs-table"><span class="n">∞</span> chef's table</a>
+        <a href="#pantry"><span class="n">→</span> pantry</a>
       </li>
     </ol>
   </nav>
 
-  {courses.map((c) => (
+  <hr class="hairline" />
+
+  <Section eyebrow="00 / starters" title="Starters: the Audits." id="starters" intro="Every engagement starts by finding the real constraint. Most sites don't have a traffic problem, they have a constraint problem, and it's rarely where people think it is. These audits work out where to begin before anyone spends money fixing the wrong thing.">
+    <div class="hang">
+      <p class="hang-label label">to start</p>
+      <ul class="menu hang-body">
+        {starters.map((u) => {
+          const i = byCode[u.code];
+          return (
+            <li>
+              <h3 class="dish">{i.name}</h3>
+              <span class="leader" aria-hidden="true"></span>
+              <a class="for" href={`#${i.code.toLowerCase()}`}>{i.code}</a>
+              <p class="desc"><em>{i.tagline}.</em> {u.note ?? i.summary}</p>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  </Section>
+
+  {dishes.map((d) => (
     <>
       <hr class="hairline" />
-      <Section eyebrow={`${c.num} / ${c.stage}`} title={c.title} id={c.id} intro={c.intro}>
+      <Section eyebrow={`${d.num} / main course`} title={d.title} id={d.id}>
+        <p slot="intro" class="lede">{d.promise}</p>
+        <p slot="intro" class="shift">{d.shift}</p>
         <div class="hang">
-          <p class="hang-label label">{c.dishes.length} dishes</p>
+          <p class="hang-label label">made with</p>
           <ul class="menu hang-body">
-            {c.dishes.map((d) => (
-              <li id={d.code.toLowerCase()}>
-                <h3 class="dish">{d.name}</h3>
-                <span class="leader" aria-hidden="true"></span>
-                <span class="for">{d.code}</span>
-                <p class="desc"><em>{d.tagline}.</em> {d.summary}</p>
-              </li>
-            ))}
+            {d.uses.map((u) => {
+              const i = byCode[u.code];
+              return (
+                <li>
+                  <h3 class="dish">{i.name}</h3>
+                  <span class="leader" aria-hidden="true"></span>
+                  <a class="for" href={`#${i.code.toLowerCase()}`}>{i.code}</a>
+                  <p class="desc">{u.note ?? i.summary}</p>
+                </li>
+              );
+            })}
           </ul>
         </div>
       </Section>
@@ -82,15 +106,34 @@ const schema = {
 
   <hr class="hairline" />
 
-  <Section eyebrow="∞ / every stage" title="The Chef's Table." id="leadership" intro="One item spans the whole menu. For teams that want senior direction across every stage, rather than a single course.">
+  <Section eyebrow="∞ / every stage" title="The Chef's Table." id="chefs-table" intro="For teams that want senior direction across every course rather than a single dish.">
     <div class="hang">
-      <p class="hang-label label">{chefsTable.code}</p>
+      <a class="hang-label label" href={`#${chef.code.toLowerCase()}`}>{chef.code}</a>
       <article class="hang-body chef">
-        <h3>{chefsTable.name}</h3>
-        <p class="tagline">{chefsTable.tagline}</p>
-        <p>{chefsTable.summary}</p>
+        <h3>{chef.name}</h3>
+        <p class="tagline">{chef.tagline}</p>
+        <p>{chef.summary}</p>
       </article>
     </div>
+  </Section>
+
+  <hr class="hairline" />
+
+  <Section eyebrow="~/pantry" title="The Pantry." id="pantry" intro="Every ingredient on the menu, on the shelf it belongs to, with the dishes that use it. Any of them can also be ordered on its own.">
+    {shelves.map((shelf) => (
+      <div class="shelf">
+        <p class="label shelf-name">{shelf}</p>
+        <div class="pantry">
+          {ingredients.filter((i) => i.shelf === shelf).map((i) => (
+            <div class="cell" id={i.code.toLowerCase()}>
+              <span class="code">{i.code}</span>
+              <span class="name">{i.name}</span>
+              <span class="shelf">{usedIn(i.code).join(' · ')}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    ))}
   </Section>
 
   <hr class="hairline" />
@@ -121,11 +164,10 @@ const schema = {
       ))}
     </div>
   </Section>
-
 </BaseLayout>
 
 <style>
-  /* Course index */
+  /* Section index */
   .courses ol {
     list-style: none;
     margin: 0;
@@ -150,7 +192,15 @@ const schema = {
     color: var(--ink-faint);
   }
 
-  /* Menu: dish name is an h3 for the outline, styled like the board's dish */
+  /* The before -> after line under each main course */
+  .shift {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--accent);
+    margin-top: var(--space-2);
+  }
+
+  /* Menu: dish names are h3s for the outline, styled as the board's dish */
   .menu {
     list-style: none;
     margin: 0;
@@ -159,7 +209,6 @@ const schema = {
   }
   .menu li {
     padding: var(--space-2) 0;
-    scroll-margin-top: var(--space-4);
   }
   .menu li + li {
     border-top: 0.5px solid var(--hairline);
@@ -167,6 +216,12 @@ const schema = {
   .menu h3.dish {
     font-size: var(--text-base);
     margin: 0;
+  }
+  .menu a.for {
+    text-decoration: none;
+  }
+  .menu a.for:hover {
+    color: var(--accent);
   }
   .menu .desc em {
     font-style: normal;
@@ -188,5 +243,21 @@ const schema = {
     color: var(--accent);
     margin: var(--space-1) 0 var(--space-2);
   }
+  a.hang-label {
+    text-decoration: none;
+  }
 
+  /* Pantry shelves */
+  .shelf + .shelf {
+    margin-top: var(--space-4);
+  }
+  .shelf-name {
+    margin: 0 0 var(--space-1);
+  }
+  .pantry .cell {
+    scroll-margin-top: var(--space-6);
+  }
+  .pantry .cell:target {
+    background: var(--accent-dim);
+  }
 </style>
