@@ -22,7 +22,7 @@ Each edition gets a Field Note with a style tile (after styletil.es): add `style
 - `/lab/` builds, listed from `src/data/projects.ts` (also feeds the home page)
 - `/framework/` Growth OS, written as thinking rather than an offer
 - `/about-me/`, `/contact/`, `404`
-- Redirects (in `astro.config.mjs`): the old iGaming note `/notes/growth-architecture-for-white-label-igaming/` points to `/growth-architect-costa-rica/`; `/about/` points to `/about-me/`
+- Redirects (in `astro.config.mjs`): `/about/` points to `/about-me/`
 - Sitemap and robots.txt generated/served automatically
 
 ## Status
