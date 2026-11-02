@@ -73,6 +73,11 @@ export function buildTokens({ roles }) {
     // Rules and the focus ring are graphics, not text: 3:1 is the bar.
     '--rule-strong': fix('rule', rule, 3),
     '--highlight': fix('highlight', highlight, 3),
+    // Form states. Error red is fixed across palettes (it has to read as "error"),
+    // only darkened if a palette's paper needs it. Field borders are UI
+    // component boundaries, so 3:1 (WCAG 1.4.11), unlike the decorative hairline.
+    '--danger': fix('danger', '#B3261E', 4.5),
+    '--field-border': fix('field-border', mix(ink, paper, 0.4), 3),
     '--ink-rgb': hexToRgb(ink).join(', '), // for the edge-shading vignette
     '--grid-dot': mix(ink, paper, 0.05), // resting pixels in the background grid
     '--accent-rgb': hexToRgb(accent).join(', '), // background spotlight glow
@@ -95,6 +100,8 @@ export function contrastChecks(tokens) {
     { pair: 'paper on ink (code blocks)', fg: t['--paper'], bg: t['--ink'], min: 4.5 },
     { pair: 'highlight vs paper (focus ring)', fg: t['--highlight'], bg: t['--paper'], min: 3 },
     { pair: 'rule vs paper (heavy rules)', fg: t['--rule-strong'], bg: t['--paper'], min: 3 },
+    { pair: 'danger on paper (form errors)', fg: t['--danger'], bg: t['--paper'], min: 4.5 },
+    { pair: 'field-border vs paper (form inputs)', fg: t['--field-border'], bg: t['--paper'], min: 3 },
   ].map((c) => ({ ...c, ratio: contrast(c.fg, c.bg) }));
 }
 

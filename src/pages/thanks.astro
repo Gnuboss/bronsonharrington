@@ -1,0 +1,73 @@
+---
+// Thank-you page for every contact form. Each form lands here with its own
+// ?src= (footer, contact), so GA4 can count conversions per form from the
+// page_view alone. Not indexed and not in the sitemap.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { CONTACT } from '../config/site';
+import { RESPONSE_PROMISE } from '../data/contact';
+
+const base = import.meta.env.BASE_URL;
+---
+<BaseLayout
+  title="Message received | Bronson Harrington"
+  description="Your message to Bronson Harrington arrived. Here's what happens next, and how to reach him directly if it's urgent."
+>
+  <meta slot="head" name="robots" content="noindex, follow" />
+
+  <section class="container thanks">
+    <p class="eyebrow">~/message-received</p>
+    <h1>Got it. Thanks for writing.</h1>
+    <p class="lede">Your message is in my inbox. I'll reply to the email address you gave.</p>
+
+    <h2>What happens next</h2>
+    <ol>
+      <li>I read it, usually the same day.</li>
+      <li>I reply by email. {RESPONSE_PROMISE.split('·')[1]?.trim()}.</li>
+      <li>If you don't hear back in a week, check your spam folder, then email me directly.</li>
+    </ol>
+
+    <p class="direct">
+      Need me sooner? Email <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
+      or call <a href={CONTACT.phoneHref}>{CONTACT.phoneDisplay}</a>.
+    </p>
+
+    <p><a href={`${base}notes/`} class="back">Read the field notes while you wait →</a></p>
+  </section>
+</BaseLayout>
+
+<style>
+  .thanks {
+    padding-top: var(--space-6);
+    max-width: var(--content-width);
+  }
+  h1 {
+    margin: var(--space-1) 0 var(--space-2);
+  }
+  .lede {
+    font-size: var(--text-lg);
+  }
+  h2 {
+    font-size: var(--text-xl);
+    margin: var(--space-5) 0 var(--space-2);
+  }
+  ol {
+    margin: 0 0 var(--space-4);
+    padding-left: 1.25rem;
+    max-width: 65ch;
+  }
+  li {
+    margin-bottom: var(--space-1);
+  }
+  .direct {
+    padding-top: var(--space-3);
+    border-top: 0.5px solid var(--hairline);
+  }
+  .back {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--accent);
+  }
+  @media (max-width: 720px) {
+    h1 { font-size: var(--text-2xl); }
+  }
+</style>
