@@ -7,11 +7,15 @@
     "build": "astro build",
     "preview": "astro preview",
     "palette:check": "node scripts/check-palette.mjs",
-    "prebuild": "node scripts/check-palette.mjs"
+    "prebuild": "node scripts/check-palette.mjs",
+    "pdf": "astro build && node scripts/build-pdf.mjs"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.11",
     "@astrojs/sitemap": "^3.2.1",
     "astro": "^4.15.0"
+  },
+  "devDependencies": {
+    "pdf-lib": "^1.17.1"
   }
 }

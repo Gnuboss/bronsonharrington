@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { personSchema } from '../data/person';
 
 const base = import.meta.env.BASE_URL;
 
@@ -21,15 +22,10 @@ const roles = [
     "@context": "https://schema.org",
     "@type": "ProfilePage",
     "url": "https://bronson.co.za/about-me/",
-    "mainEntity": {
-      "@type": "Person",
-      "@id": "https://bronson.co.za/#/schema/person",
-      "name": "Bronson Harrington",
-      "jobTitle": "Growth Architect",
-      "homeLocation": { "@type": "Place", "name": "San José, Costa Rica" },
+    "mainEntity": personSchema({
       "alumniOf": { "@type": "CollegeOrUniversity", "name": "University of South Africa (UNISA)" },
       "hasCredential": { "@type": "EducationalOccupationalCredential", "name": "Certified ScrumMaster" }
-    }
+    })
   })} />
 
   <section class="hero container">
