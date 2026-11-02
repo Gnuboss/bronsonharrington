@@ -260,7 +260,8 @@ const marks = [
     display: block;
     fill: color-mix(in srgb, var(--accent) 70%, var(--ink));
     opacity: 0.55;
-    transform: scaleX(var(--dir));
+    /* Fish are drawn facing left: mirror them when the school swims right */
+    transform: scaleX(calc(var(--dir) * -1));
   }
   @keyframes swim {
     from { transform: translateX(calc(-30vw * var(--dir) + 50vw - 50vw * var(--dir))); }
