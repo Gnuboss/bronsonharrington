@@ -72,12 +72,19 @@ export const businessSchema = () => ({
   url: SITE,
   email: `mailto:${CONTACT.email}`,
   telephone: CONTACT.phoneHref.replace('tel:', ''),
+  // Service-area business, as on the profile: HQ in Costa Rica (city and
+  // country only, no street address), serving clients worldwide
   address: {
     '@type': 'PostalAddress',
     addressLocality: PERSON.locality,
     addressCountry: PERSON.countryCode,
   },
-  areaServed: [{ '@type': 'Country', name: PERSON.country }, { '@type': 'Place', name: 'Americas' }],
+  location: {
+    '@type': 'Place',
+    name: `Headquarters: ${PERSON.locality}, ${PERSON.country}`,
+    address: { '@type': 'PostalAddress', addressLocality: PERSON.locality, addressCountry: PERSON.countryCode },
+  },
+  areaServed: { '@type': 'Place', name: 'Worldwide' },
   founder: { '@id': PERSON_ID },
   sameAs: [BUSINESS.profileUrl],
 });
