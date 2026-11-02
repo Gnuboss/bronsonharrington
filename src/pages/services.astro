@@ -4,6 +4,7 @@ import PageHero from '../components/PageHero.astro';
 import Section from '../components/Section.astro';
 import { ingredients, byCode, shelves, starters, dishes, chefsTable, usedIn, steps, faqs } from '../data/services';
 
+const base = import.meta.env.BASE_URL;
 const chef = byCode[chefsTable];
 const offer = (code: string) => ({
   "@type": "Offer",
@@ -42,7 +43,7 @@ const schema = {
   <script type="application/ld+json" set:html={JSON.stringify(schema)} />
 
   <PageHero eyebrow="~/services" title="Services" subtitle="the menu · starters → foundations → growth → domination">
-    <p class="lede">Read this like a menu. The Growth OS stages are the dishes: complete solutions I execute. The services are the ingredients each one is made from, and the best ones turn up in more than one dish. There are no prices; tell me what you're working on and we'll find the right place to start.</p>
+    <p class="lede">Read this like a menu. The Growth OS stages are the dishes: complete solutions I execute. The services are the ingredients each one is made from, and the best ones turn up in more than one dish. There are no prices; tell me what you're working on and we'll find the right place to start. If you'd rather start from the problem, try <a href={`${base}solutions/`}>solutions</a>.</p>
   </PageHero>
 
   <nav class="container courses" aria-label="Menu sections">
@@ -167,6 +168,9 @@ const schema = {
 </BaseLayout>
 
 <style>
+  .lede a {
+    color: var(--accent);
+  }
   /* Section index */
   .courses ol {
     list-style: none;
