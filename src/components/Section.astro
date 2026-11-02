@@ -1,0 +1,33 @@
+---
+// One band of a page. The head sits on the hang (eyebrow in the margin
+// column, title and intro in the content columns); the content below is
+// placed by the page, on the hang or across the full grid.
+interface Props {
+  eyebrow: string;
+  title: string;
+  id?: string;
+  intro?: string;
+  more?: { href: string; label: string };
+  /** Keep the title for the outline and screen readers but don't show it */
+  hiddenTitle?: boolean;
+  tight?: boolean;
+  class?: string;
+}
+const { eyebrow, title, id, intro, more, hiddenTitle = false, tight = false, class: cls } = Astro.props;
+---
+<section class:list={['container', tight ? 'sec-tight' : 'sec', cls]} id={id}>
+  {hiddenTitle ? (
+    <h2 class="visually-hidden">{title}</h2>
+  ) : (
+    <div class="hang sec-head">
+      <p class="hang-label tag">{eyebrow}</p>
+      <div class="hang-body">
+        <h2>{title}</h2>
+        {intro && <p class="intro">{intro}</p>}
+        <slot name="intro" />
+        {more && <a href={more.href} class="more">{more.label} →</a>}
+      </div>
+    </div>
+  )}
+  <slot />
+</section>

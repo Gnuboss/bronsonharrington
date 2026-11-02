@@ -1,0 +1,19 @@
+---
+// Page hero on the hang: eyebrow in the margin column, title block in the
+// content columns with the signature vertical rule in the gutter between.
+// Every page opens the same way, so the site has one recognisable entrance.
+interface Props {
+  eyebrow: string;
+  title: string;
+  subtitle?: string;
+}
+const { eyebrow, title, subtitle } = Astro.props;
+---
+<section class="hero container hang">
+  <p class="hang-label tag">{eyebrow}</p>
+  <div class="hang-body">
+    <h1>{title}</h1>
+    {subtitle && <p class="label subtitle">{subtitle}</p>}
+    <slot />
+  </div>
+</section>

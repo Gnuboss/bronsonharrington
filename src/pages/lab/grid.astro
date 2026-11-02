@@ -1,9 +1,8 @@
 ---
-// Grid system specimen: the proposal, shown on the site's own grid.
-// noindex while it's a proposal. Press Shift+G (or add ?grid) to see the
+// Grid system specimen: every named layout, shown on the site's own grid.
+// noindex: a reference for building pages, not content. Press Shift+G (or add ?grid) to see the
 // columns and baseline.
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import '../../styles/grid.css';
 
 const base = import.meta.env.BASE_URL;
 
@@ -47,7 +46,7 @@ const pantry = [
     <p class="hang-label eyebrow">~/lab/grid</p>
     <div class="hang-body">
       <h1>Grid System.</h1>
-      <p class="lede">One modular grid, one baseline, six named layouts. Variety comes from how content spans the columns, not from inventing a new ratio for every page.</p>
+      <p class="lede">One modular grid, one baseline, a handful of named layouts. Every page on this site is built from them. Variety comes from how content spans the columns, not from inventing a new ratio for every page.</p>
       <button type="button" class="toggle-grid" data-toggle-grid aria-pressed="false">show grid <span class="kbd">shift + g</span></button>
     </div>
   </section>

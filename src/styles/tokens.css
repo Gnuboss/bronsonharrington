@@ -48,7 +48,7 @@ body {
      html above keeps the paper colour as the fallback. */
   background: transparent;
   font-size: var(--text-base);
-  line-height: 1.6;
+  line-height: 1.5; /* 24px: sits on the 8px baseline */
   -webkit-font-smoothing: antialiased;
 }
 

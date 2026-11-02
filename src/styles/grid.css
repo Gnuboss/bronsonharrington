@@ -1,5 +1,6 @@
 /* ============================================================
-   GRID SYSTEM (proposal, used by /lab/grid/ until adopted)
+   GRID SYSTEM AND LAYOUT LANGUAGE (site-wide, imported by BaseLayout)
+   Specimen with every layout: /lab/grid/  ·  Rules: STANDARDS.md, Layout
 
    A modular column grid in the Swiss tradition (Müller-Brockmann,
    Grid Systems in Graphic Design): one set of columns, one gutter, one
@@ -64,7 +65,7 @@
 }
 @media (min-width: 720px) and (max-width: 979px) {
   .s-2  { grid-column: span 2; }
-  .s-3  { grid-column: span 2; }
+  .s-3  { grid-column: span 4; }
   .s-4  { grid-column: span 4; }
   .s-5  { grid-column: span 3; }
   .s-6  { grid-column: span 4; }
@@ -231,4 +232,200 @@ html.show-grid .grid-overlay { display: block; }
   .menu .leader { display: none; }
   .menu .for { flex-basis: 100%; order: 3; }
   .menu .desc { order: 2; }
+}
+
+/* ============================================================
+   PAGE RHYTHM: shared by every page so sections breathe the same way
+   ============================================================ */
+
+/* A section: one band of the page between hairlines */
+.sec {
+  padding-top: var(--space-6);
+  padding-bottom: var(--space-6);
+}
+.sec-tight {
+  padding-top: var(--space-5);
+  padding-bottom: var(--space-5);
+}
+
+/* Section head on the hang: eyebrow in the margin column, title and intro
+   in the content columns, optional "more" link under the intro */
+.sec-head {
+  margin-bottom: var(--space-5);
+}
+.sec-head h2 {
+  margin: 0;
+}
+.sec-head .intro {
+  margin: var(--space-2) 0 0;
+  color: var(--ink-muted);
+}
+.tag {
+  margin: 0;
+  padding-top: 0.55em; /* optically aligns with the cap height of the h2 beside it */
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--accent);
+  letter-spacing: 0.02em;
+}
+.more {
+  display: inline-block;
+  margin-top: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--accent);
+  text-decoration: none;
+}
+.more:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Lede: the one larger paragraph under a page or section title */
+.lede {
+  font-size: var(--text-lg);
+  line-height: 1.5;
+  color: var(--ink-soft);
+  margin: var(--space-3) 0 0;
+}
+
+/* ROWS: a list where each row sits on the hang split (date, key or label
+   in the margin column, content beside it), divided by hairlines.
+   Used for notes, timelines, Q&A. */
+.rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 2px solid var(--rule-strong);
+}
+.rows > * {
+  border-bottom: 0.5px solid var(--hairline);
+  padding: var(--space-3) 0;
+  row-gap: var(--space-1);
+}
+.rows .hang-label {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--ink-faint);
+  padding-top: 0.3em;
+}
+.rows h3 {
+  font-size: var(--text-lg);
+  margin: 0;
+}
+.rows h3 a {
+  text-decoration: none;
+}
+.rows h3 a:hover {
+  color: var(--accent);
+}
+.rows p {
+  margin: var(--space-1) 0 0;
+  color: var(--ink-muted);
+}
+/* A row that is one big link (tap target is the whole row) */
+.rows a.row {
+  text-decoration: none;
+}
+.rows a.row:hover h3 {
+  color: var(--accent);
+}
+
+/* CARD: a peer item. Heavy 2px rule on top, natural height, no box. */
+.card {
+  border-top: 2px solid var(--rule-strong);
+  padding-top: var(--space-2);
+  display: flex;
+  flex-direction: column;
+}
+.card h3 {
+  font-size: var(--text-lg);
+  margin: var(--space-1) 0 0;
+}
+.card p {
+  color: var(--ink-muted);
+  margin: var(--space-1) 0 0;
+}
+.card .more {
+  margin-top: auto;
+  padding-top: var(--space-2);
+}
+
+/* PROSE: long-form text in the content columns. Measure capped at the
+   8-column span, so lines stay around 65 characters. */
+.prose > * {
+  max-width: 65ch;
+}
+.prose > :first-child {
+  margin-top: 0;
+}
+.prose h2 {
+  font-size: var(--text-xl);
+  margin: var(--space-5) 0 var(--space-2);
+}
+.prose h3 {
+  font-size: var(--text-lg);
+  margin: var(--space-4) 0 var(--space-1);
+}
+.prose ul,
+.prose ol {
+  padding-left: 1.25rem;
+  margin: 0 0 var(--space-3);
+}
+.prose li {
+  margin-bottom: var(--space-1);
+}
+.prose a {
+  color: var(--accent);
+}
+.prose blockquote {
+  margin: var(--space-4) 0;
+  padding-left: var(--space-3);
+  border-left: 2px solid var(--highlight);
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  line-height: 1.4;
+  color: var(--ink);
+}
+.prose code {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  background: var(--paper-dim);
+  padding: 0.1em 0.35em;
+  border-radius: var(--radius);
+}
+
+/* PAGE HERO: the signature vertical rule runs down beside the title block */
+.hero {
+  padding-top: var(--space-6);
+  padding-bottom: var(--space-5);
+}
+.hero h1 {
+  font-size: clamp(2.5rem, 6vw, var(--text-3xl));
+  letter-spacing: -0.02em;
+}
+.hero .subtitle {
+  margin: var(--space-2) 0 0;
+}
+@media (min-width: 720px) {
+  .hero .hang-body { position: relative; }
+  /* Sits in the gutter between the margin column and the title */
+  .hero .hang-body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: calc(-0.5 * var(--gutter));
+    border-left: 0.5px solid var(--hairline);
+  }
+}
+
+/* Phone: the margin column stacks above the content, so the label sits
+   close to what it labels, and section spacing steps down one size */
+@media (max-width: 719px) {
+  .hang { row-gap: var(--space-1); }
+  .sec, .hero { padding-top: var(--space-5); padding-bottom: var(--space-5); }
+  .sec-tight { padding-top: var(--space-4); padding-bottom: var(--space-4); }
+  .sec-head { margin-bottom: var(--space-4); }
+  .tag { padding-top: 0; }
 }

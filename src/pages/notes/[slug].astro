@@ -36,83 +36,85 @@ const pageTitle = note.data.seoTitle ?? (withName.length <= 60 ? withName : note
     "isPartOf": { "@id": "https://bronson.co.za/notes/#blog" }
   })} />
 
-  <article class="container note">
-    <header class="note-head">
-      <a href={`${base}notes/`} class="eyebrow back">~/field-notes</a>
-      <h1>{note.data.title}</h1>
-      <p class="label meta">
-        <time datetime={fmt(note.data.date)}>{fmt(note.data.date)}</time>
-        {note.data.updated && <> · updated <time datetime={fmt(note.data.updated)}>{fmt(note.data.updated)}</time></>}
-        {note.data.tags.length > 0 && <> · {note.data.tags.join(' / ')}</>}
-      </p>
+  <article class="note">
+    <!-- Header on the hang: the way back hangs in the margin, the title takes the content columns -->
+    <header class="hero container hang">
+      <a href={`${base}notes/`} class="hang-label tag back">~/field-notes</a>
+      <div class="hang-body">
+        <h1>{note.data.title}</h1>
+        <p class="lede">{note.data.description}</p>
+      </div>
     </header>
 
     <hr class="hairline" />
 
-    {note.data.styleTile && <StyleTile edition={note.data.styleTile} />}
-
-    <div class="prose">
-      <Content />
+    <div class="container sec">
+      {note.data.styleTile && <div class="tile-wrap"><StyleTile edition={note.data.styleTile} /></div>}
+      <div class="hang">
+        <!-- Metadata stays in the margin column beside the text (sticky on desktop) -->
+        <aside class="hang-label meta" aria-label="About this note">
+          <dl>
+            <div><dt>published</dt><dd><time datetime={fmt(note.data.date)}>{fmt(note.data.date)}</time></dd></div>
+            {note.data.updated && <div><dt>updated</dt><dd><time datetime={fmt(note.data.updated)}>{fmt(note.data.updated)}</time></dd></div>}
+            {note.data.tags.length > 0 && <div><dt>tags</dt><dd>{note.data.tags.join(' / ')}</dd></div>}
+          </dl>
+        </aside>
+        <div class="hang-body prose">
+          <Content />
+        </div>
+      </div>
+      <div class="hang note-foot">
+        <span class="hang-label"></span>
+        <a href={`${base}notes/`} class="hang-body more">← all field notes</a>
+      </div>
     </div>
-
-    <footer class="note-foot">
-      <a href={`${base}notes/`} class="label">← all field notes</a>
-    </footer>
   </article>
 </BaseLayout>
 
 <style>
-  .note {
-    max-width: calc(var(--content-narrow) + 2 * var(--space-6));
-    padding-top: var(--space-6);
-  }
   .back {
     text-decoration: none;
   }
-  .note-head h1 {
-    font-size: var(--text-2xl);
-    margin: var(--space-2) 0 var(--space-2);
+  .hero h1 {
+    font-size: clamp(2rem, 5vw, var(--text-2xl));
   }
-  .meta {
-    margin-bottom: var(--space-4);
+  .tile-wrap {
+    margin-bottom: var(--space-6);
+  }
+  .meta dl {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1) var(--space-3);
+  }
+  .meta dt {
+    color: var(--ink-faint);
+  }
+  .meta dd {
+    margin: 0;
+    color: var(--ink);
+  }
+  @media (min-width: 720px) {
+    .meta dl {
+      display: block;
+      position: sticky;
+      top: var(--space-3);
+      border-top: 2px solid var(--rule-strong);
+      padding-top: var(--space-1);
+    }
+    .meta dl > div {
+      padding: var(--space-1) 0;
+      border-bottom: 0.5px solid var(--hairline);
+    }
   }
   .prose {
-    padding-top: var(--space-4);
     font-size: 1.0625rem;
   }
-  /* Markdown body: authors start sections at ## so the outline stays H1 -> H2 -> H3 */
-  .prose :global(h2) {
-    font-size: var(--text-xl);
-    margin: var(--space-5) 0 var(--space-2);
-  }
-  .prose :global(h3) {
-    font-size: var(--text-lg);
-    margin: var(--space-4) 0 var(--space-2);
-  }
-  .prose :global(a) {
-    color: var(--accent);
-  }
-  .prose :global(ul),
-  .prose :global(ol) {
-    max-width: 65ch;
-    padding-left: var(--space-3);
-    margin: 0 0 var(--space-3);
-  }
-  .prose :global(li) {
-    margin-bottom: var(--space-1);
-  }
-  .prose :global(blockquote) {
-    margin: var(--space-4) 0;
-    padding-left: var(--space-3);
-    border-left: 2px solid var(--highlight);
-    color: var(--ink-muted);
-  }
-  .prose :global(code) {
-    font-family: var(--font-mono);
-    font-size: 0.9em;
-    background: var(--paper-dim);
-    padding: 0.1em 0.3em;
-    border-radius: var(--radius);
+  .prose :global(h2:first-child),
+  .prose :global(p:first-child) {
+    margin-top: 0;
   }
   .prose :global(pre) {
     font-family: var(--font-mono);
@@ -127,6 +129,7 @@ const pageTitle = note.data.seoTitle ?? (withName.length <= 60 ? withName : note
   .prose :global(pre code) {
     background: none;
     padding: 0;
+    color: inherit;
   }
   .prose :global(img) {
     max-width: 100%;
@@ -136,11 +139,5 @@ const pageTitle = note.data.seoTitle ?? (withName.length <= 60 ? withName : note
     margin-top: var(--space-6);
     padding-top: var(--space-3);
     border-top: 0.5px solid var(--hairline);
-  }
-  .note-foot a {
-    text-decoration: none;
-  }
-  .note-foot a:hover {
-    color: var(--accent);
   }
 </style>
