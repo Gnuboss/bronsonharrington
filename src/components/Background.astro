@@ -1,0 +1,321 @@
+---
+// Page background, in one of two modes (set in src/config/site.ts):
+//   grid      an ultrafine pixel grid, like paper texture
+//   snowfall  festive glyphs drifting down like snow, Matrix-style flicker
+// Both share the same roving spotlight: it wanders organically and, on
+// desktop, slowly follows the cursor, lighting what it passes in the accent
+// colour and casting a faint wash on the paper.
+//
+// Performance:
+//  - Nothing is in the page at first load: once the page has rendered and
+//    the browser is idle, this script adds the background and its styles.
+//    First paint, LCP and the critical CSS are unaffected.
+//  - Grid: only the spotlight's transform changes each frame (compositor
+//    only, no layout or paint).
+//  - Snowfall: a canvas, redrawn at most 24 times a second, with flake count
+//    and canvas resolution capped by screen size. It starts a few seconds
+//    after the page has settled, so loading and first interactions stay
+//    instant. Pauses when the tab is hidden.
+//  - Reduced motion: shown, but nothing moves.
+// Colours come from the palette tokens.
+---
+<script>
+  import { SPOTLIGHT_WASH as WASH } from '../config/theme.mjs'; // tint on the paper; text contrast is checked against it
+  import { BACKGROUND } from '../config/site';
+
+  // Which background: ?bg= override, then the configured mode, then the season
+  const inSeason = (d: Date) => {
+    const md = (d.getMonth() + 1) * 100 + d.getDate();
+    const num = (s: string) => parseInt(s.replace('-', ''), 10);
+    const from = num(BACKGROUND.season.from);
+    const to = num(BACKGROUND.season.to);
+    return from <= to ? md >= from && md <= to : md >= from || md <= to;
+  };
+  const override = new URLSearchParams(location.search).get('bg');
+  const MODE: 'grid' | 'snowfall' =
+    override === 'grid' || override === 'snowfall'
+      ? override
+      : BACKGROUND.mode === 'auto'
+        ? (inSeason(new Date()) ? 'snowfall' : 'grid')
+        : BACKGROUND.mode;
+  // Grid settings. GAP = distance between pixels, DOT = pixel size (CSS px).
+  // A fine grid reads as paper texture; the glow tints it as it passes.
+  const GAP = 4;
+  const DOT = 1;
+  const GLOW = 1; // spotlight strength, 0-1
+  const SIZE = 40; // spotlight diameter, in vmax (% of the larger screen side)
+  const o = Math.floor((GAP - DOT) / 2);
+  const PIXEL = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='${GAP}' height='${GAP}'%3E%3Cpath fill-rule='evenodd' d='M0 0h${GAP}v${GAP}H0zM${o} ${o}h${DOT}v${DOT}h-${DOT}z'/%3E%3C/svg%3E") 0 0 / ${GAP}px ${GAP}px repeat`;
+
+  const CSS = `
+    .pixel-grid {
+      position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none;
+      background: var(--grid-dot);
+      animation: grid-in 1.2s ease-out both;
+    }
+    @keyframes grid-in { from { opacity: 0; } to { opacity: 1; } }
+    .pixel-grid .glow {
+      position: absolute; left: 0; top: 0;
+      width: ${SIZE}vmax; height: ${SIZE}vmax; margin: -${SIZE / 2}vmax 0 0 -${SIZE / 2}vmax; border-radius: 50%;
+      background: radial-gradient(circle closest-side,
+        rgba(var(--accent-rgb), ${GLOW}) 0%, rgba(var(--accent-rgb), ${GLOW * 0.4}) 40%, rgba(var(--accent-rgb), 0) 100%);
+      transform: translate3d(70vw, 22vh, 0);
+      will-change: transform;
+    }
+    /* Same spotlight, cast faintly over the paper so it reads as light */
+    .pixel-grid .wash {
+      position: absolute; left: 0; top: 0; z-index: 1;
+      width: ${SIZE}vmax; height: ${SIZE}vmax; margin: -${SIZE / 2}vmax 0 0 -${SIZE / 2}vmax; border-radius: 50%;
+      background: radial-gradient(circle closest-side, rgba(var(--accent-rgb), ${WASH}) 0%, rgba(var(--accent-rgb), 0) 100%);
+      transform: translate3d(70vw, 22vh, 0);
+      will-change: transform;
+    }
+    .pixel-grid.snowfall { background: var(--paper); }
+    .pixel-grid canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+    /* Tile is opaque except a DOT-sized square hole, which is the pixel */
+    .pixel-grid .mask {
+      position: absolute; inset: 0; background: var(--paper);
+      -webkit-mask: ${PIXEL}; mask: ${PIXEL};
+    }`;
+
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function mount() {
+    const style = document.createElement('style');
+    style.textContent = CSS;
+    document.head.appendChild(style);
+
+    const bg = document.createElement('div');
+    bg.className = `pixel-grid ${MODE}`;
+    bg.setAttribute('aria-hidden', 'true');
+    bg.innerHTML = MODE === 'grid'
+      ? '<div class="glow"></div><div class="mask"></div><div class="wash"></div>'
+      : '<canvas></canvas><div class="wash"></div>';
+    document.body.prepend(bg);
+
+    const lights = [...bg.querySelectorAll<HTMLElement>('.glow, .wash')];
+    const snow = MODE === 'snowfall' ? snowfall(bg.querySelector('canvas') as HTMLCanvasElement) : null;
+
+    if (reduced) {
+      snow?.draw(0, innerWidth * 0.7, innerHeight * 0.22, false); // one still frame
+      return;
+    }
+    animate((x, y, breath, t, dt) => {
+      const t3d = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0) scale(${breath.toFixed(4)})`;
+      for (const el of lights) el.style.transform = t3d;
+      snow?.tick(t, dt, x, y);
+    });
+  }
+
+  // Snowfall: glyphs drifting down at three depths (far = small, slow, faint),
+  // swaying gently, now and then flickering to a new glyph. Glyphs inside the
+  // spotlight's pool are drawn in the accent colour.
+  const GLYPHS = '01*+<>/\\{}[];:=~^#%ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜ'.split('');
+  const LAYERS = [
+    { size: 9, speed: 0.012, alpha: 0.1 },  // far
+    { size: 12, speed: 0.022, alpha: 0.14 }, // mid
+    { size: 15, speed: 0.034, alpha: 0.18 }, // near
+  ];
+  const DENSITY = 1 / 9000; // flakes per px² of screen
+  const MAX_FLAKES = 180;
+  const FRAME_MS = 1000 / 24; // canvas redraws at most 24 times a second (plenty for slow snow)
+  const PIXEL_BUDGET = 1.6e6; // max canvas pixels
+
+  function snowfall(canvas: HTMLCanvasElement) {
+    const ctx = canvas.getContext('2d')!;
+    const css = getComputedStyle(document.documentElement);
+    const ink = css.getPropertyValue('--ink').trim() || '#141414';
+    const accent = css.getPropertyValue('--accent').trim() || '#2E6F5C';
+    const font = css.getPropertyValue('--font-mono').trim() || 'monospace';
+    const radius = () => (Math.max(innerWidth, innerHeight) * SIZE) / 200; // spotlight radius in px
+    let w = 0, h = 0, dpr = 1;
+    type Flake = { x: number; y: number; layer: number; phase: number; sway: number; glyph: string; next: number };
+    let flakes: Flake[] = [];
+    const pick = () => GLYPHS[(Math.random() * GLYPHS.length) | 0];
+    const make = (anywhere: boolean): Flake => ({
+      x: Math.random() * w,
+      y: anywhere ? Math.random() * h : -20,
+      layer: Math.random() < 0.45 ? 0 : Math.random() < 0.6 ? 1 : 2,
+      phase: Math.random() * Math.PI * 2,
+      sway: 6 + Math.random() * 14,
+      glyph: pick(),
+      next: performance.now() + 800 + Math.random() * 3200,
+    });
+    // Sprite sheet: every glyph at every depth, in ink and accent, drawn once.
+    // Copying small images each frame is far cheaper than drawing text.
+    type Cell = { sx: number; sy: number; s: number };
+    let sheet: HTMLCanvasElement;
+    let cells: Cell[][][] = []; // [layer][colour 0=ink 1=accent][glyph]
+    const buildSheet = () => {
+      sheet = document.createElement('canvas');
+      const sizes = LAYERS.map((L) => Math.ceil(L.size * 1.5 * dpr));
+      const cols = GLYPHS.length;
+      sheet.width = cols * Math.max(...sizes);
+      sheet.height = sizes.reduce((a, b) => a + b, 0) * 2;
+      const g = sheet.getContext('2d')!;
+      g.textAlign = 'center'; g.textBaseline = 'middle';
+      let y = 0;
+      cells = LAYERS.map((L, li) => {
+        const s = sizes[li];
+        g.font = `500 ${L.size * dpr}px ${font}`;
+        return [ink, accent].map((colour) => {
+          g.fillStyle = colour;
+          const row = GLYPHS.map((ch, gi) => {
+            g.fillText(ch, gi * s + s / 2, y + s / 2);
+            return { sx: gi * s, sy: y, s };
+          });
+          y += s;
+          return row;
+        });
+      });
+    };
+    const glyphIndex = new Map(GLYPHS.map((g, i) => [g, i]));
+
+    const resize = () => {
+      // Cap the canvas at ~1.6 million pixels: big screens draw near 1x,
+      // phones stay sharp. The glyphs are small and faint, so it doesn't show.
+      const nextDpr = Math.max(1, Math.min(devicePixelRatio || 1, 1.5, Math.sqrt(PIXEL_BUDGET / (innerWidth * innerHeight))));
+      const rebuild = nextDpr !== dpr || !sheet;
+      dpr = nextDpr;
+      w = innerWidth; h = innerHeight;
+      canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      if (rebuild) buildSheet();
+      const count = Math.min(MAX_FLAKES, Math.round(w * h * DENSITY));
+      while (flakes.length < count) flakes.push(make(true));
+      flakes.length = count;
+    };
+    resize();
+    addEventListener('resize', resize, { passive: true });
+
+    const blit = (c: Cell, x: number, y: number) =>
+      ctx.drawImage(sheet, c.sx, c.sy, c.s, c.s, Math.round(x * dpr - c.s / 2), Math.round(y * dpr - c.s / 2), c.s, c.s);
+
+    const draw = (t: number, sx: number, sy: number, move: boolean, dt = 0) => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const r = radius();
+      for (const f of flakes) {
+        const L = LAYERS[f.layer];
+        if (move) {
+          f.y += L.speed * dt;
+          if (f.y > h + 20) Object.assign(f, make(false));
+          if (t > f.next) { f.glyph = pick(); f.next = t + 800 + Math.random() * 3200; }
+        }
+        const x = f.x + Math.sin(t * 0.0006 + f.phase) * f.sway;
+        const gi = glyphIndex.get(f.glyph)!;
+        ctx.globalAlpha = L.alpha;
+        blit(cells[f.layer][0][gi], x, f.y);
+        // Inside the spotlight: overlay the accent, strongest at the centre
+        const dx = x - sx, dy = f.y - sy;
+        if (dx * dx + dy * dy < r * r) {
+          const k = 1 - Math.sqrt(dx * dx + dy * dy) / r;
+          ctx.globalAlpha = Math.min(1, L.alpha * 4) * k * k;
+          blit(cells[f.layer][1][gi], x, f.y);
+        }
+      }
+      ctx.globalAlpha = 1;
+    };
+
+    let since = 0;
+    return {
+      draw: (t: number, sx: number, sy: number, move: boolean) => draw(t, sx, sy, move),
+      tick: (t: number, dt: number, sx: number, sy: number) => {
+        since += dt;
+        if (since < FRAME_MS) return;
+        draw(t, sx, sy, true, since);
+        since = 0;
+      },
+    };
+  }
+
+  // Motion: slow, organic, fluid.
+  //  - Steered like something drifting in water: it has a heading that can
+  //    only turn gradually, so every change of direction is an arc, never a
+  //    hairpin or a straight-line snap.
+  //  - It heads for a target that wanders along a smooth looping path, or,
+  //    while the mouse moves, a blend of that path and the cursor.
+  //  - It slows as it gets close, and lazily circles a resting target.
+  //  - A slow "breath" swells the light by a few percent.
+  const MAX_SPEED = 0.3; // px per ms when far from its target
+  const MIN_SPEED = 0.025; // never fully stops; circles instead
+  const TURN = 0.0016; // max turn rate, radians per ms (~90°/s)
+  const EASE = 0.0015; // how quickly speed changes
+  const WANDER = 0.00009; // speed of the wandering path (radians per ms)
+  const FOLLOW_IN = 0.0008; // how fast cursor influence builds while moving
+  const FOLLOW_OUT = 0.0004; // how fast it fades once the cursor rests
+  const IDLE_MS = 1200; // cursor counts as resting after this long
+
+  function animate(onFrame: (x: number, y: number, breath: number, t: number, dt: number) => void) {
+    let w = innerWidth;
+    let h = innerHeight;
+    // Random phases so every visit wanders a different path
+    const ph = Array.from({ length: 4 }, () => Math.random() * Math.PI * 2);
+    const wander = (t: number) => ({
+      x: w * (0.5 + 0.3 * Math.sin(t * WANDER + ph[0]) + 0.12 * Math.sin(t * WANDER * 2.7 + ph[1])),
+      y: h * (0.45 + 0.28 * Math.sin(t * WANDER * 1.3 + ph[2]) + 0.1 * Math.sin(t * WANDER * 3.1 + ph[3])),
+    });
+    const start = wander(performance.now());
+    let x = start.x;
+    let y = start.y;
+    let heading = Math.random() * Math.PI * 2;
+    let speed = MIN_SPEED;
+    let pointer = { x: 0, y: 0 };
+    let lastMove = -Infinity;
+    let follow = 0; // 0 = wandering, up to 0.9 = mostly following the cursor
+    let prev = performance.now();
+
+    if (matchMedia('(pointer: fine)').matches) {
+      addEventListener(
+        'pointermove',
+        (e) => {
+          pointer = { x: e.clientX, y: e.clientY };
+          lastMove = performance.now();
+        },
+        { passive: true }
+      );
+    }
+    addEventListener('resize', () => { w = innerWidth; h = innerHeight; }, { passive: true });
+
+    const frame = (t: number) => {
+      const dt = Math.min(t - prev, 50);
+      prev = t;
+
+      // Ease cursor influence in or out
+      const moving = t - lastMove < IDLE_MS;
+      follow += ((moving ? 0.9 : 0) - follow) * Math.min(1, dt * (moving ? FOLLOW_IN : FOLLOW_OUT));
+
+      // Target: a blend of the wandering path and the cursor
+      const p = wander(t);
+      const tx = p.x + (pointer.x - p.x) * follow;
+      const ty = p.y + (pointer.y - p.y) * follow;
+      const dx = tx - x;
+      const dy = ty - y;
+      const dist = Math.hypot(dx, dy);
+
+      // Turn gradually toward the target (shortest way round)
+      let diff = Math.atan2(dy, dx) - heading;
+      diff = Math.atan2(Math.sin(diff), Math.cos(diff));
+      const maxTurn = TURN * dt;
+      heading += Math.max(-maxTurn, Math.min(maxTurn, diff));
+
+      // Ease speed: quicker when far, slow when close
+      const want = Math.max(MIN_SPEED, Math.min(MAX_SPEED, dist * 0.0009));
+      speed += (want - speed) * Math.min(1, dt * EASE);
+      x += Math.cos(heading) * speed * dt;
+      y += Math.sin(heading) * speed * dt;
+
+      const breath = 1 + 0.05 * Math.sin(t * 0.0006);
+      onFrame(x, y, breath, t, dt);
+      requestAnimationFrame(frame); // browsers pause this when the tab is hidden
+    };
+    requestAnimationFrame(frame);
+  }
+
+  // Grid mounts as soon as the browser is idle; snowfall waits a few seconds
+  // longer so it never competes with the page settling.
+  const SNOW_DELAY_MS = 4000;
+  const idle = (fn: () => void) =>
+    'requestIdleCallback' in window ? requestIdleCallback(fn, { timeout: 2000 }) : setTimeout(fn, 200);
+  const kick = () => (MODE === 'snowfall' ? setTimeout(() => idle(mount), SNOW_DELAY_MS) : idle(mount));
+  document.readyState === 'complete' ? kick() : addEventListener('load', kick, { once: true });
+</script>
