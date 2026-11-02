@@ -21,9 +21,10 @@ export const CONTACT = {
 // Page background.
 //   'grid'     ultrafine pixel grid (paper texture) with the roving spotlight
 //   'snowfall' festive glyph snowfall with the same spotlight
+//   'ripples'  a fixed perspective grid; droplets send out rings that light it up
 //   'auto'     snowfall during the festive season below, grid the rest of the year
-// Preview either one on any page with ?bg=grid or ?bg=snowfall
+// Preview any of them on any page with ?bg=grid, ?bg=snowfall or ?bg=ripples
 export const BACKGROUND = {
-  mode: 'auto' as 'auto' | 'grid' | 'snowfall',
+  mode: 'ripples' as 'auto' | 'grid' | 'snowfall' | 'ripples',
   season: { from: '11-01', to: '01-06' }, // MM-DD, inclusive; may wrap the new year
 };
