@@ -2,7 +2,7 @@
 title: "Palette 01: Swiss Terminal"
 seoTitle: "Palette 01: Swiss Terminal Style Tile | Bronson Harrington"
 description: The first palette edition for this site. Warm paper, near-black ink and a muted terminal green, set in Inter and JetBrains Mono. See the full style tile.
-date: 2026-11-01
+date: 2026-09-27
 tags: [palette, design]
 styleTile: "01"
 ---
