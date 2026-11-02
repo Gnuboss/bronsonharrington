@@ -1,0 +1,131 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import Section from '../components/Section.astro';
+import { groups, fixInfo } from '../data/solutions';
+
+const base = import.meta.env.BASE_URL;
+const all = groups.flatMap((g) => g.problems);
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "Solutions: start from the problem",
+  "url": "https://bronson.co.za/solutions/",
+  "author": { "@id": "https://bronson.co.za/#/schema/person" },
+  "mainEntity": {
+    "@type": "ItemList",
+    "numberOfItems": all.length,
+    "itemListElement": all.map((p, i) => ({
+      "@type": "ListItem",
+      "position": i + 1,
+      "name": p.problem,
+      "description": p.why,
+      "url": `https://bronson.co.za/services/#${fixInfo(p.fix).anchor}`,
+    })),
+  },
+};
+---
+<BaseLayout
+  title="Solutions: Start From the Problem | Bronson Harrington"
+  description="Start from the problem: traffic drops, stalled content, missing from AI answers. Follow the dotted line to the Growth OS fix and see how it works."
+>
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+  <PageHero eyebrow="~/solutions" title="Solutions" subtitle="start from the problem · follow the line to the fix">
+    <p class="lede">You probably know the symptom better than the cure. Find the one that sounds like you, follow the dotted line to what fixes it, and the link takes you to that ingredient on the <a href={`${base}services/`}>services menu</a>. Problems are grouped by the Growth OS stage the fix belongs to.</p>
+  </PageHero>
+
+  <nav class="container index" aria-label="Problem groups">
+    <ol class="hang">
+      <li class="hang-label label">jump to</li>
+      <li class="hang-body index-links">
+        {groups.map((g) => <a href={`#${g.id}`}>{g.label}</a>)}
+      </li>
+    </ol>
+  </nav>
+
+  {groups.map((g) => (
+    <>
+      <hr class="hairline" />
+      <Section eyebrow={g.label} title={g.title} id={g.id} intro={g.intro}>
+        <div class="hang">
+          <p class="hang-label label">if this sounds like you</p>
+          <ul class="menu hang-body">
+            {g.problems.map((p) => {
+              const f = fixInfo(p.fix);
+              return (
+                <li>
+                  <h3 class="dish">{p.problem}</h3>
+                  <span class="leader" aria-hidden="true"></span>
+                  <a class="for" href={`${base}services/#${f.anchor}`}>{f.label} →</a>
+                  <p class="desc">{p.why}</p>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </Section>
+    </>
+  ))}
+
+  <hr class="hairline" />
+
+  <Section eyebrow="~/next" title="Don't See Yours?" tight>
+    <p slot="intro" class="intro">Most problems are a mix of two or three of these. Browse the full <a href={`${base}services/`}>services menu</a>, read how the stages fit together in the <a href={`${base}framework/`}>Growth OS framework</a>, or describe what's going on in the form below and I'll tell you where I'd start.</p>
+  </Section>
+</BaseLayout>
+
+<style>
+  .lede a,
+  .intro a {
+    color: var(--accent);
+  }
+  /* Group index */
+  .index ol {
+    list-style: none;
+    margin: 0;
+    padding: var(--space-3) 0;
+    border-top: 0.5px solid var(--hairline);
+  }
+  .index-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1) var(--space-3);
+  }
+  .index-links a {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .index-links a:hover {
+    color: var(--accent);
+  }
+
+  /* Menu board: problem -> fix */
+  .menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 2px solid var(--rule-strong);
+  }
+  .menu li {
+    padding: var(--space-2) 0;
+  }
+  .menu li + li {
+    border-top: 0.5px solid var(--hairline);
+  }
+  .menu h3.dish {
+    font-size: var(--text-base);
+    margin: 0;
+  }
+  .menu a.for {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .menu a.for:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+</style>
