@@ -1,0 +1,91 @@
+---
+// BH monogram as live text + CSS: the site's Inter, palette colours, and a
+// blinking terminal cursor (the same mark as the favicon's "_").
+// Scales with font-size, so `size` is any CSS length.
+//
+//   <Monogram />                      plain: ink letters on the page
+//   <Monogram variant="dark" />       paper letters in an ink square
+//   <Monogram variant="light" />      ink letters in a paper square with a hairline
+//   <Monogram size="4rem" still />    larger, cursor not blinking
+interface Props {
+  variant?: 'plain' | 'dark' | 'light';
+  size?: string;
+  still?: boolean;
+  label?: string; // accessible name; pass '' when the full name sits next to it
+}
+
+const { variant = 'plain', size = '1em', still = false, label = 'Bronson Harrington' } = Astro.props;
+---
+<span
+  class:list={['monogram', variant, { still }]}
+  style={`--mono-size:${size}`}
+  role={label ? 'img' : undefined}
+  aria-label={label || undefined}
+  aria-hidden={label ? undefined : 'true'}
+>
+  <span class="letters">BH</span><span class="cursor"></span>
+</span>
+
+<style>
+  .monogram {
+    display: inline-flex;
+    align-items: baseline;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: var(--mono-size);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    white-space: nowrap;
+    user-select: none;
+  }
+  /* Boxed variants: a square, letters optically centred */
+  .dark,
+  .light {
+    justify-content: center;
+    align-items: center;
+    width: 1.9em;
+    height: 1.9em;
+    border-radius: var(--radius);
+    padding-top: 0.08em; /* cap height sits slightly high in the line box */
+  }
+  .dark {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .light {
+    background: var(--paper);
+    color: var(--ink);
+    box-shadow: inset 0 0 0 0.5px var(--hairline);
+  }
+  .dark .letters,
+  .light .letters {
+    font-size: 0.72em;
+  }
+  /* Cursor: an underscore block on the baseline, in the accent colour */
+  .cursor {
+    display: inline-block;
+    width: 0.36em;
+    height: 0.11em;
+    margin-left: 0.09em;
+    background: var(--accent);
+    animation: mono-blink 1.1s steps(1) infinite;
+  }
+  .dark .cursor,
+  .light .cursor {
+    align-self: flex-end;
+    margin-bottom: 0.62em;
+    margin-left: 0.06em;
+    width: 0.26em;
+    height: 0.08em;
+  }
+  .still .cursor {
+    animation: none;
+  }
+  @keyframes mono-blink {
+    50% { opacity: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cursor { animation: none; }
+  }
+</style>
