@@ -64,14 +64,14 @@ export const BUSINESS = {
   profileUrl: 'https://share.google/xIzIqH90wLmnRsXaH',
   // Categories exactly as listed on the profile, primary first. Schema has
   // no category field, so they're expressed as the services offered.
-  categories: ['Media Consultant', 'Design agency', 'Marketing consultant'],
+  categories: ['Marketing consultant', 'Media Consultant', 'Design agency'],
 };
 
 export const businessSchema = () => ({
   '@type': 'ProfessionalService',
   '@id': BUSINESS_ID,
   name: BUSINESS.name,
-  description: `${PERSON.name} is a Growth Architect in ${PERSON.locality}, ${PERSON.country}: media and marketing consulting and design, focused on growth architecture, SEO and AI search visibility.`,
+  description: `${PERSON.name} is a Growth Architect in ${PERSON.locality}, ${PERSON.country}: marketing and media consulting and design, focused on growth architecture, SEO and AI search visibility.`,
   url: SITE,
   email: `mailto:${CONTACT.email}`,
   telephone: CONTACT.phoneHref.replace('tel:', ''),
@@ -91,14 +91,14 @@ export const businessSchema = () => ({
   founder: { '@id': PERSON_ID },
   sameAs: [BUSINESS.profileUrl],
   knowsAbout: PERSON.knowsAbout,
-  // Mirrors the profile's categories (Media Consultant, Design agency, Marketing consultant)
+  // Mirrors the profile's categories, primary first
   hasOfferCatalog: {
     '@type': 'OfferCatalog',
     name: 'Services',
     itemListElement: [
-      { name: 'Media consulting', category: BUSINESS.categories[0] },
-      { name: 'Design', category: BUSINESS.categories[1] },
-      { name: 'Marketing consulting', category: BUSINESS.categories[2] },
+      { name: 'Marketing consulting', category: BUSINESS.categories[0] },
+      { name: 'Media consulting', category: BUSINESS.categories[1] },
+      { name: 'Design', category: BUSINESS.categories[2] },
     ].map((sv) => ({
       '@type': 'Offer',
       itemOffered: { '@type': 'Service', name: sv.name, serviceType: sv.category, provider: { '@id': BUSINESS_ID }, areaServed: { '@type': 'Place', name: 'Worldwide' } },
