@@ -4,45 +4,40 @@
 // Why (STANDARDS.md, usability): on phones the header nav sits in the
 // hardest-to-reach zone for one-handed use (Hoober 2013: 49% of phone use
 // is one-handed, ~75% thumb-driven). This puts a labelled menu button in the
-// bottom-right corner and fans the links out on a quarter-circle around it,
-// so every target sits within a short thumb arc. Links keep visible text
-// labels (unlabelled dots force guessing), and contact, the site CTA, lands
-// on the lowest, easiest point of the arc.
+// bottom-right corner and opens the links in a callout right above it.
+//
+// The open state is an old-cartoon speech bubble. Not decoration: one
+// outlined shape groups the five links as a single unit (common region),
+// and the tail ties that unit back to the button that summoned it, so the
+// menu reads as "the button's answer" with no extra labels. Contact, the
+// site CTA, sits on the bottom row, closest to the thumb.
 //
 // Only shown at <=720px, and only when the head script has put the visitor
 // in the "radial" group (html[data-nav="radial"]). Without JS the normal
 // header nav stays, so nothing is ever unreachable.
 import { nav } from '../data/nav';
-
-// Radius of the arc in px, measured from the centre of the button.
-const R = 180;
-const last = nav.length - 1;
-// Points sit on the quarter circle, first link straight up, last straight
-// left. They are spaced evenly in height rather than by angle: labels run
-// leftward from each dot, so what keeps a label off the next dot down is
-// vertical gap. Even angles bunch the top points within ~13px of each
-// other vertically and the labels collide; even heights give every
-// neighbour R/4 = 45px (label half-height 14 + dot radius 22 = 36 needed).
-const items = nav.map((item, i) => {
-  const y = -R + (R * i) / last;
-  const x = -Math.sqrt(R * R - y * y);
-  return { ...item, x: Math.round(x), y: Math.round(y), i };
-});
 ---
 <div class="thumb-nav" data-track-location="thumb_nav" data-thumb-nav>
   <div class="scrim" data-scrim aria-hidden="true"></div>
-  <nav aria-label="Primary" id="thumb-nav-menu" class="ring">
-    <ul>
-      {items.map((item) => (
-        <li style={`--x:${item.x}px;--y:${item.y}px;--i:${item.i}`}>
-          <a href={item.href} class:list={{ cta: item.cta }}>
-            <span class="text">{item.label}</span>
-            <span class="dot" aria-hidden="true"></span>
-          </a>
-        </li>
-      ))}
-    </ul>
-  </nav>
+  <div class="bubble-wrap">
+    <nav aria-label="Primary" id="thumb-nav-menu" class="bubble">
+      <ul>
+        {nav.map((item, i) => (
+          <li style={`--i:${i}`}>
+            <a href={item.href} class:list={{ cta: item.cta }}>
+              {item.label}{item.cta && <span aria-hidden="true">→</span>}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+    <!-- Tail: filled shape covers the bubble's border where they join,
+         the open stroke draws only its two sides -->
+    <svg class="tail" viewBox="0 0 46 40" width="46" height="40" aria-hidden="true" focusable="false">
+      <path class="tail-fill" d="M-2 0 H36 Q36 24 46 40 Q20 30 -2 0 Z" />
+      <path class="tail-line" d="M0 1.5 Q20 30 46 40 Q35.5 24 34.5 1.5" />
+    </svg>
+  </div>
   <button type="button" class="toggle" aria-expanded="false" aria-controls="thumb-nav-menu">
     <span class="bars" aria-hidden="true"><span></span><span></span><span></span></span>
     <span class="word">menu</span>
@@ -63,38 +58,31 @@ const items = nav.map((item, i) => {
     }
   }
 
-  /* Dims the page while open; tapping it closes the menu */
+  /* Washes the page back so the bubble is the only thing in focus;
+     tapping it closes the menu */
   .scrim {
     position: fixed;
     inset: 0;
     z-index: 900;
-    background: radial-gradient(
-      circle at calc(100% - 46px) calc(100% - 46px),
-      rgba(var(--ink-rgb), 0.18),
-      rgba(var(--ink-rgb), 0.55) 70%
-    );
+    background: color-mix(in srgb, var(--paper) 78%, transparent);
     opacity: 0;
     pointer-events: none;
-    transition: opacity 180ms ease;
+    transition: opacity 160ms ease;
   }
   .thumb-nav.open .scrim {
     opacity: 1;
     pointer-events: auto;
   }
 
-  /* Button and arc share one anchor point: the button's centre */
-  .toggle,
-  .ring {
+  .toggle {
     position: fixed;
     right: max(var(--space-2), env(safe-area-inset-right));
     bottom: max(var(--space-2), env(safe-area-inset-bottom));
-    z-index: 901;
-  }
-  .toggle {
+    z-index: 902;
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    border: 0;
+    border: 2px solid var(--ink);
     background: var(--ink);
     color: var(--paper);
     display: flex;
@@ -103,8 +91,12 @@ const items = nav.map((item, i) => {
     justify-content: center;
     gap: 5px;
     cursor: pointer;
-    box-shadow: 0 6px 18px rgba(var(--ink-rgb), 0.28);
+    box-shadow: 3px 3px 0 var(--accent);
     -webkit-tap-highlight-color: transparent;
+  }
+  .toggle:active {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0 var(--accent);
   }
   .toggle:focus-visible {
     outline: 2px solid var(--highlight);
@@ -137,95 +129,92 @@ const items = nav.map((item, i) => {
     letter-spacing: 0.04em;
   }
 
-  /* The ring is a zero-size point at the button centre; links are placed
-     around it with the --x/--y offsets worked out at build time. */
-  .ring {
-    width: 60px;
-    height: 60px;
-    pointer-events: none;
+  /* Bubble + tail move as one piece; the drop-shadow filter traces both,
+     giving the single hard cartoon shadow */
+  .bubble-wrap {
+    position: fixed;
+    right: max(var(--space-2), env(safe-area-inset-right));
+    bottom: calc(max(var(--space-2), env(safe-area-inset-bottom)) + 88px);
+    z-index: 901;
+    width: min(232px, calc(100vw - 2 * var(--space-2)));
+    filter: drop-shadow(4px 4px 0 var(--ink));
+    transform-origin: calc(100% - 32px) calc(100% + 37px); /* the tail tip */
+    transform: scale(0.4);
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      transform 240ms cubic-bezier(0.34, 1.56, 0.64, 1),
+      opacity 120ms ease,
+      visibility 0s linear 240ms;
   }
-  .ring ul {
+  .open .bubble-wrap {
+    transform: scale(1);
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 0s;
+  }
+  .bubble {
+    background: var(--paper);
+    border: 2.5px solid var(--ink);
+    border-radius: 26px;
+    padding: var(--space-1) var(--space-2);
+  }
+  .tail {
+    position: absolute;
+    top: calc(100% - 3px);
+    right: 32px;
+    overflow: visible;
+  }
+  .tail-fill {
+    fill: var(--paper);
+  }
+  .tail-line {
+    fill: none;
+    stroke: var(--ink);
+    stroke-width: 3;
+    stroke-linejoin: round;
+  }
+  .bubble ul {
     list-style: none;
     margin: 0;
     padding: 0;
   }
-  .ring li {
-    position: absolute;
-    right: 30px;
-    bottom: 30px;
-    /* li's right/bottom edge = the dot centre, so the label runs leftward */
-    transform: translate(22px, 22px) scale(0.3);
-    opacity: 0;
-    visibility: hidden;
-    transition:
-      transform 220ms cubic-bezier(0.2, 0.9, 0.3, 1.2),
-      opacity 160ms ease,
-      visibility 0s linear 220ms;
+  .bubble li + li {
+    border-top: 1.5px dashed var(--hairline);
   }
-  .open .ring li {
-    transform: translate(calc(var(--x) + 22px), calc(var(--y) + 22px)) scale(1);
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-    transition-delay: calc(var(--i) * 30ms), calc(var(--i) * 30ms), 0s;
-  }
-  .ring a {
+  .bubble a {
     display: flex;
     align-items: center;
-    gap: var(--space-1);
-    min-height: 44px; /* WCAG 2.5.5 target size */
+    justify-content: space-between;
+    min-height: 48px; /* comfortably over the 44px target minimum */
+    font-family: var(--font-mono);
+    font-size: var(--text-base);
+    color: var(--ink);
     text-decoration: none;
     -webkit-tap-highlight-color: transparent;
   }
-  .text {
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    color: var(--ink);
-    background: var(--paper);
-    padding: 0.3rem 0.6rem;
-    border-radius: var(--radius);
-    white-space: nowrap;
-    box-shadow: 0 2px 8px rgba(var(--ink-rgb), 0.16);
+  .bubble a:active {
+    color: var(--accent);
   }
-  .dot {
-    flex: none;
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    background: var(--paper);
-    border: 1.5px solid var(--ink);
-    box-shadow: 0 2px 8px rgba(var(--ink-rgb), 0.16);
-    position: relative;
-  }
-  .dot::after {
-    content: '';
-    position: absolute;
-    inset: 15px;
-    border-radius: 50%;
-    background: var(--ink);
-  }
-  .ring a:active .dot,
-  .ring a:hover .dot {
-    background: var(--accent-dim);
-  }
-  /* Contact is the CTA: filled accent dot and label */
-  .ring a.cta .dot {
-    background: var(--accent);
-    border-color: var(--accent);
-  }
-  .ring a.cta .dot::after {
-    background: var(--paper);
-  }
-  .ring a.cta .text {
+  /* Contact is the CTA: inked row on the bottom line, nearest the thumb */
+  .bubble a.cta {
+    margin: var(--space-1) calc(-1 * var(--space-1)) 0;
+    padding: 0 var(--space-2);
+    border-radius: 999px;
     background: var(--accent);
     color: var(--paper);
   }
-  .ring a:focus-visible {
-    outline: none;
+  .bubble li:has(.cta) {
+    border-top: 0;
+    padding-bottom: 2px;
   }
-  .ring a:focus-visible .dot {
+  .bubble a:focus-visible {
     outline: 2px solid var(--highlight);
-    outline-offset: 3px;
+    outline-offset: 2px;
+    border-radius: var(--radius);
+  }
+  .bubble a.cta:focus-visible {
+    border-radius: 999px;
   }
 </style>
 
@@ -234,7 +223,7 @@ const items = nav.map((item, i) => {
   if (root) {
     const button = root.querySelector<HTMLButtonElement>('.toggle')!;
     const scrim = root.querySelector<HTMLElement>('[data-scrim]')!;
-    const links = Array.from(root.querySelectorAll<HTMLAnchorElement>('.ring a'));
+    const links = Array.from(root.querySelectorAll<HTMLAnchorElement>('.bubble a'));
     const gtag = () => (window as any).gtag as ((...args: unknown[]) => void) | undefined;
 
     const setOpen = (open: boolean, opts: { focus?: boolean } = {}) => {
