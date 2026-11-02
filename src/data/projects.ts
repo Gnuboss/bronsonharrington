@@ -40,3 +40,17 @@ export const projects: Project[] = [
     linkLabel: 'play it',
   },
 ];
+
+// Site experiments: things built into this site to try an idea out.
+// Shown in their own section on the Lab page (the home page lists builds only).
+export const experiments: (Project & { note?: string })[] = [
+  {
+    name: 'Vertical Scroller',
+    summary:
+      'An SVG parallax ocean you dive through as you scroll, telling Growth OS from the surface down to the seabed it stands on. Seven layers, a depth-gauge HUD, palette-driven colours.',
+    stack: 'svg · css · parallax',
+    href: '/lab/scroller/',
+    linkLabel: 'dive in',
+    note: '/notes/vertical-scroller-parallax-experiment/',
+  },
+];

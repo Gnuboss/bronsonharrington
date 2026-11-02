@@ -1,0 +1,475 @@
+---
+// Lab experiment: a vertical scroller. An original ocean scene drawn in SVG,
+// split into layers that move at different speeds as you scroll (parallax),
+// so reading the page feels like diving: sky, surface, open water, seabed.
+// It tells Growth OS from the top down: Domination is what everyone sees on
+// the surface, Growth is the open water, Foundations is the seabed.
+// Field note: src/content/notes/vertical-scroller-parallax-experiment.md
+//
+// Performance: every layer is drawn once; scrolling only changes each layer's
+// transform (compositor only). Reduced motion: the scene stays still.
+// Colours come from the palette tokens, so it reskins with each edition.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const base = import.meta.env.BASE_URL;
+
+// Deterministic "random" so the scene is the same on every build
+let seed = 7;
+const rand = () => {
+  seed = (seed * 16807) % 2147483647;
+  return (seed - 1) / 2147483646;
+};
+const range = (a: number, b: number) => a + rand() * (b - a);
+
+// Pieces are positioned in % of their layer, so the scene fits any screen.
+const clouds = Array.from({ length: 9 }, () => ({ x: range(-5, 90), y: range(2, 22), w: range(14, 30), o: range(0.5, 0.95) }));
+const rays = Array.from({ length: 7 }, (_, i) => ({ x: 6 + i * 14 + range(-4, 4), w: range(4, 9), skew: range(-10, 10), o: range(0.08, 0.18) }));
+const kelp = Array.from({ length: 16 }, () => ({ x: range(0, 98), h: range(14, 34), sway: range(3, 7), delay: range(0, 4) }));
+const fish = Array.from({ length: 6 }, (_, i) => ({ y: 30 + i * 11 + range(-3, 3), n: Math.round(range(4, 9)), dir: rand() > 0.5 ? 1 : -1, dur: range(28, 48), delay: range(-40, 0), s: range(0.7, 1.3) }));
+const stones = Array.from({ length: 14 }, () => ({ x: range(-2, 96), w: range(5, 14), h: range(2, 5) }));
+const bubbles = Array.from({ length: 22 }, () => ({ x: range(2, 98), y: range(35, 95), r: range(2, 6), dur: range(8, 16), delay: range(-16, 0) }));
+
+// Depth gauge marks: label and where on the page (0-1) they sit
+const marks = [
+  { at: 0, depth: '0m', label: 'surface' },
+  { at: 0.3, depth: '20m', label: 'domination' },
+  { at: 0.55, depth: '60m', label: 'growth' },
+  { at: 0.82, depth: '110m', label: 'foundations' },
+];
+---
+<BaseLayout
+  title="Vertical Scroller: A Growth OS Dive | Bronson Harrington"
+  description="A lab experiment: an SVG parallax ocean you dive through as you scroll, telling Growth OS from the surface down to the seabed it stands on."
+>
+  <!-- The scene: fixed behind the page, one element per layer -->
+  <div class="scene" aria-hidden="true">
+    <div class="layer sky" data-speed="0.08">
+      <svg class="sun" viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" /></svg>
+    </div>
+
+    <div class="layer clouds" data-speed="0.22">
+      {clouds.map((c) => (
+        <svg class="cloud" viewBox="0 0 120 40" style={`left:${c.x}%;top:${c.y}%;width:${c.w}vw;opacity:${c.o}`}>
+          <path d="M10 34 Q4 34 4 27 Q4 19 13 19 Q15 9 27 9 Q36 2 48 8 Q58 2 70 9 Q84 8 88 18 Q100 17 104 25 Q116 26 116 31 Q116 35 108 35 Z" />
+        </svg>
+      ))}
+    </div>
+
+    <div class="layer sea" data-speed="0.55">
+      <svg class="islands" viewBox="0 0 1440 120" preserveAspectRatio="none">
+        <path d="M0 120 L0 104 Q120 92 210 100 Q300 70 380 96 Q460 104 560 110 L560 120 Z" />
+        <path d="M900 120 L900 108 Q980 86 1050 98 Q1120 60 1210 92 Q1300 100 1440 96 L1440 120 Z" />
+      </svg>
+      <div class="water">
+        <svg class="waves" viewBox="0 0 1440 40" preserveAspectRatio="none">
+          <path d="M0 14 Q60 4 120 14 T240 14 T360 14 T480 14 T600 14 T720 14 T840 14 T960 14 T1080 14 T1200 14 T1320 14 T1440 14 L1440 40 L0 40 Z" />
+        </svg>
+      </div>
+    </div>
+
+    <div class="layer rays" data-speed="0.7">
+      {rays.map((r) => (
+        <svg class="ray" viewBox="0 0 10 100" preserveAspectRatio="none" style={`left:${r.x}%;width:${r.w}vw;opacity:${r.o};transform:skewX(${r.skew}deg)`}>
+          <path d="M3 0 L7 0 L10 100 L0 100 Z" />
+        </svg>
+      ))}
+    </div>
+
+    <div class="layer life" data-speed="0.85">
+      {fish.map((f) => (
+        <div class="school" style={`top:${f.y}%;--dur:${f.dur}s;--delay:${f.delay}s;--dir:${f.dir};--s:${f.s}`}>
+          <svg viewBox={`0 0 ${f.n * 18} 20`} style={`width:${f.n * 18 * f.s}px`}>
+            {Array.from({ length: f.n }, (_, i) => (
+              <path transform={`translate(${i * 18} ${(i % 3) * 4})`} d="M0 6 Q6 0 12 6 Q6 12 0 6 Z M12 6 L16 2 L16 10 Z" />
+            ))}
+          </svg>
+        </div>
+      ))}
+      {bubbles.map((b) => (
+        <span class="bubble" style={`left:${b.x}%;top:${b.y}%;width:${b.r}px;height:${b.r}px;--dur:${b.dur}s;--delay:${b.delay}s`}></span>
+      ))}
+    </div>
+
+    <div class="layer seabed" data-speed="1">
+      <div class="floor">
+        {kelp.map((k) => (
+          <svg class="kelp" viewBox="0 0 20 100" preserveAspectRatio="none" style={`left:${k.x}%;height:${k.h}vh;--sway:${k.sway}deg;--delay:${k.delay}s`}>
+            <path d="M10 100 Q2 80 10 60 Q18 40 10 20 Q4 8 10 0" />
+          </svg>
+        ))}
+        <svg class="sand" viewBox="0 0 1440 80" preserveAspectRatio="none">
+          <path d="M0 30 Q180 10 360 26 T720 22 T1080 28 T1440 18 L1440 80 L0 80 Z" />
+        </svg>
+        {stones.map((s) => (
+          <svg class="stone" viewBox="0 0 100 50" preserveAspectRatio="none" style={`left:${s.x}%;width:${s.w}vw;height:${s.h}vw`}>
+            <path d="M0 50 Q8 8 50 4 Q92 8 100 50 Z" />
+          </svg>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <!-- Depth gauge, like a game HUD -->
+  <nav class="gauge" aria-label="Depth">
+    <ol>
+      {marks.map((m) => (
+        <li style={`top:${m.at * 100}%`}><a href={`#${m.label}`}><span class="d">{m.depth}</span> {m.label}</a></li>
+      ))}
+    </ol>
+    <span class="needle" aria-hidden="true"></span>
+  </nav>
+
+  <!-- The page: four stops on the way down -->
+  <div class="dive">
+    <section class="stop container" id="surface">
+      <div class="card hero">
+        <p class="tag">~/lab/scroller</p>
+        <h1>Dive in.</h1>
+        <p class="lede">Everything you see on the surface stands on what's underneath. Scroll down: this is Growth OS from the top, the way the market sees it, to the seabed it's built on.</p>
+        <p class="hint">scroll ↓</p>
+      </div>
+    </section>
+
+    <section class="stop container" id="domination">
+      <div class="card">
+        <p class="tag">20m / domination</p>
+        <h2>What everyone sees.</h2>
+        <p>Being recommended, cited and chosen: in search rankings, answer engines and generative search. It's the part above the waterline, and the part most people try to start with.</p>
+        <a class="more" href={`${base}services/#domination`}>the domination course →</a>
+      </div>
+    </section>
+
+    <section class="stop container" id="growth">
+      <div class="card">
+        <p class="tag">60m / growth</p>
+        <h2>The open water.</h2>
+        <p>Reach that keeps expanding: content that closes the gaps, topical depth, and a footprint that grows beyond your own site. Most of the volume lives here, out of sight.</p>
+        <a class="more" href={`${base}services/#growth`}>the growth course →</a>
+      </div>
+    </section>
+
+    <section class="stop container" id="foundations">
+      <div class="card">
+        <p class="tag">110m / foundations</p>
+        <h2>The seabed.</h2>
+        <p>What everything stands on: a clear position, a site built properly, and technical health that lets search engines find and trust it all. Nobody sees it. Nothing above it holds without it.</p>
+        <a class="more" href={`${base}services/#foundations`}>the foundations course →</a>
+      </div>
+    </section>
+
+    <section class="stop container surfacing">
+      <div class="card">
+        <p class="tag">~/surface</p>
+        <h2>Come back up.</h2>
+        <p>This is a lab experiment; <a href={`${base}notes/vertical-scroller-parallax-experiment/`}>the field note</a> explains how it's built. The real thing is on the <a href={`${base}framework/`}>framework</a>, <a href={`${base}services/`}>services</a> and <a href={`${base}solutions/`}>solutions</a> pages.</p>
+        <a class="more" href="#surface">back to the surface ↑</a>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  /* Scene ---------------------------------------------------------------- */
+  .scene {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+    background: var(--paper);
+  }
+  .layer {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    /* Each layer is as tall as the distance it travels plus one screen */
+    height: calc(100vh + var(--range, 3000px) * var(--speed, 1));
+    will-change: transform;
+  }
+  .sky {
+    background: linear-gradient(var(--paper), color-mix(in srgb, var(--accent) 6%, var(--paper)) 40%);
+  }
+  .sun {
+    position: absolute;
+    right: 12%;
+    top: 9vh;
+    width: min(18vw, 160px);
+    fill: color-mix(in srgb, var(--accent) 55%, var(--paper));
+  }
+  .cloud {
+    position: absolute;
+    fill: var(--paper-dim);
+  }
+
+  /* The sea starts a short way down its layer, so the surface arrives early */
+  .sea .islands {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    top: calc(55vh - 60px);
+    height: 60px;
+    fill: color-mix(in srgb, var(--ink) 35%, var(--paper));
+  }
+  .sea .water {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 55vh;
+    bottom: 0;
+    /* Darker the deeper you go */
+    background: linear-gradient(
+      color-mix(in srgb, var(--ink) 28%, var(--paper)),
+      color-mix(in srgb, var(--ink) 60%, var(--paper)) 45%,
+      color-mix(in srgb, var(--ink) 88%, var(--paper))
+    );
+  }
+  .waves {
+    position: absolute;
+    top: -14px;
+    left: 0;
+    width: 100%;
+    height: 28px;
+    fill: color-mix(in srgb, var(--ink) 28%, var(--paper));
+  }
+
+  .rays {
+    /* Light only reaches the upper water */
+    top: calc(55vh + var(--range, 3000px) * 0.12);
+  }
+  .ray {
+    position: absolute;
+    top: 0;
+    height: 70vh;
+    fill: var(--paper);
+    transform-origin: top;
+    mix-blend-mode: soft-light;
+  }
+
+  .life {
+    top: calc(55vh + var(--range, 3000px) * 0.15);
+  }
+  .school {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    animation: swim var(--dur) linear infinite;
+    animation-delay: var(--delay);
+  }
+  .school svg {
+    display: block;
+    fill: color-mix(in srgb, var(--accent) 70%, var(--ink));
+    opacity: 0.55;
+    transform: scaleX(var(--dir));
+  }
+  @keyframes swim {
+    from { transform: translateX(calc(-30vw * var(--dir) + 50vw - 50vw * var(--dir))); }
+    to { transform: translateX(calc(130vw * var(--dir) + 50vw - 50vw * var(--dir))); }
+  }
+  .bubble {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid color-mix(in srgb, var(--paper) 60%, transparent);
+    animation: rise var(--dur) linear infinite;
+    animation-delay: var(--delay);
+  }
+  @keyframes rise {
+    from { transform: translateY(0); opacity: 0; }
+    15% { opacity: 1; }
+    to { transform: translateY(-40vh); opacity: 0; }
+  }
+
+  /* The seabed sits just above the shared footer, so it's reached before
+     the contact form scrolls over it */
+  .seabed .floor {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: calc(var(--footer, 0px) + var(--below, 0px));
+    height: 60vh;
+  }
+  /* Bedrock below the seabed, down to the bottom of the dive */
+  .seabed .floor::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    height: calc(var(--footer, 0px) + var(--below, 0px) + 10px);
+    background:
+      repeating-linear-gradient(transparent 0 46px, rgba(var(--ink-rgb), 0.14) 46px 48px, transparent 48px 86px, rgba(var(--ink-rgb), 0.08) 86px 87px),
+      color-mix(in srgb, var(--paper) 42%, var(--ink));
+  }
+  .kelp {
+    position: absolute;
+    bottom: 40px;
+    width: 26px;
+    fill: none;
+    stroke: color-mix(in srgb, var(--accent) 45%, var(--ink));
+    stroke-width: 3;
+    stroke-linecap: round;
+    transform-origin: bottom;
+    animation: sway 6s ease-in-out infinite alternate;
+    animation-delay: var(--delay);
+  }
+  @keyframes sway {
+    from { transform: rotate(calc(var(--sway) * -1)); }
+    to { transform: rotate(var(--sway)); }
+  }
+  .sand {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 80px;
+    fill: color-mix(in srgb, var(--paper) 42%, var(--ink));
+  }
+  .stone {
+    position: absolute;
+    bottom: 30px;
+    fill: color-mix(in srgb, var(--ink) 75%, var(--paper));
+  }
+
+  /* Depth gauge ------------------------------------------------------------ */
+  .gauge {
+    position: fixed;
+    right: 18px;
+    top: 22vh;
+    height: 56vh;
+    width: 2px;
+    background: color-mix(in srgb, var(--ink) 25%, transparent);
+    z-index: 5;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+  }
+  .gauge ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .gauge li {
+    position: absolute;
+    right: 10px;
+    transform: translateY(-50%);
+    white-space: nowrap;
+  }
+  .gauge a {
+    color: var(--ink);
+    text-decoration: none;
+    background: color-mix(in srgb, var(--paper) 85%, transparent);
+    padding: 1px 6px;
+    border-radius: var(--radius);
+  }
+  .gauge .d {
+    color: var(--accent);
+  }
+  .needle {
+    position: absolute;
+    left: -5px;
+    top: 0;
+    width: 12px;
+    height: 2px;
+    background: var(--accent);
+  }
+
+  /* Content ------------------------------------------------------------------ */
+  .stop {
+    min-height: 110vh;
+    display: flex;
+    align-items: center;
+  }
+  .card {
+    max-width: 520px;
+    background: var(--paper);
+    border-top: 2px solid var(--rule-strong);
+    padding: var(--space-4);
+    box-shadow: 0 10px 40px rgba(var(--ink-rgb), 0.18);
+  }
+  .card h1 {
+    margin: var(--space-1) 0 var(--space-2);
+  }
+  .card h2 {
+    margin: var(--space-1) 0 var(--space-2);
+  }
+  .card p:last-child {
+    margin-bottom: 0;
+  }
+  .card a {
+    color: var(--accent);
+  }
+  .card .more {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    text-decoration: none;
+  }
+  .hint {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--ink-faint);
+  }
+  /* Keep the shared footer readable over the deep water */
+  :global(.site-footer) {
+    background: var(--paper);
+    position: relative;
+  }
+
+  @media (max-width: 720px) {
+    /* Leave the gauge its own strip on the right */
+    .dive .container { padding-right: 52px; }
+    .gauge li a { font-size: 0; padding: 0; background: none; }
+    .gauge li a .d { font-size: var(--text-xs); background: color-mix(in srgb, var(--paper) 85%, transparent); padding: 1px 4px; }
+    .card { padding: var(--space-3); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .school, .bubble, .kelp { animation: none; }
+  }
+</style>
+
+<script>
+  // Parallax: each layer moves by scroll x its speed. Only transforms change,
+  // so the browser can do it on the compositor without repainting the scene.
+  const layers = [...document.querySelectorAll<HTMLElement>('.scene .layer')];
+  const root = document.documentElement;
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const needle = document.querySelector<HTMLElement>('.gauge .needle');
+  const gauge = document.querySelector<HTMLElement>('.gauge');
+  let gaugeH = 0;
+  let range = 1;
+
+  const measure = () => {
+    range = Math.max(1, root.scrollHeight - innerHeight);
+    root.style.setProperty('--range', `${range}px`);
+    const footer = document.querySelector<HTMLElement>('.site-footer');
+    root.style.setProperty('--footer', `${footer ? footer.offsetHeight : 0}px`);
+    // Place the seabed so it fills the lower part of the screen when the
+    // seabed card is centred: below = distance from that point to the footer
+    const stop = document.getElementById('foundations');
+    const footerH = footer ? footer.offsetHeight : 0;
+    const below = stop ? root.scrollHeight - footerH - (stop.offsetTop + stop.offsetHeight / 2 + innerHeight * 0.5) : 0;
+    root.style.setProperty('--below', `${Math.max(0, below)}px`);
+    for (const l of layers) l.style.setProperty('--speed', l.dataset.speed ?? '1');
+    gaugeH = gauge ? gauge.offsetHeight : 0;
+  };
+
+  let ticking = false;
+  const update = () => {
+    ticking = false;
+    const y = scrollY;
+    if (!still) {
+      for (const l of layers) l.style.transform = `translate3d(0, ${(-y * Number(l.dataset.speed)).toFixed(1)}px, 0)`;
+    }
+    // Move the needle directly: a page-wide CSS variable here would make the
+    // browser restyle the whole document on every frame
+    if (needle) needle.style.transform = `translate3d(0, ${(Math.min(1, y / range) * gaugeH).toFixed(1)}px, 0)`;
+  };
+  const onScroll = () => {
+    if (!ticking) { ticking = true; requestAnimationFrame(update); }
+  };
+
+  measure();
+  update();
+  addEventListener('scroll', onScroll, { passive: true });
+  addEventListener('resize', () => { measure(); update(); }, { passive: true });
+  addEventListener('load', () => { measure(); update(); });
+</script>
