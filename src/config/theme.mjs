@@ -60,6 +60,8 @@ export function buildTokens({ roles }) {
   };
   // Accent is used for text (links, eyebrows), so it must reach 4.5:1.
   const accent = fix('accent', roles.accent, 4.5);
+  // Graphics, not text: 3:1. Used for the focus ring, callouts and valid fields.
+  const hl = fix('highlight', highlight, 3);
   return {
     '--paper': paper,
     '--paper-dim': mix(ink, paper, 0.07), // code backgrounds, subtle fills
@@ -72,11 +74,14 @@ export function buildTokens({ roles }) {
     '--accent-dim': mix(accent, paper, 0.15),
     // Rules and the focus ring are graphics, not text: 3:1 is the bar.
     '--rule-strong': fix('rule', rule, 3),
-    '--highlight': fix('highlight', highlight, 3),
+    '--highlight': hl,
     // Form states. Error red is fixed across palettes (it has to read as "error"),
     // only darkened if a palette's paper needs it. Field borders are UI
     // component boundaries, so 3:1 (WCAG 1.4.11), unlike the decorative hairline.
     '--danger': fix('danger', '#B3261E', 4.5),
+    // Valid-field state follows the highlight role, so it never shares a hue
+    // with links when a palette's accent is red.
+    '--valid': hl,
     '--field-border': fix('field-border', mix(ink, paper, 0.4), 3),
     '--ink-rgb': hexToRgb(ink).join(', '), // for the edge-shading vignette
     '--grid-dot': mix(ink, paper, 0.05), // resting pixels in the background grid
