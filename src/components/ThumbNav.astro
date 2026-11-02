@@ -1,0 +1,263 @@
+---
+// Thumb nav: the "radial" arm of the mobile navigation test.
+//
+// Why (STANDARDS.md, usability): on phones the header nav sits in the
+// hardest-to-reach zone for one-handed use (Hoober 2013: 49% of phone use
+// is one-handed, ~75% thumb-driven). This puts a labelled menu button in the
+// bottom-right corner and fans the links out on a quarter-circle around it,
+// so every target sits within a short thumb arc. Links keep visible text
+// labels (unlabelled dots force guessing), and contact, the site CTA, lands
+// on the lowest, easiest point of the arc.
+//
+// Only shown at <=720px, and only when the head script has put the visitor
+// in the "radial" group (html[data-nav="radial"]). Without JS the normal
+// header nav stays, so nothing is ever unreachable.
+import { nav } from '../data/nav';
+
+// Radius of the arc in px, measured from the centre of the button.
+const R = 180;
+const last = nav.length - 1;
+// Points sit on the quarter circle, first link straight up, last straight
+// left. They are spaced evenly in height rather than by angle: labels run
+// leftward from each dot, so what keeps a label off the next dot down is
+// vertical gap. Even angles bunch the top points within ~13px of each
+// other vertically and the labels collide; even heights give every
+// neighbour R/4 = 45px (label half-height 14 + dot radius 22 = 36 needed).
+const items = nav.map((item, i) => {
+  const y = -R + (R * i) / last;
+  const x = -Math.sqrt(R * R - y * y);
+  return { ...item, x: Math.round(x), y: Math.round(y), i };
+});
+---
+<div class="thumb-nav" data-track-location="thumb_nav" data-thumb-nav>
+  <div class="scrim" data-scrim aria-hidden="true"></div>
+  <nav aria-label="Primary" id="thumb-nav-menu" class="ring">
+    <ul>
+      {items.map((item) => (
+        <li style={`--x:${item.x}px;--y:${item.y}px;--i:${item.i}`}>
+          <a href={item.href} class:list={{ cta: item.cta }}>
+            <span class="text">{item.label}</span>
+            <span class="dot" aria-hidden="true"></span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+  <button type="button" class="toggle" aria-expanded="false" aria-controls="thumb-nav-menu">
+    <span class="bars" aria-hidden="true"><span></span><span></span><span></span></span>
+    <span class="word">menu</span>
+  </button>
+</div>
+
+<style>
+  .thumb-nav {
+    display: none;
+  }
+  @media (max-width: 720px) {
+    :global(html[data-nav='radial']) .thumb-nav {
+      display: block;
+    }
+    /* Room at the end of the page so the footer can scroll clear of the button */
+    :global(html[data-nav='radial'] body) {
+      padding-bottom: 92px;
+    }
+  }
+
+  /* Dims the page while open; tapping it closes the menu */
+  .scrim {
+    position: fixed;
+    inset: 0;
+    z-index: 900;
+    background: radial-gradient(
+      circle at calc(100% - 46px) calc(100% - 46px),
+      rgba(var(--ink-rgb), 0.18),
+      rgba(var(--ink-rgb), 0.55) 70%
+    );
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 180ms ease;
+  }
+  .thumb-nav.open .scrim {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* Button and arc share one anchor point: the button's centre */
+  .toggle,
+  .ring {
+    position: fixed;
+    right: max(var(--space-2), env(safe-area-inset-right));
+    bottom: max(var(--space-2), env(safe-area-inset-bottom));
+    z-index: 901;
+  }
+  .toggle {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 0;
+    background: var(--ink);
+    color: var(--paper);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    cursor: pointer;
+    box-shadow: 0 6px 18px rgba(var(--ink-rgb), 0.28);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .toggle:focus-visible {
+    outline: 2px solid var(--highlight);
+    outline-offset: 3px;
+  }
+  .bars {
+    position: relative;
+    width: 18px;
+    height: 12px;
+  }
+  .bars span {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 1.5px;
+    background: currentColor;
+    transition: transform 200ms ease, opacity 150ms ease;
+  }
+  .bars span:nth-child(1) { top: 0; }
+  .bars span:nth-child(2) { top: 5.25px; }
+  .bars span:nth-child(3) { top: 10.5px; }
+  .open .bars span:nth-child(1) { transform: translateY(5.25px) rotate(45deg); }
+  .open .bars span:nth-child(2) { opacity: 0; }
+  .open .bars span:nth-child(3) { transform: translateY(-5.25px) rotate(-45deg); }
+  /* A text label lifts menu-icon engagement over the icon alone */
+  .word {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    line-height: 1;
+    letter-spacing: 0.04em;
+  }
+
+  /* The ring is a zero-size point at the button centre; links are placed
+     around it with the --x/--y offsets worked out at build time. */
+  .ring {
+    width: 60px;
+    height: 60px;
+    pointer-events: none;
+  }
+  .ring ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .ring li {
+    position: absolute;
+    right: 30px;
+    bottom: 30px;
+    /* li's right/bottom edge = the dot centre, so the label runs leftward */
+    transform: translate(22px, 22px) scale(0.3);
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      transform 220ms cubic-bezier(0.2, 0.9, 0.3, 1.2),
+      opacity 160ms ease,
+      visibility 0s linear 220ms;
+  }
+  .open .ring li {
+    transform: translate(calc(var(--x) + 22px), calc(var(--y) + 22px)) scale(1);
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transition-delay: calc(var(--i) * 30ms), calc(var(--i) * 30ms), 0s;
+  }
+  .ring a {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    min-height: 44px; /* WCAG 2.5.5 target size */
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .text {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--ink);
+    background: var(--paper);
+    padding: 0.3rem 0.6rem;
+    border-radius: var(--radius);
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(var(--ink-rgb), 0.16);
+  }
+  .dot {
+    flex: none;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--paper);
+    border: 1.5px solid var(--ink);
+    box-shadow: 0 2px 8px rgba(var(--ink-rgb), 0.16);
+    position: relative;
+  }
+  .dot::after {
+    content: '';
+    position: absolute;
+    inset: 15px;
+    border-radius: 50%;
+    background: var(--ink);
+  }
+  .ring a:active .dot,
+  .ring a:hover .dot {
+    background: var(--accent-dim);
+  }
+  /* Contact is the CTA: filled accent dot and label */
+  .ring a.cta .dot {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .ring a.cta .dot::after {
+    background: var(--paper);
+  }
+  .ring a.cta .text {
+    background: var(--accent);
+    color: var(--paper);
+  }
+  .ring a:focus-visible {
+    outline: none;
+  }
+  .ring a:focus-visible .dot {
+    outline: 2px solid var(--highlight);
+    outline-offset: 3px;
+  }
+</style>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-thumb-nav]');
+  if (root) {
+    const button = root.querySelector<HTMLButtonElement>('.toggle')!;
+    const scrim = root.querySelector<HTMLElement>('[data-scrim]')!;
+    const links = Array.from(root.querySelectorAll<HTMLAnchorElement>('.ring a'));
+    const gtag = () => (window as any).gtag as ((...args: unknown[]) => void) | undefined;
+
+    const setOpen = (open: boolean, opts: { focus?: boolean } = {}) => {
+      root.classList.toggle('open', open);
+      button.setAttribute('aria-expanded', String(open));
+      if (open) {
+        gtag()?.('event', 'thumb_nav_open', { nav_variant: 'radial' });
+        if (opts.focus) links[0]?.focus();
+      } else if (opts.focus) {
+        button.focus();
+      }
+    };
+
+    button.addEventListener('click', (e) => {
+      const open = !root.classList.contains('open');
+      // Keyboard activation (detail 0) moves focus into the menu; taps don't
+      setOpen(open, { focus: (e as MouseEvent).detail === 0 });
+    });
+    scrim.addEventListener('click', () => setOpen(false));
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && root.classList.contains('open')) setOpen(false, { focus: true });
+    });
+    // Back/forward cache: don't come back to an open menu
+    window.addEventListener('pageshow', () => setOpen(false));
+  }
+</script>

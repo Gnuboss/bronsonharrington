@@ -3,6 +3,7 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import PixelGrid from '../components/PixelGrid.astro';
 import TopBar from '../components/TopBar.astro';
+import ThumbNav from '../components/ThumbNav.astro';
 import '../styles/tokens.css';
 import { GA_MEASUREMENT_ID, GSC_VERIFICATION } from '../config/site';
 import { palette } from '../config/palette.mjs';
@@ -33,6 +34,25 @@ const { title, description } = Astro.props;
   <link rel="sitemap" href="/sitemap-index.xml" />
   <slot name="head" />
 
+  <!-- Mobile nav test: puts each visitor in the "top" (header links) or
+       "radial" (thumb nav) group, 50/50, and keeps them there. Runs before
+       paint so the page never flashes the wrong nav. ?nav=top or ?nav=radial
+       forces a group (handy for previewing). Only phones (<=720px) see a difference. -->
+  <script is:inline>
+    (function () {
+      var v = 'top';
+      try {
+        var q = new URLSearchParams(location.search).get('nav');
+        var saved = localStorage.getItem('navVariant');
+        if (q === 'top' || q === 'radial') v = q;
+        else if (saved === 'top' || saved === 'radial') v = saved;
+        else v = Math.random() < 0.5 ? 'top' : 'radial';
+        localStorage.setItem('navVariant', v);
+      } catch (e) {}
+      document.documentElement.setAttribute('data-nav', v);
+    })();
+  </script>
+
   {GSC_VERIFICATION && <meta name="google-site-verification" content={GSC_VERIFICATION} />}
 
   {GA_MEASUREMENT_ID && (
@@ -44,6 +64,8 @@ const { title, description } = Astro.props;
         // Global, so the click-tracking script can send events
         window.gtag = function () { window.dataLayer.push(arguments); };
         window.gtag('js', new Date());
+        // Nav test group, so every report can be split by it
+        window.gtag('set', 'user_properties', { nav_variant: document.documentElement.getAttribute('data-nav') });
         window.gtag('config', id);
       </script>
     </>
@@ -75,6 +97,7 @@ const { title, description } = Astro.props;
     <slot />
   </main>
   <Footer />
+  <ThumbNav />
   <!-- GA4 events: email and phone taps anywhere on the site (no-op until the GA tag has loaded) -->
   <script>
     document.addEventListener('click', (event) => {
@@ -83,8 +106,12 @@ const { title, description } = Astro.props;
       if (!link || typeof gtag !== 'function') return;
       const href = link.getAttribute('href') ?? '';
       const location = link.closest('[data-track-location]')?.getAttribute('data-track-location') ?? 'page';
-      if (href.startsWith('tel:')) gtag('event', 'phone_click', { link_location: location });
-      else if (href.startsWith('mailto:')) gtag('event', 'email_click', { link_location: location });
+      const nav_variant = document.documentElement.getAttribute('data-nav') ?? 'top';
+      if (href.startsWith('tel:')) gtag('event', 'phone_click', { link_location: location, nav_variant });
+      else if (href.startsWith('mailto:')) gtag('event', 'email_click', { link_location: location, nav_variant });
+      else if (location === 'header_nav' || location === 'thumb_nav') {
+        gtag('event', 'nav_click', { link_location: location, link_text: link.textContent?.trim(), nav_variant });
+      }
     });
   </script>
 </body>
