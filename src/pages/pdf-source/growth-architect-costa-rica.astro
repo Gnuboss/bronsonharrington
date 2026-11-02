@@ -1,0 +1,109 @@
+---
+// Print source for the Growth Architect, Costa Rica PDF. `npm run pdf`
+// renders this page to public/downloads/ as a tagged PDF with an outline.
+// Not a page for visitors: noindex, canonical to the real page, and kept
+// out of the sitemap. Uses the fixed edition 01 colours so the document
+// doesn't change when the site's palette does.
+import { CONTACT } from '../../config/site';
+import { PERSON } from '../../data/person';
+import { DOC, PAGE_URL, PDF_FILE, PDF_LEGACY_FILE, faqs, example, summary } from '../../data/growth-architect';
+
+const short = PAGE_URL.replace('https://', '');
+const dateLabel = new Date(DOC.date + 'T12:00:00').toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>{DOC.title}</title>
+  <meta name="author" content={PERSON.name} />
+  <meta name="description" content={DOC.subject} />
+  <meta name="robots" content="noindex, nofollow" />
+  <!-- Read by scripts/build-pdf.mjs to write the PDF metadata -->
+  <meta name="keywords" content={DOC.keywords.join(', ')} />
+  <meta name="pdf:date" content={DOC.date} />
+  <meta name="pdf:descriptor" content={PERSON.descriptor} />
+  <meta name="pdf:canonical" content={PAGE_URL} />
+  <meta name="pdf:file" content={PDF_FILE} />
+  <meta name="pdf:legacy-file" content={PDF_LEGACY_FILE} />
+  <link rel="canonical" href={PAGE_URL} />
+  <style is:global>
+    @font-face { font-family: 'Inter'; src: url('/fonts/inter-var.woff2') format('woff2'); font-weight: 100 900; }
+    @font-face { font-family: 'JetBrains Mono'; src: url('/fonts/jetbrains-mono-var.woff2') format('woff2'); font-weight: 100 800; }
+    @page { size: Letter; margin: 0.8in 0.85in 0.9in; }
+    :root { --ink: #141414; --soft: #3a3a3a; --muted: #5c5c5c; --accent: #2E6F5C; --hair: #d6d6d2; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; background: #fff; }
+    body { font-family: 'Inter', sans-serif; color: var(--soft); font-size: 10.5pt; line-height: 1.55; }
+    h1, h2, h3 { font-family: 'Inter', sans-serif; color: var(--ink); font-weight: 600; line-height: 1.2; margin: 0; }
+    h1 { font-size: 26pt; letter-spacing: -0.01em; }
+    h2 { font-size: 15pt; margin: 22pt 0 8pt; padding-top: 8pt; border-top: 2px solid var(--ink); break-after: avoid; }
+    h3 { font-size: 11pt; margin: 12pt 0 4pt; break-after: avoid; }
+    p { margin: 0 0 7pt; }
+    a { color: var(--accent); }
+    .mono { font-family: 'JetBrains Mono', monospace; font-size: 8.5pt; color: var(--muted); }
+    .cover { padding-top: 1.2in; min-height: 8.6in; display: flex; flex-direction: column; break-after: page; }
+    .cover .eyebrow { font-family: 'JetBrains Mono', monospace; color: var(--accent); font-size: 9.5pt; margin-bottom: 14pt; }
+    .cover .sub { font-size: 13pt; color: var(--soft); margin-top: 10pt; max-width: 5.2in; }
+    .byline { margin-top: 36pt; border-top: 0.5pt solid var(--hair); padding-top: 12pt; }
+    .byline strong { color: var(--ink); font-size: 12pt; }
+    .cover .canon { margin-top: auto; border: 0.5pt solid var(--hair); border-left: 3px solid var(--accent); padding: 10pt 12pt; font-size: 9.5pt; }
+    .qa { break-inside: avoid; border-top: 0.5pt solid var(--hair); padding-top: 6pt; }
+    table { width: 100%; border-collapse: collapse; margin: 6pt 0 10pt; font-size: 9pt; break-inside: avoid; }
+    th, td { text-align: left; vertical-align: top; padding: 5pt 6pt; border-bottom: 0.5pt solid var(--hair); }
+    th { color: var(--ink); font-weight: 600; border-bottom: 1pt solid var(--ink); }
+    ol { margin: 0 0 8pt; padding-left: 16pt; }
+    li { margin-bottom: 4pt; }
+    .about-doc { font-size: 9.5pt; }
+  </style>
+</head>
+<body>
+  <section class="cover">
+    <p class="eyebrow">~/growth-architect/costa-rica</p>
+    <h1>{DOC.title}</h1>
+    <p class="sub">{DOC.subtitle}</p>
+    <div class="byline">
+      <strong>{PERSON.name}</strong><br />
+      {PERSON.jobTitle} · {PERSON.locality}, {PERSON.country}<br />
+      <span class="mono">bronson.co.za · {CONTACT.email} · version {DOC.version} · {dateLabel}</span>
+    </div>
+    <p class="canon">This document is a printable copy of <a href={PAGE_URL}>{short}</a>, the canonical and most current version. Written by {PERSON.name}, {PERSON.jobTitle}, {PERSON.locality}, {PERSON.country}.</p>
+  </section>
+
+  <h2>Growth Architect, Costa Rica: quick answers</h2>
+  <p class="about-doc">Short, self-contained answers about what a Growth Architect is and how {PERSON.name} works. Each answer stands on its own.</p>
+  {faqs.map((f) => (
+    <div class="qa">
+      <h3>{f.q}</h3>
+      <p>{f.a}</p>
+    </div>
+  ))}
+
+  <h2>Worked example: growth architecture for white-label iGaming</h2>
+  <p class="about-doc">How {PERSON.name} applies growth architecture to white-label iGaming operators, the vertical most of his results come from. The same reasoning, architecture before content, applies in any vertical.</p>
+  {example.map((s) => (
+    <div class="section">
+      <h3>{s.q}</h3>
+      {s.paras.map((p) => <p>{p}</p>)}
+      {s.table && (
+        <table>
+          <thead><tr>{s.table.head.map((h) => <th scope="col">{h}</th>)}</tr></thead>
+          <tbody>{s.table.rows.map((r) => <tr>{r.map((c) => <td>{c}</td>)}</tr>)}</tbody>
+        </table>
+      )}
+      {s.steps && <ol>{s.steps.map((st) => <li>{st}</li>)}</ol>}
+      {s.after?.map((p) => <p>{p}</p>)}
+    </div>
+  ))}
+
+  <h2>Summary: problems and growth architecture answers</h2>
+  <table>
+    <thead><tr>{summary.head.map((h) => <th scope="col">{h}</th>)}</tr></thead>
+    <tbody>{summary.rows.map((r) => <tr>{r.map((c) => <td>{c}</td>)}</tr>)}</tbody>
+  </table>
+
+  <h2>About the author</h2>
+  <p>{PERSON.description} He developed Growth OS, a three-stage method (Foundations, Growth, Domination) for organic growth across search engines and AI answer engines.</p>
+  <p>Canonical version of this document: <a href={PAGE_URL}>{short}</a>. Growth OS: <a href="https://bronson.co.za/framework/">bronson.co.za/framework/</a>. Contact: <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>.</p>
+</body>
+</html>

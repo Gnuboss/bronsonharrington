@@ -12,45 +12,19 @@
 // vertical-agnostic, and iGaming is the proof, not the niche. No sales CTA,
 // in line with the personal-site positioning.
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { personSchema, businessSchema, PERSON_ID, PERSON } from '../data/person';
+import { faqs, DOC, PAGE_URL as url, PDF_FILE, PDF_URL } from '../data/growth-architect';
 
 const base = import.meta.env.BASE_URL;
-const url = 'https://bronson.co.za/growth-architect-costa-rica/';
-const pdf = `${base}downloads/igaming-enterprise-growth-architecture-framework.pdf`;
-
-const faqs = [
-  {
-    q: 'What is a Growth Architect?',
-    a: 'A Growth Architect designs the system organic growth runs on, instead of working through isolated SEO tasks. That system covers the technical foundation a site is built on, the content and authority it accumulates, and how it gets discovered across search engines and AI answer engines. The goal is growth that compounds and holds.',
-  },
-  {
-    q: 'How is a Growth Architect different from an SEO consultant?',
-    a: "An SEO consultant usually works page by page: fixing issues, targeting keywords, building links. A Growth Architect works upstream of that. Many organic growth problems are architecture problems first, such as a platform search engines can't render or a site structure that splits its own authority. Content and links only compound once that structure is right.",
-  },
-  {
-    q: 'Who is Bronson Harrington?',
-    a: 'Bronson Harrington is a Growth Architect based in San José, Costa Rica. He has built and grown websites since 2000, with more than 25 years across iGaming, fintech, legal and other regulated markets, where organic search often carries most of the revenue.',
-  },
-  {
-    q: 'What method does he use?',
-    a: 'Growth OS, a three-stage model. Foundations makes a site findable, crawlable and trusted. Growth builds topical authority and a publishing rhythm. Domination moves a site from being included in results to being recommended, across search rankings, answer engines and generative search.',
-  },
-  {
-    q: 'What results is that based on?',
-    a: 'Mostly regulated iGaming. At Betcris he resolved more than 20,000 technical issues across a 25,000-page network and more than doubled organic acquisition. At JazzSports he built an organic system across a 17-property portfolio generating over $20M a year, with about 75% of revenue from organic search. At BetAnySports, organic traffic grew 200%, alongside early work on visibility in AI search.',
-  },
-  {
-    q: 'Does the work depend on being in Costa Rica?',
-    a: 'No. Costa Rica is where Bronson is based, and it puts him in Americas time zones. The approach applies to any site where organic search and AI visibility matter.',
-  },
-];
+const pdf = `${base}downloads/${PDF_FILE}`;
+const pdfKb = 211; // update if the PDF changes size noticeably
 
 const faqSchema = {
-  '@context': 'https://schema.org',
   '@type': 'FAQPage',
   '@id': `${url}#faq`,
   url,
-  name: 'Growth Architect, Costa Rica',
-  about: { '@id': 'https://bronson.co.za/#/schema/person' },
+  name: PERSON.descriptor,
+  about: { '@id': PERSON_ID },
   mainEntity: faqs.map((f) => ({
     '@type': 'Question',
     name: f.q,
@@ -60,46 +34,45 @@ const faqSchema = {
 
 // Defines the term itself, and ties it to the person who holds the title
 const termSchema = {
-  '@context': 'https://schema.org',
   '@type': 'DefinedTerm',
   '@id': `${url}#term`,
   name: 'Growth Architect',
   description: faqs[0].a,
   url,
-  inDefinedTermSet: {
-    '@type': 'DefinedTermSet',
-    name: 'Growth OS',
-    url: 'https://bronson.co.za/framework/',
-  },
-  subjectOf: { '@id': `${url}#faq` },
+  inDefinedTermSet: { '@type': 'DefinedTermSet', name: 'Growth OS', url: 'https://bronson.co.za/framework/' },
+  subjectOf: [{ '@id': `${url}#faq` }, { '@id': `${PDF_URL}#document` }],
 };
 
-const personSchema = {
+// The downloadable PDF, so search and AI tools know who wrote it and
+// that this page is its canonical web version
+const docSchema = {
+  '@type': 'DigitalDocument',
+  '@id': `${PDF_URL}#document`,
+  name: DOC.title,
+  description: DOC.subject,
+  url: PDF_URL,
+  encodingFormat: 'application/pdf',
+  inLanguage: 'en',
+  version: DOC.version,
+  datePublished: DOC.date,
+  dateModified: DOC.date,
+  keywords: DOC.keywords.join(', '),
+  author: { '@id': PERSON_ID },
+  publisher: { '@id': PERSON_ID },
+  about: { '@id': `${url}#term` },
+  mainEntityOfPage: url,
+};
+
+const graph = {
   '@context': 'https://schema.org',
-  '@type': 'Person',
-  '@id': 'https://bronson.co.za/#/schema/person',
-  name: 'Bronson Harrington',
-  jobTitle: 'Growth Architect',
-  homeLocation: { '@type': 'Place', name: 'San José, Costa Rica' },
-  knowsAbout: [
-    'Growth architecture',
-    'Search engine optimization',
-    'Answer engine optimization',
-    'AI search visibility',
-    'Technical SEO',
-    'Topical authority',
-    'iGaming organic acquisition',
-    'Server-side pre-rendering',
-  ],
+  '@graph': [faqSchema, termSchema, docSchema, personSchema(), businessSchema()],
 };
 ---
 <BaseLayout
   title="Growth Architect Costa Rica | Bronson Harrington"
   description="What a Growth Architect is, how it differs from SEO consulting, and the results behind Bronson Harrington's work from Costa Rica. Quick answers inside."
 >
-  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
-  <script type="application/ld+json" set:html={JSON.stringify(termSchema)} />
-  <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(graph)} />
 
   <section class="hero container">
     <p class="eyebrow">~/growth-architect/costa-rica</p>
@@ -131,8 +104,8 @@ const personSchema = {
     <p class="lede">White-label iGaming platforms show the idea clearly. Their pages are rendered in the browser with JavaScript, so search crawlers and AI agents often see very little, and heavy browsing traffic competes with transactions for the same database.</p>
     <p>The fix is architectural, not editorial. A server-side pre-rendered layer turns game lobbies and live odds into flat HTML served from edge caches, which crawlers and AI retrieval systems can read instantly. Edge caching and asynchronous event streams take the browsing load off the transaction database. It all deploys through DNS and CDN routing, with no change to the underlying platform or its compliance certificates.</p>
     <a href={pdf} class="pdf" download>
-      <span class="pdf-title">iGaming Enterprise Growth Architecture Framework</span>
-      <span class="label">PDF · 4 pages · 69 KB · download →</span>
+      <span class="pdf-title">{DOC.title}</span>
+      <span class="label">PDF · 5 pages · {pdfKb} KB · version {DOC.version} · download →</span>
     </a>
   </section>
 </BaseLayout>

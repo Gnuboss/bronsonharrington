@@ -48,3 +48,15 @@ npm run dev
 
 Static build via `npm run build` → `dist/`. Point GitHub Pages at this repo, add a `CNAME` file
 with `bronson.co.za` once ready to cut over from the WordPress hosting.
+
+## The Growth Architect PDF
+
+`public/downloads/growth-architect-costa-rica-bronson-harrington.pdf` is generated, not hand-made. Its text comes from `src/data/growth-architect.ts`, the same file the Growth Architect, Costa Rica page uses, so the two never disagree. After changing that file, bump `DOC.version` / `DOC.date` and run:
+
+```
+npm run pdf
+```
+
+It builds the site, prints `/pdf-source/growth-architect-costa-rica/` to a tagged PDF with an outline, writes the metadata (title, author, subject, keywords, language, dates, canonical URL), and also copies it to the old iGaming filename so existing links get the current version. Commit both PDFs. Needs Playwright with Chromium (one-time: `npm i -g playwright && npx playwright install chromium`). It doesn't run in CI.
+
+Entity details (name, title, location, profiles, Google Business Profile) live in `src/data/person.ts` and feed every page's schema.
