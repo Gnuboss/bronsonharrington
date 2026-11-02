@@ -4,6 +4,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import PhaseNav from '../components/PhaseNav.astro';
 import { projects } from '../data/projects';
 import { profileUrls } from '../data/socials';
+import { CONTACT } from '../config/site';
 
 const base = import.meta.env.BASE_URL;
 const latestNotes = (await getCollection('notes', ({ data }) => !data.draft))
@@ -24,6 +25,8 @@ const fmt = (d: Date) => d.toISOString().slice(0, 10);
         "name": "Bronson Harrington",
         "description": "Growth Architect with 25 years of experience building organic growth systems in iGaming, fintech and other regulated markets.",
         "jobTitle": "Growth Architect",
+        "email": `mailto:${CONTACT.email}`,
+        "telephone": CONTACT.phoneHref.replace("tel:", ""),
         "url": "https://bronson.co.za",
         "homeLocation": { "@type": "Place", "name": "San José, Costa Rica" },
         "knowsAbout": [

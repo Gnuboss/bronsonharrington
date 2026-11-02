@@ -6,7 +6,7 @@ const nav = [
   { label: 'lab', href: `${base}lab/` },
   { label: 'framework', href: `${base}framework/` },
   { label: 'about', href: `${base}about-me/` },
-  { label: 'contact', href: `${base}contact/` },
+  { label: 'contact', href: `${base}contact/`, cta: true },
 ];
 ---
 <header class="site-header">
@@ -15,7 +15,7 @@ const nav = [
     <nav aria-label="Primary">
       <ul>
         {nav.map((item) => (
-          <li><a href={item.href}>{item.label}</a></li>
+          <li><a href={item.href} class:list={{ cta: item.cta }}>{item.label}{item.cta && <span aria-hidden="true"> →</span>}</a></li>
         ))}
       </ul>
     </nav>
@@ -61,10 +61,24 @@ const nav = [
   nav a:hover {
     color: var(--ink);
   }
+  /* Contact doubles as the header CTA */
+  nav a.cta {
+    color: var(--paper);
+    background: var(--ink);
+    padding: 0.4rem 0.75rem;
+    border-radius: var(--radius);
+  }
+  nav a.cta:hover {
+    color: var(--paper);
+    background: var(--accent);
+  }
   /* Five links don't fit beside the name on a phone: stack the name above the nav */
   @media (max-width: 720px) {
     .inner { flex-direction: column; align-items: flex-start; gap: var(--space-1); }
     nav ul { gap: var(--space-2); flex-wrap: wrap; }
     nav a { font-size: var(--text-xs); }
+    /* On phones the top bar already carries email and call, so contact goes back to a plain link */
+    nav a.cta { background: none; color: var(--ink-muted); padding: 0; }
+    nav a.cta span { display: none; }
   }
 </style>

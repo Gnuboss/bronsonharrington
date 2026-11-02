@@ -1,0 +1,65 @@
+---
+// Thin strip above the main header: a short descriptor on the left,
+// email and tap-to-call on the right. Descriptor hides on phones so the
+// two contact links stay on one line.
+import { CONTACT } from '../config/site';
+---
+<div class="top-bar" data-track-location="top_bar">
+  <div class="container inner">
+    <p class="descriptor">{CONTACT.descriptor}</p>
+    <nav aria-label="Contact" class="contacts">
+      <a href={`mailto:${CONTACT.email}`} aria-label={`Email Bronson at ${CONTACT.email}`}>
+        <span class="k">email</span> {CONTACT.email}
+      </a>
+      <a href={CONTACT.phoneHref} aria-label={`Call Bronson on ${CONTACT.phoneDisplay}`}>
+        <span class="k">call</span> {CONTACT.phoneDisplay}
+      </a>
+    </nav>
+  </div>
+</div>
+
+<style>
+  .top-bar {
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+  }
+  .inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding-top: 0.45rem;
+    padding-bottom: 0.45rem;
+  }
+  .descriptor {
+    margin: 0;
+    letter-spacing: 0.02em;
+  }
+  .contacts {
+    display: flex;
+    gap: var(--space-3);
+  }
+  .contacts a {
+    color: var(--paper);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .contacts a:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .k {
+    opacity: 0.7;
+    margin-right: 0.35em;
+  }
+  /* Keep the focus ring visible on the dark strip */
+  .contacts a:focus-visible {
+    outline-color: var(--paper);
+  }
+  @media (max-width: 640px) {
+    .descriptor { display: none; }
+    .inner { justify-content: center; }
+  }
+</style>
