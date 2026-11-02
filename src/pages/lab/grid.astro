@@ -1,0 +1,328 @@
+---
+// Grid system specimen: every named layout, shown on the site's own grid.
+// noindex: a reference for building pages, not content. Press Shift+G (or add ?grid) to see the
+// columns and baseline.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const base = import.meta.env.BASE_URL;
+
+// Draft content for the buffet (menu) and pantry, from content-source/.
+// Codes follow Growth OS: S strategy, F foundations, G growth, D domination.
+const menu = [
+  { dish: 'My site has stopped growing', for: 'revenue system diagnosis', desc: "Find the one constraint actually limiting growth before fixing the wrong thing." },
+  { dish: 'Traffic dropped after an update', for: 'seo recovery', desc: 'Work out what changed, what was hit, and what to fix first.' },
+  { dish: "We don't show up in AI answers", for: 'ai visibility', desc: 'Make the site readable, quotable and trusted by answer engines.' },
+  { dish: 'Our platform is hard for search engines to read', for: 'technical audit', desc: 'Rendering, crawling and structure, before content and links.' },
+  { dish: 'We publish, but nothing compounds', for: 'topical authority', desc: 'A content system that builds authority instead of adding pages.' },
+  { dish: 'We need senior direction, not an agency', for: 'fractional leadership', desc: 'Growth leadership embedded in the team, part-time.' },
+];
+const pantry = [
+  { code: 'S01', name: 'Revenue System Diagnosis', shelf: 'strategy' },
+  { code: 'S02', name: 'Brand Strategy', shelf: 'strategy' },
+  { code: 'S03', name: 'Website Strategy', shelf: 'strategy' },
+  { code: 'F01', name: 'Technical SEO Audit', shelf: 'foundations' },
+  { code: 'F02', name: 'SEO Recovery', shelf: 'foundations' },
+  { code: 'F03', name: 'Website Architecture', shelf: 'foundations' },
+  { code: 'G01', name: 'Content Strategy', shelf: 'growth' },
+  { code: 'G02', name: 'Topical Authority', shelf: 'growth' },
+  { code: 'G03', name: 'Growth Strategy', shelf: 'growth' },
+  { code: 'D01', name: 'AI Visibility Optimization', shelf: 'domination' },
+  { code: 'D02', name: 'SEO Consulting', shelf: 'domination' },
+  { code: 'D03', name: 'Fractional Growth Leadership', shelf: 'domination' },
+];
+---
+<BaseLayout
+  title="Grid System Specimen | Bronson Harrington"
+  description="The proposed grid system for bronson.co.za: a 12-column modular grid with an 8px baseline and six named layouts. Press Shift+G to see the grid."
+>
+  <meta slot="head" name="robots" content="noindex, follow" />
+
+  <div class="grid-overlay" aria-hidden="true">
+    <div class="container"><div class="g">{Array.from({ length: 12 }, () => <span></span>)}</div></div>
+  </div>
+
+  <!-- Hero: eyebrow hangs in the margin column, title takes the content columns -->
+  <section class="container sec hang">
+    <p class="hang-label eyebrow">~/lab/grid</p>
+    <div class="hang-body">
+      <h1>Grid System.</h1>
+      <p class="lede">One modular grid, one baseline, a handful of named layouts. Every page on this site is built from them. Variety comes from how content spans the columns, not from inventing a new ratio for every page.</p>
+      <button type="button" class="toggle-grid" data-toggle-grid aria-pressed="false">show grid <span class="kbd">shift + g</span></button>
+    </div>
+  </section>
+
+  <hr class="hairline" />
+
+  <!-- HANG, for Q&A -->
+  <section class="container sec">
+    <div class="hang head">
+      <p class="hang-label tag">01 / hang</p>
+      <div class="hang-body">
+        <h2>Labels in the margin.</h2>
+        <p class="note">3 columns for the label, 8 for the text, 1 left empty. Headings hang so the reading column stays clean.</p>
+      </div>
+    </div>
+    <div class="qa">
+      <div class="hang">
+        <h3 class="hang-label">What is a Growth Architect?</h3>
+        <p class="hang-body">Someone who designs the system organic growth runs on, instead of working through isolated SEO tasks: the technical foundation, the authority a site builds, and how it's found across search and AI answer engines.</p>
+      </div>
+      <div class="hang">
+        <h3 class="hang-label">Why a margin column?</h3>
+        <p class="hang-body">It gives every page the same spine. Eyebrows, questions, dates and keys all line up down the left, whatever page you're on.</p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="hairline" />
+
+  <!-- STAIRCASE -->
+  <section class="container sec">
+    <div class="hang head">
+      <p class="hang-label tag">02 / staircase</p>
+      <div class="hang-body">
+        <h2>Sequences step forward.</h2>
+        <p class="note">Each step starts three columns further right. Only for real sequences, so the layout itself says "this comes after that".</p>
+      </div>
+    </div>
+    <div class="g stair">
+      <article class="step"><p class="label">01 · foundations</p><h3>Findable, crawlable, trusted.</h3><p>Everything a search engine needs before content or links have any effect.</p></article>
+      <article class="step"><p class="label">02 · growth</p><h3>Authority that compounds.</h3><p>Topical depth and a publishing rhythm that turn rankings into outcomes.</p></article>
+      <article class="step"><p class="label">03 · domination</p><h3>Recommended, not just listed.</h3><p>From included in results to chosen by search and answer engines.</p></article>
+    </div>
+  </section>
+
+  <hr class="hairline" />
+
+  <!-- SPEC SHEET, documenting the grid itself -->
+  <section class="container sec hang">
+    <div class="hang-label"><p class="tag">03 / spec sheet</p></div>
+    <div class="hang-body">
+      <h2>The parameters.</h2>
+      <p class="note">Key and value rows on the hang split. For anything that reads like a datasheet.</p>
+      <dl class="spec">
+        <div><dt>columns</dt><dd>12 desktop · 8 tablet · 4 phone</dd></div>
+        <div><dt>gutter</dt><dd>24px at every size</dd></div>
+        <div><dt>baseline</dt><dd>8px, spacing and type land on multiples of 8</dd></div>
+        <div><dt>breakpoints</dt><dd>720px and 980px (three sizes, down from six)</dd></div>
+        <div><dt>measure</dt><dd>text never wider than 8 of 12 columns (~65 characters)</dd></div>
+        <div><dt>lineage</dt><dd>Müller-Brockmann's modular grid, Gerstner's divisible columns, Vignelli's discipline of few sizes</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <hr class="hairline" />
+
+  <!-- MENU BOARD -->
+  <section class="container sec">
+    <div class="hang head">
+      <p class="hang-label tag">04 / menu board</p>
+      <div class="hang-body">
+        <h2>The buffet.</h2>
+        <p class="note">Start from the problem, follow the dotted leader to what fixes it. No prices, no pitch. Set like a printed menu.</p>
+      </div>
+    </div>
+    <div class="hang">
+      <p class="hang-label label">pick by symptom</p>
+      <ul class="menu hang-body">
+        {menu.map((m) => (
+          <li>
+            <span class="dish">{m.dish}</span>
+            <span class="leader" aria-hidden="true"></span>
+            <span class="for">{m.for}</span>
+            <p class="desc">{m.desc}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <hr class="hairline" />
+
+  <!-- PANTRY INDEX -->
+  <section class="container sec">
+    <div class="hang head">
+      <p class="hang-label tag">05 / pantry index</p>
+      <div class="hang-body">
+        <h2>The pantry.</h2>
+        <p class="note">The ingredients behind the menu, as a parts catalogue: 2 of 12 columns per cell, six across, coded by Growth OS stage.</p>
+      </div>
+    </div>
+    <div class="pantry">
+      {pantry.map((p) => (
+        <a href={`${base}lab/grid/#pantry`} class="cell">
+          <span class="code">{p.code}</span>
+          <span class="name">{p.name}</span>
+          <span class="shelf">{p.shelf}</span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <hr class="hairline" />
+
+  <!-- FIGURE -->
+  <section class="container sec">
+    <div class="hang head">
+      <p class="hang-label tag">06 / figure</p>
+      <div class="hang-body">
+        <h2>One number, full weight.</h2>
+        <p class="note">An oversized figure across 4 columns beside 8 of text. Only for a real, sourced number.</p>
+      </div>
+    </div>
+    <div class="g">
+      <p class="s-4 figure-num">75%</p>
+      <div class="s-8 fig-text">
+        <p class="label">jazzsports · 2019 - 2023</p>
+        <p>Share of revenue from organic search across a 17-property portfolio generating over $20M a year.</p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="hairline" />
+
+  <!-- PEER MODULES -->
+  <section class="container sec">
+    <div class="hang head">
+      <p class="hang-label tag">07 / peers</p>
+      <div class="hang-body">
+        <h2>Equals stay equal.</h2>
+        <p class="note">Genuine peers sit in a uniform row: 3 × 4 columns here, or 4 × 3, or 2 × 6. Never mixed.</p>
+      </div>
+    </div>
+    <div class="g">
+      <article class="s-4 peer"><p class="label">notes</p><h3>Field notes</h3><p>Writing on SEO, AEO and growth systems.</p></article>
+      <article class="s-4 peer"><p class="label">lab</p><h3>Builds</h3><p>Tools and experiments, including this page.</p></article>
+      <article class="s-4 peer"><p class="label">framework</p><h3>Growth OS</h3><p>The three-stage method behind the work.</p></article>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .sec {
+    padding-top: var(--space-6);
+    padding-bottom: var(--space-6);
+  }
+  h1 {
+    font-size: clamp(2.5rem, 7vw, 5rem);
+    letter-spacing: -0.03em;
+  }
+  .lede {
+    font-size: var(--text-lg);
+    color: var(--ink-soft);
+    margin-top: var(--space-3);
+  }
+  .tag {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--accent);
+    margin: 0;
+    padding-top: 0.6em;
+  }
+  .head {
+    margin-bottom: var(--space-5);
+  }
+  .note {
+    color: var(--ink-muted);
+    margin-top: var(--space-2);
+  }
+  .toggle-grid {
+    margin-top: var(--space-3);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--ink);
+    background: none;
+    border: 1.5px solid var(--ink);
+    border-radius: var(--radius);
+    min-height: 40px;
+    padding: 0 var(--space-2);
+    cursor: pointer;
+  }
+  .toggle-grid[aria-pressed='true'] {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .kbd {
+    opacity: 0.6;
+    margin-left: 0.5em;
+  }
+  .qa > .hang {
+    border-top: 0.5px solid var(--hairline);
+    padding: var(--space-3) 0;
+  }
+  .qa > .hang:last-child {
+    border-bottom: 0.5px solid var(--hairline);
+  }
+  .qa h3 {
+    font-size: var(--text-base);
+  }
+  .qa p {
+    margin: 0;
+  }
+  .step {
+    border-top: 2px solid var(--rule-strong);
+    padding-top: var(--space-2);
+  }
+  .step h3 {
+    font-size: var(--text-lg);
+    margin: var(--space-1) 0;
+  }
+  .step p:last-child {
+    color: var(--ink-muted);
+  }
+  .menu {
+    border-top: 2px solid var(--rule-strong);
+  }
+  .menu li + li {
+    border-top: 0.5px solid var(--hairline);
+  }
+  .cell {
+    text-decoration: none;
+  }
+  .cell:hover {
+    background: var(--paper-dim);
+  }
+  .cell:hover .name {
+    color: var(--accent);
+  }
+  .fig-text {
+    align-self: end;
+    border-top: 2px solid var(--rule-strong);
+    padding-top: var(--space-2);
+  }
+  .fig-text p:last-child {
+    font-size: var(--text-lg);
+    color: var(--ink);
+    margin: var(--space-1) 0 0;
+  }
+  .peer {
+    border-top: 2px solid var(--rule-strong);
+    padding-top: var(--space-2);
+  }
+  .peer h3 {
+    font-size: var(--text-lg);
+    margin: var(--space-1) 0;
+  }
+  .peer p:last-child {
+    color: var(--ink-muted);
+  }
+  @media (min-width: 720px) and (max-width: 979px) {
+    .peer.s-4 { grid-column: span 8; }
+  }
+</style>
+
+<script>
+  const root = document.documentElement;
+  const button = document.querySelector<HTMLButtonElement>('[data-toggle-grid]');
+  const set = (on: boolean) => {
+    root.classList.toggle('show-grid', on);
+    button?.setAttribute('aria-pressed', String(on));
+  };
+  if (new URLSearchParams(location.search).has('grid')) set(true);
+  button?.addEventListener('click', () => set(!root.classList.contains('show-grid')));
+  document.addEventListener('keydown', (e) => {
+    const t = e.target as HTMLElement;
+    if (t.matches('input, textarea, select')) return;
+    if (e.shiftKey && e.key.toLowerCase() === 'g') set(!root.classList.contains('show-grid'));
+  });
+</script>

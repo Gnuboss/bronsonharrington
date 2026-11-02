@@ -11,13 +11,15 @@ const showForm = !path.startsWith(`${base}contact`) && !path.startsWith(`${base}
   {showForm && (
     <>
       <hr class="hairline" />
-      <section class="container say-hello" aria-labelledby="footer-form-title">
-        <div class="intro">
-          <p class="eyebrow">~/say-hello</p>
-          <h2 id="footer-form-title">Get in touch</h2>
-          <p>Something here worth talking about? Leave your name and email and I'll write back.</p>
+      <section class="container sec say-hello" aria-labelledby="footer-form-title">
+        <div class="hang">
+          <p class="hang-label tag">~/say-hello</p>
+          <div class="hang-body">
+            <h2 id="footer-form-title">Get in touch.</h2>
+            <p class="intro">Something here worth talking about? Leave your name and email and I'll write back.</p>
+            <ContactForm variant="compact" location="footer" />
+          </div>
         </div>
-        <ContactForm variant="compact" location="footer" />
       </section>
     </>
   )}
@@ -36,24 +38,14 @@ const showForm = !path.startsWith(`${base}contact`) && !path.startsWith(`${base}
 
 <style>
   .site-footer {
-    margin-top: var(--space-8);
-  }
-  .say-hello {
-    display: grid;
-    grid-template-columns: 1fr 1.4fr;
-    gap: var(--space-5);
-    padding-top: var(--space-6);
-    padding-bottom: var(--space-6);
+    margin-top: 0;
   }
   .say-hello h2 {
     font-size: var(--text-xl);
-    margin: var(--space-1) 0 var(--space-2);
   }
-  .say-hello .intro p:last-child {
+  .say-hello .intro {
     color: var(--ink-muted);
-  }
-  @media (max-width: 860px) {
-    .say-hello { grid-template-columns: 1fr; gap: var(--space-3); }
+    margin: var(--space-2) 0 var(--space-4);
   }
   .inner {
     display: flex;

@@ -2,7 +2,9 @@
 import { personSchema, businessSchema } from '../data/person';
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import PhaseNav from '../components/PhaseNav.astro';
+import PageHero from '../components/PageHero.astro';
+import Section from '../components/Section.astro';
+import { phases } from '../data/framework';
 import { projects } from '../data/projects';
 import { profileUrls } from '../data/socials';
 import { CONTACT } from '../config/site';
@@ -12,6 +14,21 @@ const latestNotes = (await getCollection('notes', ({ data }) => !data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 10); // home page shows the 10 most recent; the rest live on /notes/
 const fmt = (d: Date) => d.toISOString().slice(0, 10);
+
+const testimonials = [
+  {
+    quote: "I genuinely enjoyed the experience. He's incredibly sharp, always positive, and brings a level of strategic thinking that goes well beyond day-to-day execution. Bronson is constantly thinking long-term and building strategies that actually last, not just quick wins.",
+    name: 'Tarsis Tochi', role: 'Performance Marketing Manager', company: 'Disability Law Marketing LLC, Canada',
+  },
+  {
+    quote: "Nothing was impossible for Mr Harrington, merely challenges to overcome. He also was exceptionally well liked which meant that he could get the best out of others where others failed. Never a moment without a smile and a total 'can do' attitude.",
+    name: 'Richard De Waal', role: 'Founder', company: 'Tiburon Media, Africa',
+  },
+  {
+    quote: "Bronson was an outstanding director while at Downtown Ecommerce. He brought great value, creativity, and insights to our organization, and specifically with link building for topical authority. Any team that has Bronson on their staff is a force to reckon with.",
+    name: 'Patrick Tigue', role: 'Founder', company: 'Downtown eCommerce Partners, USA',
+  },
+];
 ---
 <BaseLayout
   title="Bronson Harrington | Growth Architect in Costa Rica"
@@ -33,282 +50,116 @@ const fmt = (d: Date) => d.toISOString().slice(0, 10);
     ]
   })} />
 
-  <section class="hero container">
-    <p class="eyebrow">~/bronson/costa-rica</p>
-    <div class="hero-grid">
-      <div class="hero-rule" aria-hidden="true"></div>
-      <div>
-        <h1>Bronson Harrington</h1>
-        <p class="label subtitle">Growth Architect · SEO / AEO · builder</p>
-        <p class="lede">I've spent 25 years building organic growth systems inside iGaming, fintech and other regulated markets. This is where I write about that work, think out loud about systems and digital sovereignty, and keep the tools I build on the side. <a href={`${base}about-me/`}>More about me →</a></p>
-      </div>
-    </div>
-  </section>
+  <PageHero eyebrow="~/bronson/costa-rica" title="Bronson Harrington" subtitle="Growth Architect · SEO / AEO · builder">
+    <p class="lede">I've spent 25 years building organic growth systems inside iGaming, fintech and other regulated markets. This is where I write about that work, think out loud about systems and digital sovereignty, and keep the tools I build on the side. <a href={`${base}about-me/`}>More about me →</a></p>
+  </PageHero>
 
   <hr class="hairline" />
 
-  <section class="notes container">
-    <div class="section-head">
-      <div>
-        <p class="eyebrow">~/field-notes</p>
-        <h2>Field Notes.</h2>
-      </div>
-      <a href={`${base}notes/`} class="more">all field notes →</a>
-    </div>
-    <ol class="note-list">
+  <!-- Field notes: a dated sequence, so rows with the date in the margin column -->
+  <Section eyebrow="~/field-notes" title="Field Notes." more={{ href: `${base}notes/`, label: 'all field notes' }}>
+    <ol class="rows">
       {latestNotes.map((note) => (
         <li>
-          <a href={`${base}notes/${note.slug}/`}>
-            <span class="note-title">{note.data.title}</span>
-            <time class="label" datetime={fmt(note.data.date)}>{fmt(note.data.date)}</time>
+          <a href={`${base}notes/${note.slug}/`} class="row hang">
+            <time class="hang-label" datetime={fmt(note.data.date)}>{fmt(note.data.date)}</time>
+            <div class="hang-body">
+              <h3>{note.data.title}</h3>
+              <p>{note.data.description}</p>
+            </div>
           </a>
         </li>
       ))}
     </ol>
-  </section>
+  </Section>
 
   <hr class="hairline" />
 
-  <section class="builds container">
-    <div class="section-head">
-      <div>
-        <p class="eyebrow">~/lab</p>
-        <h2>Things I've Built.</h2>
-      </div>
-      <a href={`${base}lab/`} class="more">the lab →</a>
-    </div>
-    <div class="build-grid">
+  <!-- Builds: genuine peers, one uniform row -->
+  <Section eyebrow="~/lab" title="Things I've Built." more={{ href: `${base}lab/`, label: 'the lab' }}>
+    <div class="g">
       {projects.map((p) => (
-        <article class="build-card">
-          <h3>{p.name}</h3>
+        <article class="card s-3">
           <p class="label">{p.stack}</p>
-          <p class="summary">{p.summary}</p>
-          <a href={p.href} class="build-link">{p.linkLabel} →</a>
+          <h3>{p.name}</h3>
+          <p>{p.summary}</p>
+          <a href={p.href} class="more">{p.linkLabel} →</a>
         </article>
       ))}
     </div>
-  </section>
+  </Section>
 
   <hr class="hairline" />
 
-  <section class="framework container">
-    <p class="eyebrow">~/framework</p>
-    <h2>How I Think About Growth.</h2>
-    <p class="lede">Growth OS is the model I've refined over 25 years: organic growth moves through three stages, Foundations, Growth and Domination, each built on the one before it.</p>
-    <PhaseNav />
-    <a href={`${base}framework/`} class="more">read the framework →</a>
-  </section>
-
-  <hr class="hairline" />
-
-  <section class="testimonials container">
-    <p class="eyebrow">~/colleagues</p>
-    <h2>What People I've Worked With Say.</h2>
-    <div class="testimonial-grid">
-      <blockquote class="testimonial">
-        <p>"I genuinely enjoyed the experience. He's incredibly sharp, always positive, and brings a level of strategic thinking that goes well beyond day-to-day execution. Bronson is constantly thinking long-term and building strategies that actually last, not just quick wins."</p>
-        <footer>
-          <span class="name">Tarsis Tochi</span>
-          <span class="label">Performance Marketing Manager</span>
-          <span class="label company">Disability Law Marketing LLC, Canada</span>
-        </footer>
-      </blockquote>
-      <blockquote class="testimonial">
-        <p>"Nothing was impossible for Mr Harrington, merely challenges to overcome. He also was exceptionally well liked which meant that he could get the best out of others where others failed. Never a moment without a smile and a total 'can do' attitude."</p>
-        <footer>
-          <span class="name">Richard De Waal</span>
-          <span class="label">Founder</span>
-          <span class="label company">Tiburon Media, Africa</span>
-        </footer>
-      </blockquote>
-      <blockquote class="testimonial">
-        <p>"Bronson was an outstanding director while at Downtown Ecommerce. He brought great value, creativity, and insights to our organization, and specifically with link building for topical authority. Any team that has Bronson on their staff is a force to reckon with."</p>
-        <footer>
-          <span class="name">Patrick Tigue</span>
-          <span class="label">Founder</span>
-          <span class="label company">Downtown eCommerce Partners, USA</span>
-        </footer>
-      </blockquote>
+  <!-- Growth OS: a real sequence, so the staircase -->
+  <Section
+    eyebrow="~/framework"
+    title="How I Think About Growth."
+    intro="Growth OS is the model I've refined over 25 years: organic growth moves through three stages, each built on the one before it."
+    more={{ href: `${base}framework/`, label: 'read the framework' }}
+  >
+    <div class="g stair">
+      {phases.map((p) => (
+        <a href={`${base}framework/#${p.id}`} class="card step">
+          <p class="label">{p.num} · {p.name.toLowerCase()}</p>
+          <h3>{p.headline}</h3>
+        </a>
+      ))}
     </div>
-  </section>
+  </Section>
 
   <hr class="hairline" />
 
-  <section class="contact container">
-    <h2>Say Hello.</h2>
-    <p>Want to compare notes, talk about a build, or ask about something I've written? <a href={`${base}contact/`}>Get in touch</a>.</p>
-  </section>
+  <!-- Testimonials: peers, natural height (the quotes differ in length) -->
+  <Section eyebrow="~/colleagues" title="What People I've Worked With Say.">
+    <div class="g">
+      {testimonials.map((t) => (
+        <blockquote class="card s-4 quote">
+          <p>"{t.quote}"</p>
+          <footer>
+            <span class="name">{t.name}</span>
+            <span class="label">{t.role}</span>
+            <span class="label">{t.company}</span>
+          </footer>
+        </blockquote>
+      ))}
+    </div>
+  </Section>
 </BaseLayout>
 
 <style>
-  .hero {
-    padding-top: var(--space-6);
-    padding-bottom: var(--space-6);
-  }
-  .hero-grid {
-    display: grid;
-    grid-template-columns: 1px 1fr;
-    gap: var(--space-5);
-    margin-top: var(--space-3);
-  }
-  .hero-rule {
-    background: var(--hairline);
-  }
-  .subtitle {
-    margin: var(--space-2) 0 var(--space-3);
-  }
-  .lede {
-    font-size: var(--text-lg);
-    color: var(--ink-soft);
-    max-width: var(--content-narrow);
-  }
   .lede a {
     color: var(--accent);
   }
-
-  .notes,
-  .builds,
-  .framework,
-  .testimonials {
-    padding-top: var(--space-6);
-    padding-bottom: var(--space-6);
-  }
-  .section-head {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: var(--space-3);
-    margin-bottom: var(--space-4);
-  }
-  .section-head h2 {
-    margin-top: var(--space-1);
-  }
-  .framework h2,
-  .testimonials h2 {
-    margin: var(--space-1) 0 var(--space-3);
-  }
-  .more {
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    color: var(--accent);
-    text-decoration: none;
-    white-space: nowrap;
-  }
-  .framework .more {
-    display: inline-block;
-    margin-top: var(--space-3);
-  }
-
-  /* Field notes: a dated sequence, so a plain linked list (title + date) rather than cards.
-     Whole row is the link target for an easy tap on mobile. */
-  .note-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    border-bottom: 0.5px solid var(--hairline);
-  }
-  .note-list li {
-    border-top: 0.5px solid var(--hairline);
-  }
-  .note-list a {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: var(--space-3);
-    padding: var(--space-2) 0;
+  .step {
     text-decoration: none;
   }
-  .note-title {
-    color: var(--ink);
-    font-size: var(--text-base);
-  }
-  .note-list time {
-    flex-shrink: 0;
-  }
-  .note-list a:hover .note-title {
-    color: var(--accent);
-  }
-
-  /* Builds: genuine peers, so a uniform grid */
-  .build-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-5);
-  }
-  .build-card {
-    border-top: 2px solid var(--rule-strong);
-    padding-top: var(--space-3);
-    display: flex;
-    flex-direction: column;
-  }
-  .build-card h3 {
+  .step h3 {
     font-size: var(--text-lg);
   }
-  .build-card .label {
-    margin: var(--space-1) 0 var(--space-2);
-  }
-  .build-card .summary {
-    font-size: var(--text-sm);
-    color: var(--ink-muted);
-  }
-  .build-link {
-    margin-top: auto;
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
+  .step:hover h3 {
     color: var(--accent);
-    text-decoration: none;
   }
-
-  .testimonial-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--space-5);
-  }
-  .testimonial {
+  .quote {
     margin: 0;
-    padding-top: var(--space-3);
-    border-top: 2px solid var(--rule-strong);
   }
-  .testimonial p {
-    font-size: var(--text-sm);
-    color: var(--ink-soft);
-    font-style: italic;
+  .quote > p {
+    margin: 0;
+    font-size: var(--text-base);
+    color: var(--ink);
+    line-height: 1.5;
   }
-  .testimonial footer {
+  .quote footer {
+    margin-top: var(--space-3);
     display: flex;
     flex-direction: column;
-    margin-top: var(--space-2);
+    gap: 2px;
   }
-  .testimonial .company {
-    color: var(--ink-muted);
-  }
-  .testimonial .name {
-    font-family: var(--font-display);
-    font-weight: 500;
-    font-size: var(--text-sm);
+  .quote .name {
     color: var(--ink);
+    font-weight: 500;
   }
-
-  .contact {
-    padding-top: var(--space-6);
-  }
-  .contact h2 {
-    margin-bottom: var(--space-2);
-  }
-  .contact a {
-    color: var(--accent);
-  }
-
-  @media (max-width: 860px) {
-    .hero-grid { grid-template-columns: 1fr; }
-    .hero-rule { display: none; }
-    .build-grid { grid-template-columns: 1fr; }
-    .testimonial-grid { grid-template-columns: 1fr; }
-  }
-  @media (max-width: 560px) {
-    .note-list a {
-      flex-direction: column;
-      gap: 0.25rem;
-    }
+  @media (min-width: 720px) and (max-width: 979px) {
+    .quote.s-4 { grid-column: span 8; }
   }
 </style>

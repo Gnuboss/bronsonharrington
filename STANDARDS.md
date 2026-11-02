@@ -66,3 +66,32 @@ Every form on the site is `src/components/ContactForm.astro` (variants: `full`, 
 - **Spam:** honeypot, not CAPTCHA.
 - **Measure it:** `form_start`, `field_complete`, `submit_attempt`, `form_error`, `submit_failed`, `form_submit`, each with `form_location`, and a unique thank-you URL per form (`/thanks/?src=`).
 - Works without JavaScript: native required checks, plain POST, same thank-you page.
+
+## Layout
+
+One grid, one spine, a few named layouts. Variety comes from how content spans the columns, never from a new ratio invented for one page. The live specimen is `/lab/grid/` (Shift+G shows the grid on any page that includes the overlay); the CSS is `src/styles/grid.css`, loaded on every page.
+
+**The grid.** 12 columns on desktop, 8 on tablet, 4 on phone, 24px gutter. Spans are written in 12ths (`.s-4`, `.s-6`…) and fold down by rule. Breakpoints are 720px and 980px only; don't add others.
+
+**The baseline.** 8px. Body line height is 24px; spacing tokens are multiples of 8.
+
+**The spine (hang).** Every page hangs its labels in a margin column: 3 of 12 on desktop, 2 of 8 on tablet, stacked above on phone. Eyebrows, dates, keys and questions go in `.hang-label`; titles and text go in `.hang-body` (8 columns, leaving one empty on the right). Text is never wider than that span.
+
+**Building blocks.**
+- `PageHero` opens every page: eyebrow in the margin, title block with the signature vertical rule in the gutter.
+- `Section` is every band after that: eyebrow and title on the hang, optional intro and "more" link, then the content. Sections are separated by `<hr class="hairline" />`.
+
+**Named layouts, chosen by what the content is:**
+
+| Content | Layout | Class |
+|---|---|---|
+| Dated or keyed sequence (notes, roles, steps, Q&A) | Rows on the hang split | `.rows` + `.hang` |
+| Genuine peers (projects, testimonials, disciplines) | Uniform cards, one span for all | `.g` + `.card.s-3/4/6` |
+| A real progression (Foundations → Growth → Domination) | Staircase | `.g.stair` |
+| Parameters, contact details, specs | Spec sheet | `.spec` |
+| Problems leading to solutions | Menu board with dotted leaders | `.menu` |
+| A catalogue of capabilities | Pantry index | `.pantry` |
+| One sourced number | Figure | `.figure-num` beside `.s-8` |
+| Long-form writing | Prose in the content columns | `.hang-body.prose` |
+
+Don't mix spans within a row of peers, don't use the staircase for things that aren't a sequence, and don't put a figure on a number without a source.

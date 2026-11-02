@@ -11,6 +11,8 @@
 // Reframed in Nov 2026 from the original iGaming page: the definition is
 // vertical-agnostic, and iGaming is the proof, not the niche. No sales CTA,
 // in line with the personal-site positioning.
+import PageHero from '../components/PageHero.astro';
+import Section from '../components/Section.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { personSchema, businessSchema, PERSON_ID, PERSON } from '../data/person';
 import { faqs, DOC, PAGE_URL as url, PDF_FILE, PDF_URL } from '../data/growth-architect';
@@ -74,116 +76,89 @@ const graph = {
 >
   <script type="application/ld+json" set:html={JSON.stringify(graph)} />
 
-  <section class="hero container">
-    <p class="eyebrow">~/growth-architect/costa-rica</p>
-    <h1>Growth Architect, Costa Rica</h1>
+  <PageHero eyebrow="~/growth-architect/costa-rica" title="Growth Architect, Costa Rica">
     <p class="lede">A Growth Architect designs the system organic growth runs on: the technical foundation, the authority a site builds, and how it's found across search and AI answer engines. Bronson Harrington does this work from San José, Costa Rica.</p>
-  </section>
+  </PageHero>
 
   <hr class="hairline" />
 
-  <section class="faq container" aria-labelledby="faq-title">
-    <p class="eyebrow">quick answers</p>
-    <h2 id="faq-title">The short version.</h2>
-    <div class="faq-list">
+  <!-- Answers visible, not collapsed: answer engines quote what they can read -->
+  <Section eyebrow="quick answers" title="The short version.">
+    <div class="rows">
       {faqs.map((f) => (
-        <article class="faq-item">
-          <h3>{f.q}</h3>
-          <p>{f.a}</p>
-        </article>
+        <div class="hang">
+          <h3 class="hang-label q">{f.q}</h3>
+          <p class="hang-body">{f.a}</p>
+        </div>
       ))}
     </div>
-    <p class="more">The full model: <a href={`${base}framework/`}>Growth OS</a>. The longer story: <a href={`${base}about-me/`}>about me</a>.</p>
-  </section>
+    <div class="hang see-also">
+      <p class="hang-label tag">see also</p>
+      <p class="hang-body">The full model: <a href={`${base}framework/`}>Growth OS</a>. The longer story: <a href={`${base}about-me/`}>about me</a>.</p>
+    </div>
+  </Section>
 
   <hr class="hairline" />
 
-  <section class="example container" aria-labelledby="example-title">
-    <p class="eyebrow">worked example</p>
-    <h2 id="example-title">White-label iGaming, without a rebuild.</h2>
-    <p class="lede">White-label iGaming platforms show the idea clearly. Their pages are rendered in the browser with JavaScript, so search crawlers and AI agents often see very little, and heavy browsing traffic competes with transactions for the same database.</p>
-    <p>The fix is architectural, not editorial. A server-side pre-rendered layer turns game lobbies and live odds into flat HTML served from edge caches, which crawlers and AI retrieval systems can read instantly. Edge caching and asynchronous event streams take the browsing load off the transaction database. It all deploys through DNS and CDN routing, with no change to the underlying platform or its compliance certificates.</p>
-    <p>The longer write-up is in the field note <a href={`${base}notes/growth-architecture-for-white-label-igaming/`}>Growth architecture for white-label iGaming stacks</a>.</p>
-    <a href={pdf} class="pdf" download>
-      <span class="pdf-title">{DOC.title}</span>
-      <span class="label">PDF · 5 pages · {pdfKb} KB · version {DOC.version} · download →</span>
-    </a>
-  </section>
+  <Section eyebrow="worked example" title="White-label iGaming, without a rebuild.">
+    <p slot="intro" class="lede">White-label iGaming platforms show the idea clearly. Their pages are rendered in the browser with JavaScript, so search crawlers and AI agents often see very little, and heavy browsing traffic competes with transactions for the same database.</p>
+    <div class="hang">
+      <div class="hang-body prose">
+        <p>The fix is architectural, not editorial. A server-side pre-rendered layer turns game lobbies and live odds into flat HTML served from edge caches, which crawlers and AI retrieval systems can read instantly. Edge caching and asynchronous event streams take the browsing load off the transaction database. It all deploys through DNS and CDN routing, with no change to the underlying platform or its compliance certificates.</p>
+        <p>The longer write-up is in the field note <a href={`${base}notes/growth-architecture-for-white-label-igaming/`}>Growth architecture for white-label iGaming stacks</a>.</p>
+        <a href={pdf} class="pdf" download>
+          <span class="label">PDF · 5 pages · {pdfKb} KB · version {DOC.version}</span>
+          <span class="pdf-title">{DOC.title}</span>
+          <span class="more">download →</span>
+        </a>
+      </div>
+    </div>
+  </Section>
 </BaseLayout>
 
 <style>
-  .hero {
-    padding-top: var(--space-6);
-    padding-bottom: var(--space-5);
-  }
-  .hero h1 {
-    margin-top: var(--space-1);
-  }
-  .lede {
-    font-size: var(--text-lg);
-    color: var(--ink-soft);
-    max-width: var(--content-narrow);
-    margin-top: var(--space-2);
-  }
-  .faq,
-  .example {
-    padding-top: var(--space-6);
-    padding-bottom: var(--space-6);
-  }
-  .faq h2,
-  .example h2 {
-    margin-top: var(--space-1);
-  }
-  .faq-list {
-    margin-top: var(--space-5);
-    border-bottom: 0.5px solid var(--hairline);
-  }
-  /* Genuine peer items: one uniform list */
-  .faq-item {
-    border-top: 0.5px solid var(--hairline);
-    padding: var(--space-3) 0;
-    display: grid;
-    grid-template-columns: 1fr 1.6fr;
-    gap: var(--space-4);
-  }
-  .faq-item h3 {
+  .q {
+    font-family: var(--font-display);
     font-size: var(--text-base);
-    font-weight: 500;
+    color: var(--ink);
+    padding-top: 0;
   }
-  .faq-item p {
+  .rows .hang-body {
     margin: 0;
     color: var(--ink-soft);
   }
-  .more {
-    margin-top: var(--space-3);
+  .see-also {
+    margin-top: var(--space-4);
+  }
+  .see-also .hang-body {
+    margin: 0;
     font-family: var(--font-mono);
     font-size: var(--text-sm);
     color: var(--ink-muted);
   }
-  .more a {
+  .see-also a {
     color: var(--accent);
   }
   .pdf {
-    display: inline-flex;
+    display: flex;
     flex-direction: column;
-    gap: 0.25rem;
-    margin-top: var(--space-2);
+    gap: 4px;
+    margin-top: var(--space-4);
     padding: var(--space-3);
     border: 0.5px solid var(--hairline);
     border-top: 2px solid var(--rule-strong);
     text-decoration: none;
-    max-width: var(--content-narrow);
   }
   .pdf-title {
     font-family: var(--font-display);
+    font-size: var(--text-lg);
     font-weight: 500;
     color: var(--ink);
   }
+  .pdf .more {
+    margin-top: var(--space-1);
+  }
   .pdf:hover .pdf-title {
     color: var(--accent);
-  }
-  @media (max-width: 720px) {
-    .faq-item { grid-template-columns: 1fr; gap: var(--space-1); }
-    .hero h1 { font-size: var(--text-2xl); }
   }
 </style>

@@ -1,57 +1,15 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { phases } from '../data/framework';
+import { faqs as gaFaqs } from '../data/growth-architect';
+import PageHero from '../components/PageHero.astro';
+import Section from '../components/Section.astro';
 
 const base = import.meta.env.BASE_URL;
 
-// Each phase covers three peer disciplines (uniform grid), but the phases
-// themselves are a real sequence (numbered flow, stacked in order).
-const phases = [
-  {
-    id: 'foundations',
-    num: '01',
-    name: 'Foundations',
-    headline: 'Where organic growth actually starts.',
-    lede: "Before content, before links, before anything compounds, the foundation has to be right. Foundations covers everything fully within your control: everything a search engine needs to find, crawl, understand and trust a site before new content or a single link has any meaningful effect.",
-    items: [
-      { title: 'Technical health', text: 'Crawl analysis, redirect chains, Core Web Vitals, structured data and platform-specific issues. In regulated verticals that includes white-label template duplication and geo-blocking that quietly suppresses indexation in licensed markets.' },
-      { title: 'Indexation repair', text: 'Crawl budget spent on the pages that matter rather than template junk. Canonicals clarified, redirect chains resolved, robots.txt and XML sitemaps validated.' },
-      { title: 'Content quality review', text: "Existing content checked against quality rater guidelines and E-E-A-T. In regulated markets, compliance language and disclaimers have to satisfy raters and regulators at the same time." },
-    ],
-    why: "You can't compound on a broken base. The most common pattern I see is heavy investment in content and links while the technical foundation actively suppresses the results: rankings that should move don't, and link equity leaks into redirect chains and orphaned URLs.",
-  },
-  {
-    id: 'growth',
-    num: '02',
-    name: 'Growth',
-    headline: 'Where the foundations start paying off.',
-    lede: "A clean technical foundation without content and authority is just a well-organised empty site. Growth is where topical authority gets built, a publishing rhythm gets established, and rankings start moving in ways that translate to real outcomes.",
-    items: [
-      { title: 'Topical authority', text: 'Mapping and building the full semantic territory a site needs to own, with hub-and-spoke clusters that signal genuine depth rather than isolated keyword targeting.' },
-      { title: 'Content velocity', text: 'A cadence that compounds rather than spikes. One well-structured piece a week that builds the cluster beats ten pieces dropped at once followed by silence.' },
-      { title: 'Link acquisition', text: 'Editorial links from sources that carry real authority in your market, and data-driven content that earns citations. No schemes or shortcuts that become a liability at the next algorithm update.' },
-    ],
-    why: "The relationship between Foundations and Growth is foundational: you can't build topical authority on a crawl-broken site. The relationship between Growth and Domination is multiplicative: every new cluster page keeps reinforcing the pages above it long after it's published.",
-  },
-  {
-    id: 'domination',
-    num: '03',
-    name: 'Domination',
-    headline: 'Where organic gains become permanent.',
-    lede: "Ranking is not the same as dominating. Domination is the shift from being included in results to being recommended, across search rankings, answer engines and generative search. It scales what Growth proved and builds the systems that make the gains hold.",
-    items: [
-      { title: 'Scale what works', text: "Doubling down on the content and authority angles that are actually gaining traction, like pushing page-two rankings to page one, where the traffic curve inflects sharply." },
-      { title: 'Compound authority', text: 'A fully interconnected cluster where every supporting page passes authority to the pages that matter, E-E-A-T signals reinforced at scale, and structured data marking up the right entities.' },
-      { title: 'Measurement systems', text: 'Tracking the signals that predict vulnerability, not just rankings and traffic: topical gaps, thin-page ratios and crawl health. When a core update lands, you know within days whether you are exposed.' },
-    ],
-    why: "Organic gains without measurement systems are temporary. Most SEO work stops before this phase, and the gains slowly erode as competitors catch up or an update hits without warning. Domination is what keeps the engine running afterwards.",
-  },
-];
-
 const faqs = [
-  {
-    q: 'What is a Growth Architect?',
-    a: "Someone who looks at how branding, websites, search visibility, content, automation, analytics and business strategy work together, rather than specialising in a single channel. The goal isn't to deliver a list of tactics but to create the conditions for sustainable growth.",
-  },
+  // Same definition as the Growth Architect page, so the term has one meaning everywhere
+  { q: gaFaqs[0].q, a: gaFaqs[0].a },
   {
     q: 'Do you have to start with Foundations?',
     a: "Not always. Plenty of sites already have solid technical health and can move straight into Growth. But it's worth checking first: content and links built on a broken foundation produce a fraction of the results they should, and the problem is rarely visible from the surface.",
@@ -94,223 +52,122 @@ const schema = {
 >
   <script type="application/ld+json" set:html={JSON.stringify(schema)} />
 
-  <section class="hero container">
-    <p class="eyebrow">~/framework</p>
-    <h1>Growth OS</h1>
-    <p class="label subtitle">an organic growth framework · foundations → growth → domination</p>
+  <PageHero eyebrow="~/framework" title="Growth OS" subtitle="an organic growth framework · foundations → growth → domination">
     <p class="lede">Sustainable growth isn't about chasing rankings. It's about building something that compounds: structurally sound, increasingly authoritative, and eventually difficult to compete with directly. Growth OS is the model I've refined over 25 years for doing that, in three stages that each build on the one before.</p>
-  </section>
+  </PageHero>
 
-  <hr class="hairline" />
-
-  <nav class="phase-flow container" aria-label="Framework stages">
-    {phases.map((p, i) => (
-      <>
-        <a href={`#${p.id}`} class="flow-node-link">
-          <span class="flow-node">{p.num}</span>
-          <span class="flow-label">{p.name.toLowerCase()}</span>
-        </a>
-        {i < phases.length - 1 && <span class="flow-line" aria-hidden="true"></span>}
-      </>
-    ))}
+  <!-- Stage index: a real sequence, so a numbered flow across the grid -->
+  <nav class="container flow" aria-label="Framework stages">
+    <ol class="g">
+      {phases.map((p) => (
+        <li class="s-4">
+          <a href={`#${p.id}`}>
+            <span class="num">{p.num}</span>
+            <span class="name">{p.name.toLowerCase()}</span>
+            <span class="arrow" aria-hidden="true">↓</span>
+          </a>
+        </li>
+      ))}
+    </ol>
   </nav>
 
   {phases.map((p) => (
     <>
       <hr class="hairline" />
-      <section class="phase container" id={p.id}>
-        <p class="eyebrow">{p.num} / {p.name.toLowerCase()}</p>
-        <h2>{p.name}: {p.headline}</h2>
-        <p class="lede">{p.lede}</p>
-        <div class="service-list">
+      <Section eyebrow={`${p.num} / ${p.name.toLowerCase()}`} title={`${p.name}: ${p.headline}`} id={p.id}>
+        <p slot="intro" class="lede">{p.lede}</p>
+        <!-- The three disciplines in a stage are peers: one uniform row -->
+        <div class="g">
           {p.items.map((it) => (
-            <article class="service-item">
+            <article class="card s-4">
               <h3>{it.title}</h3>
               <p>{it.text}</p>
             </article>
           ))}
         </div>
-        <p class="why"><span class="label">why it matters</span>{p.why}</p>
-      </section>
+        <div class="hang why">
+          <p class="hang-label tag">why it matters</p>
+          <p class="hang-body">{p.why}</p>
+        </div>
+      </Section>
     </>
   ))}
 
   <hr class="hairline" />
 
-  <section class="faq container">
-    <p class="eyebrow">~/faq</p>
-    <h2>Questions About the Framework.</h2>
-    <div class="faq-list">
+  <Section eyebrow="~/faq" title="Questions About the Framework.">
+    <div class="rows">
       {faqs.map((f) => (
-        <details class="faq-item">
-          <summary>{f.q}</summary>
-          <p>{f.a}</p>
-        </details>
+        <div class="hang">
+          <h3 class="hang-label q">{f.q}</h3>
+          <p class="hang-body">{f.a}</p>
+        </div>
       ))}
     </div>
-  </section>
+  </Section>
 
   <hr class="hairline" />
 
-  <section class="closing container">
-    <h2>Keep Reading.</h2>
-    <p>I write about how these ideas play out in practice in my <a href={`${base}notes/`}>field notes</a>. If you want to argue with any of it, <a href={`${base}contact/`}>I'd like to hear from you</a>.</p>
-  </section>
+  <Section eyebrow="~/next" title="Keep Reading." tight>
+    <p slot="intro" class="intro">I write about how these ideas play out in practice in my <a href={`${base}notes/`}>field notes</a>, and the definition behind all of it is on the <a href={`${base}growth-architect-costa-rica/`}>Growth Architect, Costa Rica</a> page. If you want to argue with any of it, <a href={`${base}contact/`}>I'd like to hear from you</a>.</p>
+  </Section>
 </BaseLayout>
 
 <style>
-  .hero {
-    padding-top: var(--space-6);
-    padding-bottom: var(--space-5);
-  }
-  .subtitle {
-    margin: var(--space-2) 0 var(--space-3);
-  }
-  .lede {
-    font-size: var(--text-lg);
-    color: var(--ink-soft);
-    max-width: var(--content-narrow);
-  }
-
-  /* Real sequence, so a connected flow rather than peer cards */
-  .phase-flow {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-    padding-top: var(--space-4);
-    padding-bottom: var(--space-4);
-  }
-  .flow-node-link {
-    display: flex;
-    align-items: center;
-    gap: var(--space-1);
-    text-decoration: none;
-    flex-shrink: 0;
-  }
-  .flow-node {
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    color: var(--ink-faint);
-    border: 0.5px solid var(--hairline);
-    border-radius: 50%;
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .flow-label {
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    color: var(--ink);
-  }
-  .flow-node-link:hover .flow-node {
-    border-color: var(--accent);
-    color: var(--accent);
-  }
-  .flow-node-link:hover .flow-label {
-    color: var(--accent);
-  }
-  .flow-line {
-    height: 0.5px;
-    background: var(--hairline);
-    flex: 1;
-  }
-
-  .phase {
-    padding-top: var(--space-6);
-    padding-bottom: var(--space-6);
-    scroll-margin-top: var(--space-3);
-  }
-  .phase h2 {
-    margin: var(--space-1) 0 var(--space-3);
-  }
-  .phase .lede {
-    margin-bottom: var(--space-5);
-  }
-  .service-list {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--space-5);
-  }
-  .service-item {
-    border-top: 2px solid var(--rule-strong);
+  .flow {
     padding-top: var(--space-3);
+    padding-bottom: var(--space-3);
+    border-top: 0.5px solid var(--hairline);
   }
-  .service-item h3 {
-    font-size: var(--text-lg);
-    margin-bottom: var(--space-2);
+  .flow ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    row-gap: 0;
   }
-  .service-item p {
+  .flow a {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-1);
+    padding: var(--space-1) 0;
+    font-family: var(--font-mono);
     font-size: var(--text-sm);
-    color: var(--ink-muted);
+    text-decoration: none;
+    border-top: 2px solid var(--rule-strong);
+  }
+  .flow .num { color: var(--ink-faint); }
+  .flow .name { color: var(--ink); }
+  .flow .arrow { margin-left: auto; color: var(--ink-faint); }
+  .flow a:hover .name,
+  .flow a:hover .arrow { color: var(--accent); }
+  @media (max-width: 719px) {
+    .flow ol { row-gap: var(--space-1); }
+  }
+  @media (min-width: 720px) and (max-width: 979px) {
+    .flow li.s-4 { grid-column: span 8; }
+  }
+  @media (min-width: 720px) and (max-width: 979px) {
+    .card.s-4 { grid-column: span 8; }
   }
   .why {
     margin-top: var(--space-5);
-    padding-left: var(--space-3);
-    border-left: 2px solid var(--highlight);
-    max-width: var(--content-narrow);
   }
-  .why .label {
-    display: block;
-    margin-bottom: var(--space-1);
+  .why .hang-body {
+    margin: 0;
+    color: var(--ink-soft);
   }
-
-  .faq {
-    padding-top: var(--space-6);
-    padding-bottom: var(--space-6);
-  }
-  .faq h2 {
-    margin: var(--space-1) 0 var(--space-4);
-  }
-  .faq-item {
-    border-top: 0.5px solid var(--hairline);
-    padding: var(--space-3) 0;
-  }
-  .faq-item:last-child {
-    border-bottom: 0.5px solid var(--hairline);
-  }
-  .faq-item summary {
+  .q {
     font-family: var(--font-display);
-    font-weight: 500;
+    font-size: var(--text-base);
     color: var(--ink);
-    cursor: pointer;
-    list-style: none;
+    padding-top: 0;
   }
-  .faq-item summary::-webkit-details-marker {
-    display: none;
+  .rows .hang-body {
+    margin: 0;
+    color: var(--ink-soft);
   }
-  .faq-item summary::before {
-    content: '+';
-    display: inline-block;
-    width: 1em;
+  .intro a,
+  .rows a {
     color: var(--accent);
-    font-family: var(--font-mono);
-  }
-  .faq-item[open] summary::before {
-    content: '\2212';
-  }
-  .faq-item p {
-    font-size: var(--text-sm);
-    color: var(--ink-muted);
-    margin: var(--space-2) 0 0;
-    padding-left: 1em;
-  }
-
-  .closing {
-    padding-top: var(--space-6);
-  }
-  .closing h2 {
-    margin-bottom: var(--space-2);
-  }
-  .closing a {
-    color: var(--accent);
-  }
-
-  @media (max-width: 860px) {
-    .service-list { grid-template-columns: 1fr; }
-  }
-  @media (max-width: 560px) {
-    .flow-label { display: none; }
   }
 </style>

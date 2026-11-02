@@ -2,6 +2,8 @@
 // Thank-you page for every contact form. Each form lands here with its own
 // ?src= (footer, contact), so GA4 can count conversions per form from the
 // page_view alone. Not indexed and not in the sitemap.
+import PageHero from '../components/PageHero.astro';
+import Section from '../components/Section.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { CONTACT } from '../config/site';
 import { RESPONSE_PROMISE } from '../data/contact';
@@ -14,60 +16,38 @@ const base = import.meta.env.BASE_URL;
 >
   <meta slot="head" name="robots" content="noindex, follow" />
 
-  <section class="container thanks">
-    <p class="eyebrow">~/message-received</p>
-    <h1>Got it. Thanks for writing.</h1>
+  <PageHero eyebrow="~/message-received" title="Got it. Thanks for writing.">
     <p class="lede">Your message is in my inbox. I'll reply to the email address you gave.</p>
+  </PageHero>
 
-    <h2>What happens next</h2>
-    <ol>
-      <li>I read it, usually the same day.</li>
-      <li>I reply by email. {RESPONSE_PROMISE.split('·')[1]?.trim()}.</li>
-      <li>If you don't hear back in a week, check your spam folder, then email me directly.</li>
+  <hr class="hairline" />
+
+  <Section eyebrow="~/next" title="What happens next.">
+    <ol class="rows">
+      <li class="hang"><span class="hang-label">01</span><p class="hang-body">I read it, usually the same day.</p></li>
+      <li class="hang"><span class="hang-label">02</span><p class="hang-body">I reply by email. {RESPONSE_PROMISE.split('·')[1]?.trim()}.</p></li>
+      <li class="hang"><span class="hang-label">03</span><p class="hang-body">If you don't hear back in a week, check your spam folder, then email me directly.</p></li>
     </ol>
-
-    <p class="direct">
-      Need me sooner? Email <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
-      or call <a href={CONTACT.phoneHref}>{CONTACT.phoneDisplay}</a>.
-    </p>
-
-    <p><a href={`${base}notes/`} class="back">Read the field notes while you wait →</a></p>
-  </section>
+    <div class="hang direct">
+      <p class="hang-label tag">sooner?</p>
+      <p class="hang-body">Email <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a> or call <a href={CONTACT.phoneHref}>{CONTACT.phoneDisplay}</a>. Or <a href={`${base}notes/`}>read the field notes</a> while you wait.</p>
+    </div>
+  </Section>
 </BaseLayout>
 
 <style>
-  .thanks {
-    padding-top: var(--space-6);
-    max-width: var(--content-width);
-  }
-  h1 {
-    margin: var(--space-1) 0 var(--space-2);
-  }
-  .lede {
-    font-size: var(--text-lg);
-  }
-  h2 {
-    font-size: var(--text-xl);
-    margin: var(--space-5) 0 var(--space-2);
-  }
-  ol {
-    margin: 0 0 var(--space-4);
-    padding-left: 1.25rem;
-    max-width: 65ch;
-  }
-  li {
-    margin-bottom: var(--space-1);
+  .rows .hang-body {
+    margin: 0;
+    color: var(--ink);
   }
   .direct {
-    padding-top: var(--space-3);
-    border-top: 0.5px solid var(--hairline);
+    margin-top: var(--space-4);
   }
-  .back {
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
+  .direct .hang-body {
+    margin: 0;
+    color: var(--ink-muted);
+  }
+  .direct a {
     color: var(--accent);
-  }
-  @media (max-width: 720px) {
-    h1 { font-size: var(--text-2xl); }
   }
 </style>

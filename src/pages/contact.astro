@@ -1,4 +1,7 @@
 ---
+import PageHero from '../components/PageHero.astro';
+import Section from '../components/Section.astro';
+import { CONTACT } from '../config/site';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { socialGroups } from '../data/socials';
 import ContactForm from '../components/ContactForm.astro';
@@ -17,43 +20,48 @@ const base = import.meta.env.BASE_URL;
     "about": { "@id": "https://bronson.co.za/#/schema/person" }
   })} />
 
-  <section class="hero container">
-    <p class="eyebrow">~/contact</p>
-    <h1>Contact</h1>
+  <PageHero eyebrow="~/contact" title="Contact">
     <p class="lede">Want to compare notes, talk about a build, or follow up on something I've written? Pick a topic, leave your email, and I'll write back. Or email me directly.</p>
-  </section>
+  </PageHero>
 
   <hr class="hairline" />
 
-  <section class="form-section container">
-    <h2>Write to me</h2>
-    <ContactForm variant="full" location="contact" />
-  </section>
-
-  <section class="info-strip container">
-    <div class="info-block">
-      <p class="label">email</p>
-      <a href="mailto:im@bronson.co.za" class="info-value">im@bronson.co.za</a>
+  <Section eyebrow="~/write" title="Write to me.">
+    <div class="hang">
+      <div class="hang-body">
+        <ContactForm variant="full" location="contact" />
+      </div>
     </div>
-    <div class="info-block">
-      <p class="label">location</p>
-      <p class="info-value">San José, Costa Rica</p>
-    </div>
-  </section>
+  </Section>
 
-  <section class="elsewhere container">
-    <p class="eyebrow">~/elsewhere</p>
-    <h2>Find Me Elsewhere.</h2>
-    <div class="social-grid">
+  <hr class="hairline" />
+
+  <!-- Direct details read like a datasheet -->
+  <Section eyebrow="~/direct" title="Direct." tight>
+    <div class="hang">
+      <dl class="spec hang-body">
+        <div><dt>email</dt><dd><a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a></dd></div>
+        <div><dt>phone</dt><dd><a href={CONTACT.phoneHref}>{CONTACT.phoneDisplay}</a></dd></div>
+        <div><dt>based in</dt><dd>San José, Costa Rica</dd></div>
+        <div><dt>works</dt><dd>Remotely, worldwide</dd></div>
+      </dl>
+    </div>
+  </Section>
+
+  <hr class="hairline" />
+
+  <!-- Three genuine peer groups: one uniform row -->
+  <Section eyebrow="~/elsewhere" title="Find Me Elsewhere.">
+    <div class="g">
       {socialGroups.map((g) => (
-        <div class="social-group">
+        <div class="s-4 group">
           <h3 class="label">{g.label}</h3>
           <ul>
             {g.links.map((l) => (
               <li>
                 <a href={l.href} rel={l.profile ? 'me noopener' : 'noopener'}>
                   <span class="s-name">{l.name}</span>
-                  <span class="label s-handle">{l.handle}</span>
+                  <span class="label">{l.handle}</span>
                 </a>
               </li>
             ))}
@@ -61,112 +69,52 @@ const base = import.meta.env.BASE_URL;
         </div>
       ))}
     </div>
-  </section>
-
+  </Section>
 </BaseLayout>
 
 <style>
-  .hero {
-    padding-top: var(--space-6);
-    padding-bottom: var(--space-5);
+  /* The spec sheet sits inside the content columns here, so its own rows
+     drop the hang split and run key-over-value on narrow widths */
+  .spec.hang-body > div {
+    grid-template-columns: 8rem 1fr;
   }
-  .hero .lede {
-    font-size: var(--text-lg);
-    color: var(--ink-soft);
-    max-width: var(--content-narrow);
-    margin-top: var(--space-2);
+  .spec.hang-body dt,
+  .spec.hang-body dd {
+    grid-column: auto;
   }
-  .form-section {
-    padding-top: var(--space-6);
-    padding-bottom: var(--space-6);
-  }
-  .form-section h2 {
-    margin-bottom: var(--space-3);
-  }
-  .info-strip {
-    padding-top: var(--space-6);
-    display: flex;
-    border-top: 0.5px solid var(--hairline);
-    border-bottom: 0.5px solid var(--hairline);
-  }
-  .info-block {
-    flex: 1;
-    padding: var(--space-3) var(--space-4) var(--space-3) 0;
-    border-right: 0.5px solid var(--hairline);
-  }
-  .info-block:last-child {
-    border-right: none;
-    padding-right: 0;
-  }
-  .info-block + .info-block {
-    padding-left: var(--space-4);
-  }
-  .info-value {
-    display: block;
-    font-size: var(--text-base);
+  .spec a {
     color: var(--ink);
-    text-decoration: none;
-    margin-top: var(--space-1);
   }
-  a.info-value:hover {
+  .spec a:hover {
     color: var(--accent);
   }
-  .elsewhere {
-    padding-top: var(--space-6);
-  }
-  .elsewhere h2 {
-    margin: var(--space-1) 0 var(--space-4);
-  }
-  /* Three genuine peer groups: uniform columns */
-  .social-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--space-5);
-  }
-  .social-group h3 {
+  .group h3 {
     font-weight: 400;
     margin-bottom: var(--space-1);
   }
-  .social-group ul {
+  .group ul {
     list-style: none;
     margin: 0;
     padding: 0;
+    border-top: 2px solid var(--rule-strong);
+  }
+  .group li {
     border-bottom: 0.5px solid var(--hairline);
   }
-  .social-group li {
-    border-top: 0.5px solid var(--hairline);
-  }
-  .social-group a {
+  .group a {
     display: flex;
     flex-direction: column;
-    gap: 0.15rem;
+    gap: 2px;
     padding: var(--space-2) 0;
     text-decoration: none;
   }
   .s-name {
     color: var(--ink);
   }
-  .social-group a:hover .s-name {
+  .group a:hover .s-name {
     color: var(--accent);
   }
-  @media (max-width: 860px) {
-    .social-grid { grid-template-columns: 1fr; gap: var(--space-4); }
-  }
-  @media (max-width: 720px) {
-    .info-strip {
-      flex-direction: column;
-    }
-    .info-block {
-      border-right: none;
-      border-bottom: 0.5px solid var(--hairline);
-      padding: var(--space-3) 0;
-    }
-    .info-block:last-child {
-      border-bottom: none;
-      padding-bottom: 0;
-    }
-    .info-block + .info-block {
-      padding-left: 0;
-    }
+  @media (min-width: 720px) and (max-width: 979px) {
+    .group.s-4 { grid-column: span 8; }
   }
 </style>

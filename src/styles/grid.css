@@ -1,0 +1,431 @@
+/* ============================================================
+   GRID SYSTEM AND LAYOUT LANGUAGE (site-wide, imported by BaseLayout)
+   Specimen with every layout: /lab/grid/  ·  Rules: STANDARDS.md, Layout
+
+   A modular column grid in the Swiss tradition (Müller-Brockmann,
+   Grid Systems in Graphic Design): one set of columns, one gutter, one
+   baseline, and every layout on the site is a named arrangement of
+   spans on it. Variation comes from how content spans the grid, never
+   from new ad-hoc ratios.
+
+   Columns:  12 on desktop (divides into 2, 3, 4 and 6: halves, thirds,
+             quarters, sixths, the same reason Gerstner and the Swiss
+             designers favoured highly divisible grids)
+             8 on tablet, 4 on phone. Spans are written for 12 and fold
+             down by rule, so a page is designed once.
+   Gutter:   24px (--space-3), the same at every size.
+   Baseline: 8px. Type and spacing land on multiples of 8.
+   Breakpoints: three, replacing the six in use today.
+     phone   < 720px    4 columns
+     tablet  720-979px  8 columns
+     desktop >= 980px   12 columns
+   ============================================================ */
+
+:root {
+  --cols: 4;
+  --gutter: var(--space-3);
+  --baseline: 8px;
+}
+@media (min-width: 720px) {
+  :root { --cols: 8; }
+}
+@media (min-width: 980px) {
+  :root { --cols: 12; }
+}
+
+.g,
+.hang {
+  display: grid;
+  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+  column-gap: var(--gutter);
+  row-gap: calc(var(--baseline) * 4);
+}
+
+/* ---- Spans, written in 12ths. On tablet a span becomes its share of 8,
+        rounded to the nearest sensible value; on phone everything is full
+        width unless marked to keep a share (.p-half). ---- */
+.g > * { grid-column: 1 / -1; }
+
+@media (min-width: 980px) {
+  .s-2  { grid-column: span 2; }
+  .s-3  { grid-column: span 3; }
+  .s-4  { grid-column: span 4; }
+  .s-5  { grid-column: span 5; }
+  .s-6  { grid-column: span 6; }
+  .s-7  { grid-column: span 7; }
+  .s-8  { grid-column: span 8; }
+  .s-9  { grid-column: span 9; }
+  .s-12 { grid-column: span 12; }
+  /* Start positions: for staircases and deliberate offsets */
+  .at-2  { grid-column-start: 2; }
+  .at-4  { grid-column-start: 4; }
+  .at-5  { grid-column-start: 5; }
+  .at-7  { grid-column-start: 7; }
+  .at-10 { grid-column-start: 10; }
+}
+@media (min-width: 720px) and (max-width: 979px) {
+  .s-2  { grid-column: span 2; }
+  .s-3  { grid-column: span 4; }
+  .s-4  { grid-column: span 4; }
+  .s-5  { grid-column: span 3; }
+  .s-6  { grid-column: span 4; }
+  .s-7  { grid-column: span 5; }
+  .s-8  { grid-column: span 5; }
+  .s-9  { grid-column: span 6; }
+  .s-12 { grid-column: span 8; }
+}
+@media (max-width: 719px) {
+  .p-half { grid-column: span 2; }
+}
+
+/* ============================================================
+   NAMED LAYOUTS. Each one has a job; pick by what the content is.
+   ============================================================ */
+
+/* 1. HANG: label in a margin column (3 of 12), content in the rest (9).
+      The classic Swiss move: headings and labels hang in the margin so
+      the text column stays clean. For section heads, Q&A, specs, timelines. */
+.hang > .hang-label { grid-column: 1 / -1; }
+.hang > .hang-body  { grid-column: 1 / -1; }
+@media (min-width: 720px) {
+  .hang > .hang-label { grid-column: 1 / span 2; }
+  .hang > .hang-body  { grid-column: 3 / -1; }
+}
+@media (min-width: 980px) {
+  .hang > .hang-label { grid-column: 1 / span 3; }
+  .hang > .hang-body  { grid-column: 4 / span 8; } /* leaves a 1-column right margin */
+}
+
+/* 2. STAIRCASE: each step starts further right. For real sequences only
+      (Foundations, Growth, Domination), so the layout itself reads as
+      progress. Collapses to a plain stack on phone. */
+@media (min-width: 980px) {
+  .stair > :nth-child(1) { grid-column: 1 / span 6; }
+  .stair > :nth-child(2) { grid-column: 4 / span 6; }
+  .stair > :nth-child(3) { grid-column: 7 / span 6; }
+}
+@media (min-width: 720px) and (max-width: 979px) {
+  .stair > :nth-child(1) { grid-column: 1 / span 6; }
+  .stair > :nth-child(2) { grid-column: 2 / span 6; }
+  .stair > :nth-child(3) { grid-column: 3 / span 6; }
+}
+
+/* 3. SPEC SHEET: key/value rows on the hang split, mono keys. Technical
+      data reads like a datasheet: stack, dates, parameters, deliverables. */
+.spec {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 2px solid var(--rule-strong);
+}
+.spec > div {
+  display: grid;
+  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+  column-gap: var(--gutter);
+  padding: calc(var(--baseline) * 1.5) 0;
+  border-bottom: 0.5px solid var(--hairline);
+}
+.spec dt { grid-column: 1 / -1; font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-faint); }
+.spec dd { grid-column: 1 / -1; margin: 0; color: var(--ink); }
+@media (min-width: 720px) {
+  .spec dt { grid-column: 1 / span 2; padding-top: 0.2em; }
+  .spec dd { grid-column: 3 / -1; }
+}
+@media (min-width: 980px) {
+  .spec dt { grid-column: 1 / span 3; }
+  .spec dd { grid-column: 4 / span 8; }
+}
+
+/* 4. MENU BOARD (the buffet): items with dotted leaders running to the
+      "who it's for" column, set like a typographic menu. Scannable by
+      problem, no prices, no pitch. */
+.menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.menu li {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-1);
+  padding: calc(var(--baseline) * 1.5) 0;
+}
+.menu .dish { color: var(--ink); font-weight: 500; }
+.menu .leader {
+  flex: 1;
+  min-width: var(--space-3);
+  border-bottom: 1.5px dotted var(--field-border);
+  transform: translateY(-0.3em);
+}
+.menu .for { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-muted); white-space: nowrap; }
+.menu .desc { flex-basis: 100%; margin: 0; font-size: var(--text-sm); color: var(--ink-muted); }
+.menu li { flex-wrap: wrap; }
+
+/* 5. PANTRY INDEX: dense modular cells, 2 of 12 each (6 across), with
+      a code and a shelf label, like a periodic table or a parts catalogue.
+      The ingredients behind the menu. */
+.pantry {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+  border-top: 0.5px solid var(--hairline);
+  border-left: 0.5px solid var(--hairline);
+}
+@media (min-width: 720px) { .pantry { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (min-width: 980px) { .pantry { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+.pantry > * {
+  border-right: 0.5px solid var(--hairline);
+  border-bottom: 0.5px solid var(--hairline);
+  padding: var(--space-2);
+  min-height: calc(var(--baseline) * 16);
+  display: flex;
+  flex-direction: column;
+  gap: var(--baseline);
+}
+.pantry .code { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--accent); }
+.pantry .name { color: var(--ink); font-weight: 500; line-height: 1.25; }
+.pantry .shelf { margin-top: auto; font-family: var(--font-mono); font-size: 0.6875rem; color: var(--ink-faint); }
+
+/* 6. FIGURE: an oversized number spanning 4 columns beside 8 of text.
+      Only for a real, sourced figure, never decoration. */
+.figure-num {
+  font-family: var(--font-display);
+  font-size: clamp(3.5rem, 9vw, 7rem);
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+}
+
+/* ============================================================
+   GRID OVERLAY: Shift+G (or ?grid on the URL) shows the columns and the
+   8px baseline. A working tool for checking alignment, in keeping with
+   the site's technical roots. Hidden, inert and aria-hidden otherwise.
+   ============================================================ */
+.grid-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  pointer-events: none;
+  display: none;
+}
+html.show-grid .grid-overlay { display: block; }
+.grid-overlay .container,
+.grid-overlay .g { height: 100%; }
+.grid-overlay .g > span {
+  grid-column: span 1;
+  background: rgba(var(--accent-rgb), 0.07);
+  border-left: 0.5px solid rgba(var(--accent-rgb), 0.25);
+  border-right: 0.5px solid rgba(var(--accent-rgb), 0.25);
+}
+@media (max-width: 719px) { .grid-overlay .g > span:nth-child(n + 5) { display: none; } }
+@media (min-width: 720px) and (max-width: 979px) { .grid-overlay .g > span:nth-child(n + 9) { display: none; } }
+.grid-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(rgba(var(--accent-rgb), 0.12) 1px, transparent 1px);
+  background-size: 100% var(--baseline);
+}
+
+/* Phone: no room for a leader line, so the "for" label drops under the dish */
+@media (max-width: 719px) {
+  .menu .leader { display: none; }
+  .menu .for { flex-basis: 100%; order: 3; }
+  .menu .desc { order: 2; }
+}
+
+/* ============================================================
+   PAGE RHYTHM: shared by every page so sections breathe the same way
+   ============================================================ */
+
+/* A section: one band of the page between hairlines */
+.sec {
+  padding-top: var(--space-6);
+  padding-bottom: var(--space-6);
+}
+.sec-tight {
+  padding-top: var(--space-5);
+  padding-bottom: var(--space-5);
+}
+
+/* Section head on the hang: eyebrow in the margin column, title and intro
+   in the content columns, optional "more" link under the intro */
+.sec-head {
+  margin-bottom: var(--space-5);
+}
+.sec-head h2 {
+  margin: 0;
+}
+.sec-head .intro {
+  margin: var(--space-2) 0 0;
+  color: var(--ink-muted);
+}
+.tag {
+  margin: 0;
+  padding-top: 0.55em; /* optically aligns with the cap height of the h2 beside it */
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--accent);
+  letter-spacing: 0.02em;
+}
+.more {
+  display: inline-block;
+  margin-top: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--accent);
+  text-decoration: none;
+}
+.more:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Lede: the one larger paragraph under a page or section title */
+.lede {
+  font-size: var(--text-lg);
+  line-height: 1.5;
+  color: var(--ink-soft);
+  margin: var(--space-3) 0 0;
+}
+
+/* ROWS: a list where each row sits on the hang split (date, key or label
+   in the margin column, content beside it), divided by hairlines.
+   Used for notes, timelines, Q&A. */
+.rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 2px solid var(--rule-strong);
+}
+.rows > * {
+  border-bottom: 0.5px solid var(--hairline);
+  padding: var(--space-3) 0;
+  row-gap: var(--space-1);
+}
+.rows .hang-label {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--ink-faint);
+  padding-top: 0.3em;
+}
+.rows h3 {
+  font-size: var(--text-lg);
+  margin: 0;
+}
+.rows h3 a {
+  text-decoration: none;
+}
+.rows h3 a:hover {
+  color: var(--accent);
+}
+.rows p {
+  margin: var(--space-1) 0 0;
+  color: var(--ink-muted);
+}
+/* A row that is one big link (tap target is the whole row) */
+.rows a.row {
+  text-decoration: none;
+}
+.rows a.row:hover h3 {
+  color: var(--accent);
+}
+
+/* CARD: a peer item. Heavy 2px rule on top, natural height, no box. */
+.card {
+  border-top: 2px solid var(--rule-strong);
+  padding-top: var(--space-2);
+  display: flex;
+  flex-direction: column;
+}
+.card h3 {
+  font-size: var(--text-lg);
+  margin: var(--space-1) 0 0;
+}
+.card p {
+  color: var(--ink-muted);
+  margin: var(--space-1) 0 0;
+}
+.card .more {
+  margin-top: auto;
+  padding-top: var(--space-2);
+}
+
+/* PROSE: long-form text in the content columns. Measure capped at the
+   8-column span, so lines stay around 65 characters. */
+.prose > * {
+  max-width: 65ch;
+}
+.prose > :first-child {
+  margin-top: 0;
+}
+.prose h2 {
+  font-size: var(--text-xl);
+  margin: var(--space-5) 0 var(--space-2);
+}
+.prose h3 {
+  font-size: var(--text-lg);
+  margin: var(--space-4) 0 var(--space-1);
+}
+.prose ul,
+.prose ol {
+  padding-left: 1.25rem;
+  margin: 0 0 var(--space-3);
+}
+.prose li {
+  margin-bottom: var(--space-1);
+}
+.prose a {
+  color: var(--accent);
+}
+.prose blockquote {
+  margin: var(--space-4) 0;
+  padding-left: var(--space-3);
+  border-left: 2px solid var(--highlight);
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  line-height: 1.4;
+  color: var(--ink);
+}
+.prose code {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  background: var(--paper-dim);
+  padding: 0.1em 0.35em;
+  border-radius: var(--radius);
+}
+
+/* PAGE HERO: the signature vertical rule runs down beside the title block */
+.hero {
+  padding-top: var(--space-6);
+  padding-bottom: var(--space-5);
+}
+.hero h1 {
+  font-size: clamp(2.5rem, 6vw, var(--text-3xl));
+  letter-spacing: -0.02em;
+}
+.hero .subtitle {
+  margin: var(--space-2) 0 0;
+}
+@media (min-width: 720px) {
+  .hero .hang-body { position: relative; }
+  /* Sits in the gutter between the margin column and the title */
+  .hero .hang-body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: calc(-0.5 * var(--gutter));
+    border-left: 0.5px solid var(--hairline);
+  }
+}
+
+/* Phone: the margin column stacks above the content, so the label sits
+   close to what it labels, and section spacing steps down one size */
+@media (max-width: 719px) {
+  .hang { row-gap: var(--space-1); }
+  .sec, .hero { padding-top: var(--space-5); padding-bottom: var(--space-5); }
+  .sec-tight { padding-top: var(--space-4); padding-bottom: var(--space-4); }
+  .sec-head { margin-bottom: var(--space-4); }
+  .tag { padding-top: 0; }
+}

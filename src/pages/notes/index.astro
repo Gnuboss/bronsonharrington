@@ -1,5 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
+import PageHero from '../../components/PageHero.astro';
+import Section from '../../components/Section.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
 const base = import.meta.env.BASE_URL;
@@ -28,83 +30,38 @@ const fmt = (d: Date) => d.toISOString().slice(0, 10);
     }))
   })} />
 
-  <section class="container intro">
-    <p class="eyebrow">~/field-notes</p>
-    <h1>Field Notes</h1>
+  <PageHero eyebrow="~/field-notes" title="Field Notes">
     <p class="lede">Writing on SEO and AEO, growth systems, digital sovereignty, and the things I build.</p>
-  </section>
+  </PageHero>
 
   <hr class="hairline" />
 
-  <section class="container list">
-    <h2 class="visually-hidden">All field notes</h2>
+  <!-- A dated sequence: rows with the date in the margin column -->
+  <Section eyebrow="~/all" title="All field notes" hiddenTitle>
     {notes.length === 0 ? (
       <p class="empty">Nothing published yet.</p>
     ) : (
-      <ol class="note-list">
+      <ol class="rows">
         {notes.map((note) => (
           <li>
-            <time class="label" datetime={fmt(note.data.date)}>{fmt(note.data.date)}</time>
-            <div>
-              <h3><a href={`${base}notes/${note.slug}/`}>{note.data.title}</a></h3>
-              <p>{note.data.description}</p>
-            </div>
+            <a href={`${base}notes/${note.slug}/`} class="row hang">
+              <time class="hang-label" datetime={fmt(note.data.date)}>{fmt(note.data.date)}</time>
+              <div class="hang-body">
+                <h3>{note.data.title}</h3>
+                <p>{note.data.description}</p>
+                {note.data.tags.length > 0 && <p class="label tags">{note.data.tags.join(' / ')}</p>}
+              </div>
+            </a>
           </li>
         ))}
       </ol>
     )}
-  </section>
+  </Section>
 </BaseLayout>
 
 <style>
-  .intro {
-    padding-top: var(--space-6);
-    padding-bottom: var(--space-5);
-  }
-  .intro h1 {
-    margin: var(--space-2) 0 var(--space-3);
-  }
-  .lede {
-    font-size: var(--text-lg);
-    max-width: var(--content-narrow);
-  }
-  .list {
-    padding-top: var(--space-4);
-  }
-  .note-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-  .note-list li {
-    display: grid;
-    grid-template-columns: 8rem 1fr;
-    gap: var(--space-3);
-    padding: var(--space-3) 0;
-    border-bottom: 0.5px solid var(--hairline);
-  }
-  .note-list time {
-    padding-top: 0.4rem;
-  }
-  .note-list h3 {
-    font-size: var(--text-lg);
-    margin-bottom: var(--space-1);
-  }
-  .note-list h3 a {
-    text-decoration: none;
-  }
-  .note-list h3 a:hover {
-    color: var(--accent);
-  }
-  .note-list p {
-    margin: 0;
-    color: var(--ink-muted);
-    font-size: var(--text-sm);
-  }
-  @media (max-width: 720px) {
-    .note-list li {
-      grid-template-columns: 1fr;
-      gap: var(--space-1);
-    }
+  .tags {
+    margin-top: var(--space-1) !important;
+    color: var(--ink-faint) !important;
   }
 </style>
