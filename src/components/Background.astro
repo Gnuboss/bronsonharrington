@@ -32,8 +32,8 @@
     return from <= to ? md >= from && md <= to : md >= from || md <= to;
   };
   const override = new URLSearchParams(location.search).get('bg');
-  const MODE: 'grid' | 'snowfall' =
-    override === 'grid' || override === 'snowfall'
+  const MODE: 'grid' | 'snowfall' | 'ripples' =
+    override === 'grid' || override === 'snowfall' || override === 'ripples'
       ? override
       : BACKGROUND.mode === 'auto'
         ? (inSeason(new Date()) ? 'snowfall' : 'grid')
@@ -70,7 +70,7 @@
       transform: translate3d(70vw, 22vh, 0);
       will-change: transform;
     }
-    .pixel-grid.snowfall { background: var(--paper); }
+    .pixel-grid.snowfall, .pixel-grid.ripples { background: var(--paper); }
     .pixel-grid canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
     /* Tile is opaque except a DOT-sized square hole, which is the pixel */
     .pixel-grid .mask {
@@ -90,8 +90,15 @@
     bg.setAttribute('aria-hidden', 'true');
     bg.innerHTML = MODE === 'grid'
       ? '<div class="glow"></div><div class="mask"></div><div class="wash"></div>'
-      : '<canvas></canvas><div class="wash"></div>';
+      : MODE === 'ripples'
+        ? '<canvas></canvas>'
+        : '<canvas></canvas><div class="wash"></div>';
     document.body.prepend(bg);
+
+    if (MODE === 'ripples') {
+      pond(bg.querySelector('canvas') as HTMLCanvasElement);
+      return;
+    }
 
     const lights = [...bg.querySelectorAll<HTMLElement>('.glow, .wash')];
     const snow = MODE === 'snowfall' ? snowfall(bg.querySelector('canvas') as HTMLCanvasElement) : null;
@@ -228,6 +235,187 @@
     };
   }
 
+  // Ripples: a fixed grid of faint dots seen in perspective, like looking
+  // across a pond (rows tighten and fade toward the top). Droplets land at
+  // random, and on desktop where the cursor moves or clicks; each sends out
+  // concentric rings, and dots brighten in the accent colour as a ring passes.
+  //  - The grid never moves: it's drawn once to an offscreen canvas and
+  //    copied in; only dots inside active rings are drawn on top.
+  //  - When no ripple is active, nothing is redrawn at all.
+  const POND = {
+    spacing: 26, // world px between dots (on-screen spacing at the bottom edge)
+    horizon: -0.35, // horizon line, as a fraction of screen height (negative = above the top)
+    dropEvery: [1800, 4500], // ms between random droplets
+    cursorEvery: 1200, // ms between droplets while the cursor moves
+    maxDrops: 4, // ripples alive at once
+    speed: 0.11, // ring growth, world px per ms
+    life: 4200, // ms a droplet's rings last
+    rings: 3, // concentric rings per droplet
+    ringGap: 46, // world px between rings
+    ringWidth: 22, // world px, softness of each ring
+  };
+
+  function pond(canvas: HTMLCanvasElement) {
+    const ctx = canvas.getContext('2d')!;
+    const css = getComputedStyle(document.documentElement);
+    const ink = css.getPropertyValue('--ink').trim() || '#141414';
+    const accent = css.getPropertyValue('--accent').trim() || '#2E6F5C';
+    let w = 0, h = 0, dpr = 1, D = 1, hz = 0;
+    type Dot = { X: number; Z: number; sx: number; sy: number; size: number; alpha: number };
+    let dots: Dot[] = [];
+    let base: HTMLCanvasElement;
+    type Drop = { X: number; Z: number; born: number };
+    const drops: Drop[] = [];
+
+    // Perspective: world point (X across, Z into the distance) -> screen
+    const project = (X: number, Z: number) => {
+      const k = D / (D + Z);
+      return { sx: w / 2 + X * k, sy: hz + (h - hz) * k, k };
+    };
+    const unproject = (sx: number, sy: number) => {
+      const k = Math.max(0.05, (sy - hz) / (h - hz));
+      return { X: (sx - w / 2) / k, Z: D / k - D };
+    };
+
+    const build = () => {
+      dpr = Math.max(1, Math.min(devicePixelRatio || 1, 1.5, Math.sqrt(PIXEL_BUDGET / (innerWidth * innerHeight))));
+      w = innerWidth; h = innerHeight; D = h; hz = POND.horizon * h;
+      canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
+      const zFar = D * ((h - hz) / -hz - 1); // depth where the grid meets the top edge
+      dots = [];
+      for (let Z = 0; Z <= zFar; Z += POND.spacing) {
+        const k = D / (D + Z);
+        const half = (w / 2) / k + POND.spacing;
+        for (let X = -Math.floor(half / POND.spacing) * POND.spacing; X <= half; X += POND.spacing) {
+          const p = project(X, Z);
+          if (p.sx < -4 || p.sx > w + 4) continue;
+          dots.push({ X, Z, sx: p.sx, sy: p.sy, size: 0.8 + 1.4 * k, alpha: 0.05 + 0.16 * k * k });
+        }
+      }
+      // Static base layer: the resting grid, drawn once
+      base = document.createElement('canvas');
+      base.width = canvas.width; base.height = canvas.height;
+      const b = base.getContext('2d')!;
+      b.scale(dpr, dpr); b.fillStyle = ink;
+      for (const d of dots) {
+        b.globalAlpha = d.alpha;
+        b.fillRect(d.sx - d.size / 2, d.sy - d.size / 2, d.size, d.size);
+      }
+      paint(performance.now(), true);
+    };
+
+    // Screen-space box a droplet's rings can reach (world circle -> projected box)
+    const reach = POND.speed * POND.life + POND.ringWidth * 2;
+    const box = (dr: Drop, t: number) => {
+      const R = Math.min(reach, POND.speed * (t - dr.born) + POND.ringWidth * 2);
+      const near = project(dr.X, Math.max(0, dr.Z - R));
+      const far = project(dr.X, dr.Z + R);
+      const halfW = R * near.k + 4;
+      return { x0: near.sx - halfW, x1: near.sx + halfW, y0: far.sy - 4, y1: near.sy + 4 };
+    };
+    let dirty: { x0: number; y0: number; x1: number; y1: number } | null = null;
+
+    // Full repaint (resize / first draw), or just the area ripples covered
+    const paint = (t: number, full = false) => {
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      let area = { x0: 0, y0: 0, x1: w, y1: h };
+      if (!full) {
+        const boxes = drops.map((dr) => box(dr, t));
+        if (dirty) boxes.push(dirty); // also wipe what the last frame lit
+        if (!boxes.length) return;
+        area = {
+          x0: Math.max(0, Math.min(...boxes.map((b) => b.x0))), y0: Math.max(0, Math.min(...boxes.map((b) => b.y0))),
+          x1: Math.min(w, Math.max(...boxes.map((b) => b.x1))), y1: Math.min(h, Math.max(...boxes.map((b) => b.y1))),
+        };
+        dirty = drops.length ? area : null;
+      }
+      const px = Math.floor(area.x0 * dpr), py = Math.floor(area.y0 * dpr);
+      const pw = Math.ceil(area.x1 * dpr) - px, ph = Math.ceil(area.y1 * dpr) - py;
+      if (pw <= 0 || ph <= 0) return;
+      ctx.clearRect(px, py, pw, ph);
+      ctx.drawImage(base, px, py, pw, ph, px, py, pw, ph);
+      if (!drops.length) return;
+      ctx.save();
+      ctx.beginPath(); ctx.rect(px, py, pw, ph); ctx.clip();
+      ctx.scale(dpr, dpr);
+      ctx.fillStyle = accent;
+      for (const d of dots) {
+        if (d.sx < area.x0 || d.sx > area.x1 || d.sy < area.y0 || d.sy > area.y1) continue;
+        let glow = 0;
+        for (const dr of drops) {
+          const dx = d.X - dr.X, dz = d.Z - dr.Z;
+          if (dx > reach || dx < -reach || dz > reach || dz < -reach) continue; // cheap reject
+          const dist = Math.sqrt(dx * dx + dz * dz);
+          const age = t - dr.born;
+          const fade = 1 - age / POND.life;
+          // The droplet itself: a brief bright splash at the centre
+          if (age < 500 && dist < 30) glow += (1 - age / 500) * (1 - dist / 30);
+          // Concentric rings, each a little fainter than the last
+          for (let i = 0; i < POND.rings; i++) {
+            const r = POND.speed * age - i * POND.ringGap;
+            if (r <= 0) continue;
+            const off = (dist - r) / POND.ringWidth;
+            if (off > 3 || off < -3) continue;
+            glow += Math.exp(-off * off) * fade * fade * (1 - i * 0.28);
+          }
+        }
+        if (glow < 0.04) continue;
+        const g = Math.min(1, glow);
+        ctx.globalAlpha = Math.min(1, d.alpha + 0.55 * g);
+        const sz = d.size + g * 1.2;
+        ctx.fillRect(d.sx - sz / 2, d.sy - sz / 2, sz, sz);
+      }
+      ctx.restore();
+    };
+
+    const drop = (X: number, Z: number) => {
+      if (drops.length >= POND.maxDrops) drops.shift(); // oldest ripple gives way
+      drops.push({ X, Z, born: performance.now() });
+    };
+    const randomDrop = () => {
+      const p = unproject(Math.random() * w, h * (0.12 + Math.random() * 0.85));
+      drop(p.X, p.Z);
+    };
+
+    build();
+    addEventListener('resize', build, { passive: true });
+    if (reduced) return; // resting grid only
+
+    // Random droplets
+    const schedule = () => {
+      const [a, b] = POND.dropEvery;
+      setTimeout(() => { if (!document.hidden) randomDrop(); schedule(); }, a + Math.random() * (b - a));
+    };
+    randomDrop();
+    schedule();
+
+    // Desktop: droplets follow the cursor now and then, and on click
+    if (matchMedia('(pointer: fine)').matches) {
+      let last = 0;
+      addEventListener('pointermove', (e) => {
+        const now = performance.now();
+        if (now - last < POND.cursorEvery) return;
+        last = now;
+        const p = unproject(e.clientX, e.clientY); drop(p.X, p.Z);
+      }, { passive: true });
+      addEventListener('pointerdown', (e) => {
+        const p = unproject(e.clientX, e.clientY); drop(p.X, p.Z);
+      }, { passive: true });
+    }
+
+    // Redraw only while ripples are alive, at most 24 times a second
+    let prev = 0;
+    const frame = (t: number) => {
+      requestAnimationFrame(frame);
+      for (let i = drops.length - 1; i >= 0; i--) if (t - drops[i].born > POND.life) drops.splice(i, 1);
+      if (t - prev < FRAME_MS) return;
+      if (!drops.length && !dirty) return; // settled on the resting grid: nothing to draw
+      prev = t;
+      paint(t);
+    };
+    requestAnimationFrame(frame);
+  }
+
   // Motion: slow, organic, fluid.
   //  - Steered like something drifting in water: it has a heading that can
   //    only turn gradually, so every change of direction is an arc, never a
@@ -316,6 +504,6 @@
   const SNOW_DELAY_MS = 4000;
   const idle = (fn: () => void) =>
     'requestIdleCallback' in window ? requestIdleCallback(fn, { timeout: 2000 }) : setTimeout(fn, 200);
-  const kick = () => (MODE === 'snowfall' ? setTimeout(() => idle(mount), SNOW_DELAY_MS) : idle(mount));
+  const kick = () => (MODE === 'grid' ? idle(mount) : setTimeout(() => idle(mount), SNOW_DELAY_MS));
   document.readyState === 'complete' ? kick() : addEventListener('load', kick, { once: true });
 </script>
