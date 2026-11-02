@@ -16,15 +16,22 @@
 // in the "radial" group (html[data-nav="radial"]). Without JS the normal
 // header nav stays, so nothing is ever unreachable.
 import { nav } from '../data/nav';
+const base = import.meta.env.BASE_URL;
+// The header's wordmark doubles as the home link, but the bubble stands
+// alone on phones, so it carries an explicit home row at the top.
+const links = [{ label: 'home', href: base }, ...nav];
+// Mark the page you're on (also announced by screen readers)
+const here = Astro.url.pathname;
+const isCurrent = (href: string) => (href === base ? here === base : here.startsWith(href));
 ---
 <div class="thumb-nav" data-track-location="thumb_nav" data-thumb-nav>
   <div class="scrim" data-scrim aria-hidden="true"></div>
   <div class="bubble-wrap">
     <nav aria-label="Primary" id="thumb-nav-menu" class="bubble">
       <ul>
-        {nav.map((item, i) => (
-          <li style={`--i:${i}`}>
-            <a href={item.href} class:list={{ cta: item.cta }}>
+        {links.map((item) => (
+          <li>
+            <a href={item.href} class:list={{ cta: item.cta }} aria-current={isCurrent(item.href) ? 'page' : undefined}>
               {item.label}{item.cta && <span aria-hidden="true">→</span>}
             </a>
           </li>
@@ -195,6 +202,16 @@ import { nav } from '../data/nav';
   }
   .bubble a:active {
     color: var(--accent);
+  }
+  /* Current page: accent text plus a square marker, so it isn't colour-only */
+  .bubble a[aria-current='page']:not(.cta) {
+    color: var(--accent);
+  }
+  .bubble a[aria-current='page']:not(.cta)::after {
+    content: '';
+    width: 8px;
+    height: 8px;
+    background: var(--accent);
   }
   /* Contact is the CTA: inked row on the bottom line, nearest the thumb */
   .bubble a.cta {
