@@ -52,3 +52,17 @@ Every page that isn't a pure utility/thank-you page needs all of these present, 
 - [ ] Schema present and validated (parses as JSON, correct `@type`)
 - [ ] Internal links use the `${base}` pattern, not hardcoded root paths
 - [ ] Heading hierarchy is a perfect, unbroken sequence: H1 (once, page title) &#8594; H2 (major section headers) &#8594; H3 (sub-sections / component titles within a section) &#8594; H4 (finer detail within a subsection) &#8594; H5 (one-liners). Never skip a level. Small taxonomic labels (category tags, form field labels) don't need heading tags at all - only things that belong in the actual document outline get one.
+
+## Forms
+
+Every form on the site is `src/components/ContactForm.astro` (variants: `full`, `compact`), built to the lead form standard. New forms reuse it rather than starting over. The rules:
+
+- **Button names the outcome, not the action.** Never "Submit" or "Send". Each topic carries its own label (`src/data/contact.ts`), and pages that imply a topic pre-select it.
+- **Ask only for what the reply needs.** Name and email required; everything else optional and labelled "optional". Optional extras sit behind dashed add-on buttons, and hidden content is never sent.
+- **Validation:** nothing red before interaction or while a field is being typed the first time; errors appear on leaving the field or on submit, then re-check as the visitor types. Valid and error states always carry an icon, never colour alone. Error copy says what to do ("Enter your name").
+- **The button is never disabled.** A blocked submit shows every error and focuses the first. Sending shows a spinner and locks against double taps. A failure keeps everything typed and offers email as a fallback.
+- **Inputs:** 44px minimum, 16px text (no iOS zoom), correct `type` / `inputmode` / `autocomplete`. Primary action is the tallest element (52px).
+- **Promise only what's true.** The response line under the button must match how fast replies actually happen.
+- **Spam:** honeypot, not CAPTCHA.
+- **Measure it:** `form_start`, `field_complete`, `submit_attempt`, `form_error`, `submit_failed`, `form_submit`, each with `form_location`, and a unique thank-you URL per form (`/thanks/?src=`).
+- Works without JavaScript: native required checks, plain POST, same thank-you page.

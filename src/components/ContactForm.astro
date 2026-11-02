@@ -1,0 +1,548 @@
+---
+// Contact form, built to the lead form standard (see STANDARDS.md, Forms).
+//
+// Two variants of one component, so both places behave identically:
+//   full     - the contact page: message box always visible
+//   compact  - the site footer: message tucked behind an "Add a note" button
+//
+// Progressive enhancement: without JS it's a plain POST to FormSubmit with
+// native required checks, then the thank-you page. With JS it validates
+// inline, sends in the background, keeps everything typed on failure, and
+// reports each step to GA4.
+import { topics, topicForPath, FORM_ENDPOINT, RESPONSE_PROMISE } from '../data/contact';
+import { CONTACT } from '../config/site';
+
+interface Props {
+  variant?: 'full' | 'compact';
+  /** Where the form sits; used for ids, the thank-you URL and analytics */
+  location: string;
+}
+const { variant = 'full', location } = Astro.props;
+const id = (name: string) => `${location}-${name}`;
+const selected = topicForPath(Astro.url.pathname);
+const defaultButton = topics.find((t) => t.value === selected)!.button;
+const noteMax = variant === 'full' ? 1000 : 500;
+const thanks = new URL(`/thanks/?src=${location}`, Astro.site).href;
+---
+<form
+  class:list={['contact-form', variant]}
+  action={`https://formsubmit.co/${FORM_ENDPOINT}`}
+  method="POST"
+  data-contact-form
+  data-location={location}
+  data-endpoint={`https://formsubmit.co/ajax/${FORM_ENDPOINT}`}
+  data-thanks={`/thanks/?src=${location}`}
+>
+  <input type="hidden" name="_subject" value={`New message from bronson.co.za (${location})`} />
+  <input type="hidden" name="_template" value="table" />
+  <input type="hidden" name="_captcha" value="false" />
+  <input type="hidden" name="_next" value={thanks} />
+  <input type="hidden" name="Form" value={location} />
+  <input type="hidden" name="Page" data-hidden="page" />
+  <input type="hidden" name="Landing page" data-hidden="landing" />
+  <input type="hidden" name="Referrer" data-hidden="referrer" />
+  <input type="hidden" name="UTM" data-hidden="utm" />
+  <!-- Honeypot: off-screen, skipped by keyboard and autofill; bots fill it -->
+  <div class="hp" aria-hidden="true">
+    <label for={id('hp')}>Leave this empty</label>
+    <input type="text" id={id('hp')} name="_honey" tabindex="-1" autocomplete="off" />
+  </div>
+
+  <div class="banner" role="alert" data-banner hidden>
+    Couldn't send your message. Everything you typed is still here, so try again or email
+    <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>.
+  </div>
+
+  <div class="row">
+    <div class="field" data-field="name">
+      <label for={id('name')}>Name</label>
+      <div class="control">
+        <input type="text" id={id('name')} name="Name" required minlength="2"
+          autocomplete="name" enterkeyhint="next" aria-describedby={id('name-error')} />
+        <svg class="icon ok" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" /></svg>
+        <svg class="icon bad" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 4v5M8 11.5v.5" /></svg>
+      </div>
+      <p class="error" id={id('name-error')} aria-live="polite"></p>
+    </div>
+
+    <div class="field" data-field="email">
+      <label for={id('email')}>Email</label>
+      <div class="control">
+        <input type="email" id={id('email')} name="Email" required inputmode="email"
+          autocomplete="email" enterkeyhint="next" aria-describedby={id('email-error')} />
+        <svg class="icon ok" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" /></svg>
+        <svg class="icon bad" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 4v5M8 11.5v.5" /></svg>
+      </div>
+      <p class="error" id={id('email-error')} aria-live="polite"></p>
+    </div>
+  </div>
+
+  <div class="field">
+    <label for={id('topic')}>What's it about?</label>
+    <div class="control">
+      <select id={id('topic')} name="Topic" data-topic>
+        {topics.map((t) => (
+          <option value={t.label} data-button={t.button} selected={t.value === selected}>{t.label}</option>
+        ))}
+      </select>
+      <svg class="icon chevron" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 6l4 4 4-4" /></svg>
+    </div>
+  </div>
+
+  {variant === 'compact' && (
+    <button type="button" class="addon" aria-expanded="false" aria-controls={id('note-wrap')} data-addon>
+      <span data-addon-label>+ Add a note</span>
+    </button>
+  )}
+
+  <div class="field note" id={id('note-wrap')} data-note hidden={variant === 'compact'}>
+    <label for={id('note')}>
+      {variant === 'compact' ? 'Anything to add?' : 'Message'} <span class="optional">optional</span>
+    </label>
+    <textarea id={id('note')} name="Message" rows={variant === 'full' ? 6 : 3} maxlength={noteMax}
+      placeholder={variant === 'full' ? "What's on your mind? Links welcome." : 'A link, a question, some context'}
+      aria-describedby={id('note-count')} disabled={variant === 'compact'}></textarea>
+    <p class="counter" id={id('note-count')} data-counter data-max={noteMax}>0 / {noteMax}</p>
+  </div>
+
+  <button type="submit" class="primary" data-submit>
+    <span class="spinner" aria-hidden="true"></span>
+    <span data-submit-label>{defaultButton}</span> <span aria-hidden="true">→</span>
+  </button>
+  <p class="promise">{RESPONSE_PROMISE}</p>
+
+  <p class="or"><span>or</span></p>
+  <a class="secondary" href={`mailto:${CONTACT.email}`}>Email {CONTACT.email}</a>
+
+  <p class="privacy">Your details are only used to reply. No newsletter, no lists.</p>
+</form>
+
+<style>
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2); /* 16px between fields */
+    max-width: var(--content-narrow);
+  }
+  .row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-2);
+  }
+  .full .row {
+    grid-template-columns: 1fr;
+  }
+  @media (max-width: 560px) {
+    .row { grid-template-columns: 1fr; }
+  }
+  .field {
+    display: flex;
+    flex-direction: column;
+  }
+  label {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 0.4rem;
+  }
+  .optional {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    font-weight: 400;
+    color: var(--ink-faint);
+    margin-left: 0.35em;
+  }
+  .control {
+    position: relative;
+  }
+  input,
+  select,
+  textarea {
+    width: 100%;
+    min-height: 44px;
+    font-family: var(--font-body);
+    font-size: 16px; /* 16px stops iOS zooming on focus */
+    color: var(--ink);
+    background: var(--paper);
+    border: 1.5px solid var(--field-border);
+    border-radius: var(--radius);
+    padding: 0.55rem 2.25rem 0.55rem 0.75rem;
+    transition: border-color 120ms ease;
+  }
+  textarea {
+    padding-right: 0.75rem;
+    resize: vertical;
+    line-height: 1.5;
+  }
+  select {
+    appearance: none;
+    cursor: pointer;
+  }
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--ink-faint);
+  }
+  /* Active: focused, not yet valid */
+  input:focus,
+  select:focus,
+  textarea:focus {
+    outline: none;
+    border-color: var(--ink);
+    box-shadow: 0 0 0 1px var(--ink);
+  }
+  .icon {
+    position: absolute;
+    right: 0.7rem;
+    top: 50%;
+    width: 16px;
+    height: 16px;
+    transform: translateY(-50%);
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    pointer-events: none;
+  }
+  .icon.ok,
+  .icon.bad {
+    display: none;
+  }
+  .chevron {
+    color: var(--ink-muted);
+  }
+  /* Valid and error both carry an icon: colour is never the only signal */
+  .field.is-valid input { border-color: var(--accent); }
+  .field.is-valid .icon.ok { display: block; color: var(--accent); }
+  .field.is-error input { border-color: var(--danger); }
+  .field.is-error input:focus { box-shadow: 0 0 0 1px var(--danger); }
+  .field.is-error .icon.bad {
+    display: block;
+    color: var(--paper);
+    background: var(--danger);
+    border-radius: 50%;
+    stroke-width: 2.2;
+  }
+  .error {
+    margin: 0;
+    font-size: 0.8125rem;
+    color: var(--danger);
+  }
+  .error:not(:empty) {
+    margin-top: 6px; /* takes no space when empty */
+  }
+  .counter {
+    margin: 4px 0 0;
+    align-self: flex-end;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--ink-faint);
+  }
+  .counter.near {
+    color: var(--danger);
+  }
+
+  /* Add-on: dashed so it reads as an optional extra, not a required field */
+  .addon {
+    align-self: flex-start;
+    min-height: 40px;
+    padding: 0 var(--space-2);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--ink-muted);
+    background: transparent;
+    border: 1.5px dashed var(--field-border);
+    border-radius: var(--radius);
+    cursor: pointer;
+  }
+  .addon[aria-expanded='true'] {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  /* Primary: tallest element, full width, always enabled */
+  .primary {
+    position: relative;
+    margin-top: var(--space-1);
+    min-height: 52px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5em;
+    font-family: var(--font-mono);
+    font-size: var(--text-base);
+    color: var(--paper);
+    background: var(--ink);
+    border: 0;
+    border-radius: var(--radius);
+    cursor: pointer;
+  }
+  .primary:hover {
+    background: var(--accent);
+  }
+  .primary[aria-busy='true'] {
+    cursor: progress;
+    background: var(--accent);
+  }
+  .spinner {
+    display: none;
+    width: 14px;
+    height: 14px;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: spin 700ms linear infinite;
+  }
+  .primary[aria-busy='true'] .spinner {
+    display: inline-block;
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  .promise {
+    margin: calc(-1 * var(--space-1)) 0 0;
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--ink-muted);
+    max-width: none;
+  }
+  .or {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin: 0;
+    max-width: none;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--ink-faint);
+  }
+  .or::before,
+  .or::after {
+    content: '';
+    flex: 1;
+    border-top: 0.5px solid var(--hairline);
+  }
+  .secondary {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--ink);
+    text-decoration: none;
+    border: 1.5px solid var(--ink);
+    border-radius: var(--radius);
+  }
+  .secondary:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+  .privacy {
+    margin: 0;
+    font-size: 0.6875rem;
+    color: var(--ink-faint);
+    max-width: none;
+  }
+  .banner {
+    padding: var(--space-2);
+    font-size: var(--text-sm);
+    color: var(--ink);
+    background: var(--paper);
+    border: 1.5px solid var(--danger);
+    border-left-width: 4px;
+    border-radius: var(--radius);
+  }
+  .banner[hidden],
+  .note[hidden] {
+    display: none;
+  }
+  .hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+</style>
+
+<script>
+  type Gtag = (...args: unknown[]) => void;
+  const gtag: Gtag = (...args) => {
+    const g = (window as any).gtag as Gtag | undefined;
+    if (typeof g === 'function') g(...args);
+  };
+  const variant = () => document.documentElement.getAttribute('data-nav') ?? 'top';
+
+  // Session context for the hidden fields: first page of the visit and UTMs.
+  // sessionStorage can throw (private modes), so every access is guarded.
+  const session = (() => {
+    const read = (k: string) => { try { return sessionStorage.getItem(k); } catch { return null; } };
+    const write = (k: string, v: string) => { try { sessionStorage.setItem(k, v); } catch {} };
+    if (!read('landing')) write('landing', location.pathname + location.search);
+    const params = new URLSearchParams(location.search);
+    const utm = ['utm_source', 'utm_medium', 'utm_campaign']
+      .map((k) => (params.get(k) ? `${k}=${params.get(k)}` : ''))
+      .filter(Boolean)
+      .join('&');
+    if (utm) write('utm', utm);
+    return { landing: read('landing') ?? '', utm: read('utm') ?? '' };
+  })();
+
+  const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  const rules: Record<string, (v: string) => string> = {
+    name: (v) => (v.trim().length >= 2 ? '' : 'Enter your name'),
+    email: (v) =>
+      !v.trim() ? 'Enter your email, so I can reply' : EMAIL.test(v.trim()) ? '' : 'Check your email address',
+  };
+
+  document.querySelectorAll<HTMLFormElement>('[data-contact-form]').forEach((form) => {
+    const where = form.dataset.location!;
+    form.noValidate = true; // our inline checks replace the browser's bubbles
+
+    const set = (key: string, value: string) => {
+      const el = form.querySelector<HTMLInputElement>(`[data-hidden="${key}"]`);
+      if (el) el.value = value;
+    };
+    set('page', location.href);
+    set('landing', session.landing);
+    set('referrer', document.referrer);
+    set('utm', session.utm);
+
+    // ---- Field validation -------------------------------------------------
+    const fields = Array.from(form.querySelectorAll<HTMLElement>('[data-field]')).map((wrap) => {
+      const name = wrap.dataset.field!;
+      const input = wrap.querySelector('input')!;
+      const msg = wrap.querySelector<HTMLElement>('.error')!;
+      let shownError = false; // once an error has shown, re-check as they type
+      let completed = false;
+      const check = (showErrors: boolean) => {
+        const error = rules[name](input.value);
+        wrap.classList.toggle('is-valid', !error);
+        if (!error && !completed) {
+          completed = true;
+          gtag('event', 'field_complete', { field_name: name, form_location: where });
+        }
+        if (error && (showErrors || shownError)) {
+          shownError = true;
+          wrap.classList.add('is-error');
+          input.setAttribute('aria-invalid', 'true');
+          msg.textContent = error;
+        } else if (!error) {
+          wrap.classList.remove('is-error');
+          input.removeAttribute('aria-invalid');
+          msg.textContent = '';
+        }
+        return !error;
+      };
+      // Never red while typing a field for the first time; only after leaving it
+      input.addEventListener('input', () => check(false));
+      input.addEventListener('blur', () => { if (input.value) check(true); });
+      return { input, check };
+    });
+
+    // ---- form_start: first focus on any field -----------------------------
+    let started = false;
+    form.addEventListener('focusin', (e) => {
+      if (started || !(e.target as Element).matches('input, select, textarea')) return;
+      started = true;
+      gtag('event', 'form_start', { form_location: where, nav_variant: variant() });
+    });
+
+    // ---- Topic sets the button label (outcome-led copy per topic) ---------
+    const topic = form.querySelector<HTMLSelectElement>('[data-topic]')!;
+    const submitLabel = form.querySelector<HTMLElement>('[data-submit-label]')!;
+    topic.addEventListener('change', () => {
+      submitLabel.textContent = topic.selectedOptions[0].dataset.button ?? 'Get a reply';
+    });
+
+    // ---- Note: counter, and the compact variant's add-on ------------------
+    const noteWrap = form.querySelector<HTMLElement>('[data-note]')!;
+    const note = noteWrap.querySelector('textarea')!;
+    const counter = form.querySelector<HTMLElement>('[data-counter]')!;
+    const max = Number(counter.dataset.max);
+    const count = () => {
+      counter.textContent = `${note.value.length} / ${max}`;
+      counter.classList.toggle('near', note.value.length > max * 0.9);
+    };
+    note.addEventListener('input', count);
+
+    const addon = form.querySelector<HTMLButtonElement>('[data-addon]');
+    if (addon) {
+      const addonLabel = addon.querySelector<HTMLElement>('[data-addon-label]')!;
+      addon.addEventListener('click', () => {
+        const open = addon.getAttribute('aria-expanded') !== 'true';
+        addon.setAttribute('aria-expanded', String(open));
+        noteWrap.hidden = !open;
+        // Hidden content is never sent: closing clears and disables it
+        note.disabled = !open;
+        if (open) {
+          addonLabel.textContent = '− Remove note';
+          note.focus();
+        } else {
+          note.value = '';
+          count();
+          addonLabel.textContent = '+ Add a note';
+          addon.focus();
+        }
+      });
+    }
+
+    // ---- Submit -----------------------------------------------------------
+    const button = form.querySelector<HTMLButtonElement>('[data-submit]')!;
+    const banner = form.querySelector<HTMLElement>('[data-banner]')!;
+    let sending = false;
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (sending) return; // double tap sends one message
+      gtag('event', 'submit_attempt', { form_location: where });
+
+      const results = fields.map((f) => f.check(true));
+      const firstBad = fields.find((_, i) => !results[i]);
+      if (firstBad) {
+        gtag('event', 'form_error', { form_location: where });
+        firstBad.input.focus();
+        return;
+      }
+
+      const data = Object.fromEntries(new FormData(form).entries());
+      const go = () => location.assign(form.dataset.thanks!);
+      // Honeypot filled: pretend it worked, send nothing
+      if (data._honey) return go();
+
+      sending = true;
+      banner.hidden = true;
+      button.setAttribute('aria-busy', 'true');
+      const label = submitLabel.textContent;
+      submitLabel.textContent = 'Sending…';
+
+      try {
+        const res = await fetch(form.dataset.endpoint!, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify(data),
+        });
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok || String(json.success) !== 'true') throw new Error('send failed');
+        gtag('event', 'form_submit', {
+          form_location: where,
+          topic: topic.value,
+          nav_variant: variant(),
+          event_callback: go,
+        });
+        setTimeout(go, 800); // don't wait on analytics if it's blocked
+      } catch {
+        gtag('event', 'submit_failed', { form_location: where });
+        sending = false;
+        button.removeAttribute('aria-busy');
+        submitLabel.textContent = label;
+        banner.hidden = false;
+        banner.focus?.();
+      }
+    });
+  });
+</script>
