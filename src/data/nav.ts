@@ -6,6 +6,7 @@ export const nav = [
   { label: 'field notes', href: `${base}notes/` },
   { label: 'lab', href: `${base}lab/` },
   { label: 'framework', href: `${base}framework/` },
+  { label: 'services', href: `${base}services/` },
   { label: 'about', href: `${base}about-me/` },
   { label: 'contact', href: `${base}contact/`, cta: true },
 ];

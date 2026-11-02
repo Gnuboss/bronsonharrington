@@ -1,0 +1,263 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import Section from '../components/Section.astro';
+import { ingredients, byCode, shelves, starters, dishes, chefsTable, usedIn, steps, faqs } from '../data/services';
+
+const chef = byCode[chefsTable];
+const offer = (code: string) => ({
+  "@type": "Offer",
+  "itemOffered": { "@type": "Service", "name": byCode[code].name, "description": byCode[code].summary, "provider": { "@id": "https://bronson.co.za/#/schema/person" } },
+});
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "OfferCatalog",
+      "name": "Growth OS solutions and services by Bronson Harrington",
+      "url": "https://bronson.co.za/services/",
+      "itemListElement": [
+        { "@type": "OfferCatalog", "name": "Starters: audits", "itemListElement": starters.map((u) => offer(u.code)) },
+        ...dishes.map((d) => ({
+          "@type": "OfferCatalog",
+          "name": `Growth OS ${d.name}`,
+          "description": d.promise,
+          "itemListElement": d.uses.map((u) => offer(u.code)),
+        })),
+        offer(chefsTable),
+      ],
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": faqs.map((f) => ({ "@type": "Question", "name": f.q, "acceptedAnswer": { "@type": "Answer", "text": f.a } })),
+    },
+  ],
+};
+---
+<BaseLayout
+  title="Services: Growth OS Solutions Menu | Bronson Harrington"
+  description="Growth OS solutions served like a menu: audits to start, then Foundations, Growth and Domination, each made from the services that fit."
+>
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+  <PageHero eyebrow="~/services" title="Services" subtitle="the menu · starters → foundations → growth → domination">
+    <p class="lede">Read this like a menu. The Growth OS stages are the dishes: complete solutions I execute. The services are the ingredients each one is made from, and the best ones turn up in more than one dish. There are no prices; tell me what you're working on and we'll find the right place to start.</p>
+  </PageHero>
+
+  <nav class="container courses" aria-label="Menu sections">
+    <ol class="hang">
+      <li class="hang-label label">on the menu</li>
+      <li class="hang-body course-links">
+        <a href="#starters"><span class="n">00</span> starters</a>
+        {dishes.map((d) => <a href={`#${d.id}`}><span class="n">{d.num}</span> {d.name.toLowerCase()}</a>)}
+        <a href="#chefs-table"><span class="n">∞</span> chef's table</a>
+        <a href="#pantry"><span class="n">→</span> pantry</a>
+      </li>
+    </ol>
+  </nav>
+
+  <hr class="hairline" />
+
+  <Section eyebrow="00 / starters" title="Starters: the Audits." id="starters" intro="Every engagement starts by finding the real constraint. Most sites don't have a traffic problem, they have a constraint problem, and it's rarely where people think it is. These audits work out where to begin before anyone spends money fixing the wrong thing.">
+    <div class="hang">
+      <p class="hang-label label">to start</p>
+      <ul class="menu hang-body">
+        {starters.map((u) => {
+          const i = byCode[u.code];
+          return (
+            <li>
+              <h3 class="dish">{i.name}</h3>
+              <span class="leader" aria-hidden="true"></span>
+              <a class="for" href={`#${i.code.toLowerCase()}`}>{i.code}</a>
+              <p class="desc"><em>{i.tagline}.</em> {u.note ?? i.summary}</p>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  </Section>
+
+  {dishes.map((d) => (
+    <>
+      <hr class="hairline" />
+      <Section eyebrow={`${d.num} / main course`} title={d.title} id={d.id}>
+        <p slot="intro" class="lede">{d.promise}</p>
+        <p slot="intro" class="shift">{d.shift}</p>
+        <div class="hang">
+          <p class="hang-label label">made with</p>
+          <ul class="menu hang-body">
+            {d.uses.map((u) => {
+              const i = byCode[u.code];
+              return (
+                <li>
+                  <h3 class="dish">{i.name}</h3>
+                  <span class="leader" aria-hidden="true"></span>
+                  <a class="for" href={`#${i.code.toLowerCase()}`}>{i.code}</a>
+                  <p class="desc">{u.note ?? i.summary}</p>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </Section>
+    </>
+  ))}
+
+  <hr class="hairline" />
+
+  <Section eyebrow="∞ / every stage" title="The Chef's Table." id="chefs-table" intro="For teams that want senior direction across every course rather than a single dish.">
+    <div class="hang">
+      <a class="hang-label label" href={`#${chef.code.toLowerCase()}`}>{chef.code}</a>
+      <article class="hang-body chef">
+        <h3>{chef.name}</h3>
+        <p class="tagline">{chef.tagline}</p>
+        <p>{chef.summary}</p>
+      </article>
+    </div>
+  </Section>
+
+  <hr class="hairline" />
+
+  <Section eyebrow="~/pantry" title="The Pantry." id="pantry" intro="Every ingredient on the menu, on the shelf it belongs to, with the dishes that use it. Any of them can also be ordered on its own.">
+    {shelves.map((shelf) => (
+      <div class="shelf">
+        <p class="label shelf-name">{shelf}</p>
+        <div class="pantry">
+          {ingredients.filter((i) => i.shelf === shelf).map((i) => (
+            <div class="cell" id={i.code.toLowerCase()}>
+              <span class="code">{i.code}</span>
+              <span class="name">{i.name}</span>
+              <span class="shelf">{usedIn(i.code).join(' · ')}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    ))}
+  </Section>
+
+  <hr class="hairline" />
+
+  <Section eyebrow="~/how-it-works" title="How It Works.">
+    <div class="rows">
+      {steps.map((s) => (
+        <div class="hang">
+          <p class="hang-label tag">{s.key}</p>
+          <div class="hang-body">
+            <h3>{s.title}</h3>
+            <p>{s.text}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </Section>
+
+  <hr class="hairline" />
+
+  <Section eyebrow="~/faq" title="Questions About the Menu.">
+    <div class="rows">
+      {faqs.map((f) => (
+        <div class="hang">
+          <h3 class="hang-label q">{f.q}</h3>
+          <p class="hang-body">{f.a}</p>
+        </div>
+      ))}
+    </div>
+  </Section>
+</BaseLayout>
+
+<style>
+  /* Section index */
+  .courses ol {
+    list-style: none;
+    margin: 0;
+    padding: var(--space-3) 0;
+    border-top: 0.5px solid var(--hairline);
+  }
+  .course-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1) var(--space-3);
+  }
+  .course-links a {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .course-links a:hover {
+    color: var(--accent);
+  }
+  .course-links .n {
+    color: var(--ink-faint);
+  }
+
+  /* The before -> after line under each main course */
+  .shift {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--accent);
+    margin-top: var(--space-2);
+  }
+
+  /* Menu: dish names are h3s for the outline, styled as the board's dish */
+  .menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 2px solid var(--rule-strong);
+  }
+  .menu li {
+    padding: var(--space-2) 0;
+  }
+  .menu li + li {
+    border-top: 0.5px solid var(--hairline);
+  }
+  .menu h3.dish {
+    font-size: var(--text-base);
+    margin: 0;
+  }
+  .menu a.for {
+    text-decoration: none;
+  }
+  .menu a.for:hover {
+    color: var(--accent);
+  }
+  .menu .desc em {
+    font-style: normal;
+    color: var(--ink);
+  }
+
+  /* Chef's table */
+  .chef {
+    border-top: 2px solid var(--rule-strong);
+    border-left: 2px solid var(--highlight);
+    padding: var(--space-3) 0 0 var(--space-3);
+  }
+  .chef h3 {
+    margin: 0;
+  }
+  .chef .tagline {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--accent);
+    margin: var(--space-1) 0 var(--space-2);
+  }
+  a.hang-label {
+    text-decoration: none;
+  }
+
+  /* Pantry shelves */
+  .shelf + .shelf {
+    margin-top: var(--space-4);
+  }
+  .shelf-name {
+    margin: 0 0 var(--space-1);
+  }
+  .pantry .cell {
+    scroll-margin-top: var(--space-6);
+  }
+  .pantry .cell:target {
+    background: var(--accent-dim);
+  }
+</style>
