@@ -36,7 +36,7 @@ export const projects: Project[] = [
     name: 'Tarot Slot Machine',
     summary: 'A tarot card of the day, drawn slot-machine style, built for Misterio Studios.',
     stack: 'html · css · js',
-    href: 'https://tarot.misteriostudios.com',
+    href: 'https://tarot.bronson.co.za/',
     linkLabel: 'play it',
   },
 ];
