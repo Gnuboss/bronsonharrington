@@ -15,7 +15,13 @@
 // Colours come from the palette tokens (--grid-dot, --accent-rgb, --paper).
 ---
 <script>
-  const PIXEL = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cpath fill-rule='evenodd' d='M0 0h24v24H0zM11 11h2v2h-2z'/%3E%3C/svg%3E\") 0 0 / 24px 24px repeat";
+  // Grid settings. GAP = distance between pixels, DOT = pixel size (CSS px).
+  // A fine grid reads as paper texture; the glow tints it as it passes.
+  const GAP = 4;
+  const DOT = 1;
+  const GLOW = 0.7; // spotlight strength, 0-1
+  const o = Math.floor((GAP - DOT) / 2);
+  const PIXEL = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='${GAP}' height='${GAP}'%3E%3Cpath fill-rule='evenodd' d='M0 0h${GAP}v${GAP}H0zM${o} ${o}h${DOT}v${DOT}h-${DOT}z'/%3E%3C/svg%3E") 0 0 / ${GAP}px ${GAP}px repeat`;
 
   const CSS = `
     .pixel-grid {
@@ -28,11 +34,11 @@
       position: absolute; left: 0; top: 0;
       width: 64vmax; height: 64vmax; margin: -32vmax 0 0 -32vmax; border-radius: 50%;
       background: radial-gradient(circle closest-side,
-        rgba(var(--accent-rgb), 0.95) 0%, rgba(var(--accent-rgb), 0.45) 40%, rgba(var(--accent-rgb), 0) 100%);
+        rgba(var(--accent-rgb), ${GLOW}) 0%, rgba(var(--accent-rgb), ${GLOW * 0.4}) 40%, rgba(var(--accent-rgb), 0) 100%);
       transform: translate3d(70vw, 22vh, 0);
       will-change: transform;
     }
-    /* 24px tile: opaque except a 2px square hole, which is the pixel */
+    /* Tile is opaque except a DOT-sized square hole, which is the pixel */
     .pixel-grid .mask {
       position: absolute; inset: 0; background: var(--paper);
       -webkit-mask: ${PIXEL}; mask: ${PIXEL};
