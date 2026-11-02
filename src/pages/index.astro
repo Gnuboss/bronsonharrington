@@ -128,6 +128,7 @@ const fmt = (d: Date) => d.toISOString().slice(0, 10);
         <footer>
           <span class="name">Tarsis Tochi</span>
           <span class="label">Performance Marketing Manager</span>
+          <span class="label company">Disability Law Marketing LLC, Canada</span>
         </footer>
       </blockquote>
       <blockquote class="testimonial">
@@ -135,6 +136,7 @@ const fmt = (d: Date) => d.toISOString().slice(0, 10);
         <footer>
           <span class="name">Richard De Waal</span>
           <span class="label">Founder</span>
+          <span class="label company">Tiburon Media, Africa</span>
         </footer>
       </blockquote>
       <blockquote class="testimonial">
@@ -142,6 +144,7 @@ const fmt = (d: Date) => d.toISOString().slice(0, 10);
         <footer>
           <span class="name">Patrick Tigue</span>
           <span class="label">Founder</span>
+          <span class="label company">Downtown eCommerce Partners, USA</span>
         </footer>
       </blockquote>
     </div>
@@ -293,6 +296,9 @@ const fmt = (d: Date) => d.toISOString().slice(0, 10);
     display: flex;
     flex-direction: column;
     margin-top: var(--space-2);
+  }
+  .testimonial .company {
+    color: var(--ink-muted);
   }
   .testimonial .name {
     font-family: var(--font-display);
