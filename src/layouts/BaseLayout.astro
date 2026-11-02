@@ -2,6 +2,7 @@
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import PixelGrid from '../components/PixelGrid.astro';
+import TopBar from '../components/TopBar.astro';
 import '../styles/tokens.css';
 import { GA_MEASUREMENT_ID, GSC_VERIFICATION } from '../config/site';
 import { palette } from '../config/palette.mjs';
@@ -40,9 +41,10 @@ const { title, description } = Astro.props;
       <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}></script>
       <script is:inline define:vars={{ id: GA_MEASUREMENT_ID }}>
         window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', id);
+        // Global, so the click-tracking script can send events
+        window.gtag = function () { window.dataLayer.push(arguments); };
+        window.gtag('js', new Date());
+        window.gtag('config', id);
       </script>
     </>
   )}
@@ -67,10 +69,23 @@ const { title, description } = Astro.props;
 </head>
 <body>
   <PixelGrid />
+  <TopBar />
   <Header />
   <main>
     <slot />
   </main>
   <Footer />
+  <!-- GA4 events: email and phone taps anywhere on the site (no-op until the GA tag has loaded) -->
+  <script>
+    document.addEventListener('click', (event) => {
+      const link = (event.target as Element | null)?.closest?.('a[href]');
+      const gtag = (window as any).gtag;
+      if (!link || typeof gtag !== 'function') return;
+      const href = link.getAttribute('href') ?? '';
+      const location = link.closest('[data-track-location]')?.getAttribute('data-track-location') ?? 'page';
+      if (href.startsWith('tel:')) gtag('event', 'phone_click', { link_location: location });
+      else if (href.startsWith('mailto:')) gtag('event', 'email_click', { link_location: location });
+    });
+  </script>
 </body>
 </html>
