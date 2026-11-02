@@ -1,0 +1,316 @@
+---
+// A style tile (after Samantha Warren's styletil.es): one board showing a
+// palette edition's colours, type pairing and core interface elements.
+// It renders with that edition's own colours, not the site's current ones,
+// so a Field Note about an old edition still shows the right palette.
+import { getEdition } from '../config/palette.mjs';
+import { buildTokens, adjustments } from '../config/theme.mjs';
+
+interface Props {
+  edition: string;
+}
+
+const { edition } = Astro.props;
+const p = getEdition(edition);
+if (!p) throw new Error(`StyleTile: no palette edition "${edition}" in src/config/palette.mjs`);
+
+const tokens = buildTokens(p);
+const adjusted = Object.fromEntries(adjustments.map((a) => [a.name, a.to]));
+
+const stack = (name: string, fallback: string) => `'${name}', ${fallback}`;
+const scoped = {
+  ...tokens,
+  '--tile-display': stack(p.fonts.display, 'system-ui, sans-serif'),
+  '--tile-body': stack(p.fonts.body, 'system-ui, sans-serif'),
+  '--tile-mono': stack(p.fonts.mono, 'ui-monospace, monospace'),
+};
+const styleAttr = Object.entries(scoped).map(([k, v]) => `${k}:${v}`).join(';');
+
+const roles = [
+  { key: 'paper', label: 'paper', use: 'background' },
+  { key: 'ink', label: 'ink', use: 'text' },
+  { key: 'accent', label: 'accent', use: 'links, labels' },
+  { key: 'rule', label: 'rule', use: 'heavy rules' },
+  { key: 'highlight', label: 'highlight', use: 'callouts, focus' },
+].map((r) => ({ ...r, hex: p.roles[r.key].toUpperCase(), used: adjusted[r.key] }));
+
+const sameFont = p.fonts.display === p.fonts.body;
+---
+<figure class="tile" style={styleAttr} aria-label={`Style tile for palette edition ${p.edition}, ${p.name}`}>
+  <div class="tile-head">
+    <span class="t-label">style tile · edition {p.edition}</span>
+    <span class="t-name">{p.name}</span>
+    {p.date && <span class="t-label">{p.date}</span>}
+  </div>
+
+  <div class="swatches">
+    {roles.map((r) => (
+      <div class="swatch">
+        <span class="chip" style={`background:${r.used ?? r.hex}`}></span>
+        <span class="s-role">{r.label}</span>
+        <span class="t-label">{r.used ?? r.hex}</span>
+        <span class="t-label s-use">{r.use}</span>
+        {r.used && <span class="t-label s-note">from {r.hex}</span>}
+      </div>
+    ))}
+  </div>
+
+  <div class="tile-body">
+    <div class="type">
+      <span class="t-label">type</span>
+      <div class="specimen">
+        <span class="aa">Aa</span>
+        <div class="faces">
+          <span class="face-name display">{p.fonts.display}</span>
+          <span class="t-label">{sameFont ? 'display + body' : 'display'}</span>
+          {!sameFont && (
+            <>
+              <span class="face-name body">{p.fonts.body}</span>
+              <span class="t-label">body</span>
+            </>
+          )}
+          <span class="face-name mono">{p.fonts.mono}</span>
+          <span class="t-label">structure, labels</span>
+        </div>
+      </div>
+      <p class="sample-head">Sustainable growth compounds.</p>
+      <p class="sample-body">Organic growth moves through three stages, each building on the one before it. Strong foundations make everything after them easier.</p>
+      <p class="sample-mono">~/framework/01_foundations</p>
+    </div>
+
+    <div class="elements">
+      <span class="t-label">elements</span>
+      <p class="el-eyebrow">~/field-notes</p>
+      <p class="el-text">Body copy with <span class="el-link">an inline link</span> and <code>inline code</code>.</p>
+      <div class="el-card">
+        <span class="el-card-title">Card title</span>
+        <span class="t-label">stack · details</span>
+        <span class="el-muted">Secondary copy sits a step back from the body.</span>
+      </div>
+      <div class="el-row">
+        <span>A field note title</span>
+        <span class="t-label">2026-11-01</span>
+      </div>
+      <div class="el-quote">Callouts and quotes take the highlight rule.</div>
+    </div>
+  </div>
+
+  {p.source && (
+    <figcaption class="t-label tile-foot">palette source: <a href={p.source}>{p.source.replace(/^https?:\/\//, '')}</a></figcaption>
+  )}
+</figure>
+
+<style>
+  /* Everything here reads the edition's scoped variables set on .tile */
+  .tile {
+    margin: var(--space-4) 0 var(--space-5);
+    background: var(--paper);
+    color: var(--ink-soft);
+    border: 0.5px solid var(--hairline);
+    font-family: var(--tile-body);
+  }
+  .t-label {
+    font-family: var(--tile-mono);
+    font-size: var(--text-xs);
+    color: var(--ink-faint);
+  }
+  .tile-head {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    border-bottom: 0.5px solid var(--hairline);
+  }
+  .t-name {
+    font-family: var(--tile-display);
+    font-weight: 500;
+    color: var(--ink);
+    flex: 1;
+  }
+
+  /* Five roles are genuine peers: uniform grid */
+  .swatches {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    border-bottom: 0.5px solid var(--hairline);
+  }
+  .swatch {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    padding: var(--space-2) var(--space-2) var(--space-3);
+    border-right: 0.5px solid var(--hairline);
+    min-width: 0;
+  }
+  .swatch:last-child {
+    border-right: none;
+  }
+  .chip {
+    display: block;
+    height: 4.5rem;
+    margin-bottom: var(--space-1);
+    box-shadow: inset 0 0 0 0.5px var(--hairline);
+  }
+  .s-role {
+    font-family: var(--tile-display);
+    font-weight: 500;
+    color: var(--ink);
+    font-size: var(--text-sm);
+  }
+  .s-note {
+    color: var(--accent);
+  }
+
+  .tile-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .type,
+  .elements {
+    padding: var(--space-3);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    min-width: 0;
+  }
+  .type {
+    border-right: 0.5px solid var(--hairline);
+  }
+  .tile p {
+    margin: 0;
+    max-width: none;
+  }
+
+  .specimen {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .aa {
+    font-family: var(--tile-display);
+    font-size: 4.5rem;
+    line-height: 1;
+    font-weight: 500;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+  }
+  .faces {
+    display: grid;
+    grid-template-columns: auto auto;
+    column-gap: var(--space-2);
+    row-gap: 0.25rem;
+    align-items: baseline;
+  }
+  .face-name {
+    color: var(--ink);
+    font-size: var(--text-sm);
+  }
+  .face-name.display { font-family: var(--tile-display); font-weight: 500; }
+  .face-name.body { font-family: var(--tile-body); }
+  .face-name.mono { font-family: var(--tile-mono); }
+  .sample-head {
+    font-family: var(--tile-display);
+    font-size: var(--text-xl);
+    font-weight: 500;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  .sample-body {
+    font-size: var(--text-sm);
+    line-height: 1.6;
+  }
+  .sample-mono {
+    font-family: var(--tile-mono);
+    font-size: var(--text-sm);
+    color: var(--accent);
+  }
+
+  .el-eyebrow {
+    font-family: var(--tile-mono);
+    font-size: var(--text-sm);
+    color: var(--accent);
+  }
+  .el-text {
+    font-size: var(--text-sm);
+  }
+  .el-link {
+    color: var(--accent);
+    text-decoration: underline;
+  }
+  .tile code {
+    font-family: var(--tile-mono);
+    font-size: 0.9em;
+    background: var(--paper-dim);
+    color: var(--ink);
+    padding: 0.1em 0.3em;
+    border-radius: var(--radius);
+  }
+  .el-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    border-top: 2px solid var(--rule-strong);
+    padding-top: var(--space-2);
+  }
+  .el-card-title {
+    font-family: var(--tile-display);
+    font-weight: 500;
+    color: var(--ink);
+  }
+  .el-muted {
+    font-size: var(--text-sm);
+    color: var(--ink-muted);
+  }
+  .el-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--space-2);
+    padding: var(--space-1) 0;
+    border-top: 0.5px solid var(--hairline);
+    border-bottom: 0.5px solid var(--hairline);
+    color: var(--ink);
+    font-size: var(--text-sm);
+  }
+  .el-quote {
+    border-left: 2px solid var(--highlight);
+    padding-left: var(--space-2);
+    color: var(--ink);
+  }
+  .tile-foot {
+    display: block;
+    padding: var(--space-2) var(--space-3);
+    border-top: 0.5px solid var(--hairline);
+  }
+  .tile-foot a {
+    color: var(--accent);
+  }
+
+  @media (max-width: 720px) {
+    /* Swatches become rows: chip beside name and hex */
+    .swatches {
+      grid-template-columns: 1fr;
+    }
+    .swatch {
+      display: grid;
+      grid-template-columns: 3rem 1fr auto;
+      column-gap: var(--space-2);
+      align-items: center;
+      border-right: none;
+      border-bottom: 0.5px solid var(--hairline);
+      padding: var(--space-1) var(--space-2);
+    }
+    .swatch:last-child { border-bottom: none; }
+    .chip {
+      height: 2.5rem;
+      margin: 0;
+      grid-row: span 2;
+    }
+    .s-use, .s-note { grid-column: 2 / span 2; }
+    .tile-body { grid-template-columns: 1fr; }
+    .type { border-right: none; border-bottom: 0.5px solid var(--hairline); }
+    .tile-head { flex-wrap: wrap; }
+    .t-name { flex-basis: 100%; order: -1; }
+  }
+</style>

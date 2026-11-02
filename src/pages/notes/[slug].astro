@@ -1,6 +1,7 @@
 ---
 import { getCollection, type CollectionEntry } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import StyleTile from '../../components/StyleTile.astro';
 
 export async function getStaticPaths() {
   const notes = await getCollection('notes', ({ data }) => !data.draft);
@@ -47,6 +48,8 @@ const pageTitle = note.data.seoTitle ?? (withName.length <= 60 ? withName : note
     </header>
 
     <hr class="hairline" />
+
+    {note.data.styleTile && <StyleTile edition={note.data.styleTile} />}
 
     <div class="prose">
       <Content />
