@@ -44,7 +44,9 @@ body {
   margin: 0;
   font-family: var(--font-body);
   color: var(--ink-soft);
-  background: var(--paper);
+  /* Transparent so the fixed pixel-grid background shows through;
+     html above keeps the paper colour as the fallback. */
+  background: transparent;
   font-size: var(--text-base);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;

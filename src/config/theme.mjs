@@ -67,6 +67,8 @@ export function buildTokens({ roles }) {
     '--rule-strong': fix('rule', rule, 3),
     '--highlight': fix('highlight', highlight, 3),
     '--ink-rgb': hexToRgb(ink).join(', '), // for the edge-shading vignette
+    '--grid-dot': mix(ink, paper, 0.1), // resting pixels in the background grid
+    '--accent-rgb': hexToRgb(accent).join(', '), // background spotlight glow
   };
 }
 
