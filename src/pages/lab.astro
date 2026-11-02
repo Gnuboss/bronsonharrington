@@ -2,7 +2,7 @@
 import PageHero from '../components/PageHero.astro';
 import Section from '../components/Section.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { projects } from '../data/projects';
+import { projects, experiments } from '../data/projects';
 ---
 <BaseLayout
   title="Lab: Local-First Tools and Experiments | Bronson Harrington"
@@ -14,11 +14,11 @@ import { projects } from '../data/projects';
     "name": "Lab - Bronson Harrington",
     "url": "https://bronson.co.za/lab/",
     "author": { "@id": "https://bronson.co.za/#/schema/person" },
-    "hasPart": projects.map((p) => ({
+    "hasPart": [...projects, ...experiments].map((p) => ({
       "@type": "SoftwareApplication",
       "name": p.name,
       "description": p.summary,
-      "url": p.href,
+      "url": p.href.startsWith("/") ? `https://bronson.co.za${p.href}` : p.href,
       "applicationCategory": "WebApplication"
     }))
   })} />
@@ -46,6 +46,24 @@ import { projects } from '../data/projects';
       <p class="hang-body">More experiments live on <a href="https://github.com/Gnuboss">GitHub</a>.</p>
     </div>
   </Section>
+
+  <hr class="hairline" />
+
+  <Section eyebrow="~/experiments" title="Experiments." intro="Ideas tried out on this site itself. Each one comes with a field note on how it was built and what I learned.">
+    <div class="g">
+      {experiments.map((p) => (
+        <article class="card s-6">
+          <p class="label">{p.stack}</p>
+          <h3>{p.name}</h3>
+          <p>{p.summary}</p>
+          <div class="links">
+            <a href={p.href} class="more">{p.linkLabel} →</a>
+            {p.note && <a href={p.note} class="more">read the field note →</a>}
+          </div>
+        </article>
+      ))}
+    </div>
+  </Section>
 </BaseLayout>
 
 <style>
@@ -54,6 +72,14 @@ import { projects } from '../data/projects';
   }
   @media (min-width: 720px) and (max-width: 979px) {
     .card.s-6 { grid-column: span 4; }
+  }
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1) var(--space-3);
+  }
+  .links .more {
+    margin: 0;
   }
   .more-note {
     margin-top: var(--space-5);

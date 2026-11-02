@@ -4,6 +4,7 @@
 // so reading the page feels like diving: sky, surface, open water, seabed.
 // It tells Growth OS from the top down: Domination is what everyone sees on
 // the surface, Growth is the open water, Foundations is the seabed.
+// Field note: src/content/notes/vertical-scroller-parallax-experiment.md
 //
 // Performance: every layer is drawn once; scrolling only changes each layer's
 // transform (compositor only). Reduced motion: the scene stays still.
@@ -37,11 +38,9 @@ const marks = [
 ];
 ---
 <BaseLayout
-  title="Lab: A Vertical Scroller Through Growth OS | Bronson Harrington"
+  title="Vertical Scroller: A Growth OS Dive | Bronson Harrington"
   description="A lab experiment: an SVG parallax ocean you dive through as you scroll, telling Growth OS from the surface down to the seabed it stands on."
 >
-  <meta name="robots" content="noindex" slot="head" />
-
   <!-- The scene: fixed behind the page, one element per layer -->
   <div class="scene" aria-hidden="true">
     <div class="layer sky" data-speed="0.08">
@@ -162,7 +161,7 @@ const marks = [
       <div class="card">
         <p class="tag">~/surface</p>
         <h2>Come back up.</h2>
-        <p>This is a lab experiment. The real thing is on the <a href={`${base}framework/`}>framework</a>, <a href={`${base}services/`}>services</a> and <a href={`${base}solutions/`}>solutions</a> pages.</p>
+        <p>This is a lab experiment; <a href={`${base}notes/vertical-scroller-parallax-experiment/`}>the field note</a> explains how it's built. The real thing is on the <a href={`${base}framework/`}>framework</a>, <a href={`${base}services/`}>services</a> and <a href={`${base}solutions/`}>solutions</a> pages.</p>
         <a class="more" href="#surface">back to the surface ↑</a>
       </div>
     </section>
