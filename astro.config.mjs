@@ -9,7 +9,7 @@ export default defineConfig({
   integrations: [
     sitemap({
       // Conversion and print-source pages aren't content: kept out
-      filter: (page) => !page.includes('/thanks/') && !page.includes('/pdf-source/'),
+      filter: (page) => !page.includes('/thanks/') && !page.includes('/pdf-source/') && !page.includes('/lab/grid/'),
       // The sitemap tool only sees pages, so the PDF is listed by hand
       customPages: ['https://bronson.co.za/downloads/growth-architect-costa-rica-bronson-harrington.pdf'],
     }),
