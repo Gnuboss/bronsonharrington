@@ -40,7 +40,7 @@ export function ensureContrast(fg, bg, min, toward) {
   return toward;
 }
 
-// Strongest tint the background spotlight casts on the paper (PixelGrid uses this).
+// Strongest tint the background spotlight casts on the paper (Background uses this).
 // Text colours are checked against this tinted paper as well as plain paper.
 export const SPOTLIGHT_WASH = 0.06;
 
