@@ -213,8 +213,8 @@ const thanks = new URL(`/thanks/?src=${location}`, Astro.site).href;
     color: var(--ink-muted);
   }
   /* Valid and error both carry an icon: colour is never the only signal */
-  .field.is-valid input { border-color: var(--accent); }
-  .field.is-valid .icon.ok { display: block; color: var(--accent); }
+  .field.is-valid input { border-color: var(--valid); }
+  .field.is-valid .icon.ok { display: block; color: var(--valid); }
   .field.is-error input { border-color: var(--danger); }
   .field.is-error input:focus { box-shadow: 0 0 0 1px var(--danger); }
   .field.is-error .icon.bad {

@@ -18,30 +18,53 @@
 // ============================================================
 
 export const palette = {
-  edition: '01',
-  name: 'Swiss Terminal',
-  source: '', // coolors.co link, when the palette came from one
+  edition: '02',
+  name: 'Nutcracker',
+  source: 'https://coolors.co/palette/780000-c1121f-fdf0d5-003049-669bbc',
   date: '2026-11-01', // when this edition went live
-  swatches: ['#F7F6F2', '#141414', '#2E6F5C'],
-  // Type pairing for this edition (recorded for the style tile; the site's
-  // font files and stacks live in public/fonts and src/styles/tokens.css)
+  swatches: ['#FDF0D5', '#003049', '#780000', '#C1121F', '#669BBC'],
   fonts: {
     display: 'Inter',
     body: 'Inter',
     mono: 'JetBrains Mono',
   },
+  // Festive edition. Navy and cream with two reds, the nutcracker's uniform.
+  // Links take the deep wine red rather than the bright one, so link text
+  // never reads as a form error (errors use the fixed --danger red).
   roles: {
-    paper: '#F7F6F2',
-    ink: '#141414',
-    accent: '#2E6F5C',
-    rule: '#141414',
-    highlight: '#2E6F5C',
+    paper: '#FDF0D5',
+    ink: '#003049',
+    accent: '#780000',
+    rule: '#C1121F',
+    highlight: '#669BBC',
   },
 };
 
 // Previous editions, kept for reference and easy rollback:
 // copy one back into `palette` above to restore it.
-export const history = [];
+export const history = [
+  {
+    edition: '01',
+    name: 'Swiss Terminal',
+    source: '', // coolors.co link, when the palette came from one
+    date: '2026-11-01', // when this edition went live
+    swatches: ['#F7F6F2', '#141414', '#2E6F5C'],
+    // Type pairing for this edition (recorded for the style tile; the site's
+    // font files and stacks live in public/fonts and src/styles/tokens.css)
+    fonts: {
+      display: 'Inter',
+      body: 'Inter',
+      mono: 'JetBrains Mono',
+    },
+    roles: {
+      paper: '#F7F6F2',
+      ink: '#141414',
+      accent: '#2E6F5C',
+      rule: '#141414',
+      highlight: '#2E6F5C',
+    },
+  },
+];
 
 // Look up any edition, current or past, by its number (e.g. '01').
 // Used by style tiles so an old Field Note keeps showing its own palette.
