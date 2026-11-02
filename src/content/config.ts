@@ -13,6 +13,8 @@ const notes = defineCollection({
     date: z.coerce.date(),
     updated: z.coerce.date().optional(),
     tags: z.array(z.string()).default([]),
+    // Palette edition number (e.g. '01') to show a style tile at the top of the note
+    styleTile: z.string().optional(),
     // draft: true keeps a note out of the build entirely
     draft: z.boolean().default(false),
   }),

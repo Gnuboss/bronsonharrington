@@ -13,6 +13,8 @@ All colour comes from one file: `src/config/palette.mjs`. Each edition has a num
 
 To reskin: put the new colours in `palette`, move the old one into `history`, and run `npm run palette:check`. Any colour that would be hard to read is darkened only as far as needed to reach WCAG AA, and the check lists what it changed. The check also runs before every build and stops it only if ink and paper themselves don't contrast enough.
 
+Each edition gets a Field Note with a style tile (after styletil.es): add `styleTile: "02"` to the note's frontmatter and `src/components/StyleTile.astro` renders that edition's swatches, type pairing and core elements at the top of the note, in that edition's own colours. Record the edition's `date` and `fonts` in palette.mjs too. See `src/content/notes/palette-01-swiss-terminal.md` for the pattern.
+
 ## Structure
 
 - `/` home: intro, latest notes, builds, framework teaser

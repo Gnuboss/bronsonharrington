@@ -21,7 +21,15 @@ export const palette = {
   edition: '01',
   name: 'Swiss Terminal',
   source: '', // coolors.co link, when the palette came from one
+  date: '2026-11-01', // when this edition went live
   swatches: ['#F7F6F2', '#141414', '#2E6F5C'],
+  // Type pairing for this edition (recorded for the style tile; the site's
+  // font files and stacks live in public/fonts and src/styles/tokens.css)
+  fonts: {
+    display: 'Inter',
+    body: 'Inter',
+    mono: 'JetBrains Mono',
+  },
   roles: {
     paper: '#F7F6F2',
     ink: '#141414',
@@ -34,3 +42,8 @@ export const palette = {
 // Previous editions, kept for reference and easy rollback:
 // copy one back into `palette` above to restore it.
 export const history = [];
+
+// Look up any edition, current or past, by its number (e.g. '01').
+// Used by style tiles so an old Field Note keeps showing its own palette.
+export const getEdition = (edition) =>
+  [palette, ...history].find((p) => p.edition === edition);
