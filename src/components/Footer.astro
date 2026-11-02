@@ -23,7 +23,8 @@ const showForm = !path.startsWith(`${base}contact`) && !path.startsWith(`${base}
   )}
   <hr class="hairline" />
   <div class="container inner">
-    <span class="label">© {year} Bronson Harrington - Growth Architect, Costa Rica</span>
+    <!-- The category phrase links to its definition page on every page (SEO/AEO) -->
+    <span class="label">© {year} Bronson Harrington - <a href={`${base}growth-architect-costa-rica/`} class="gacr">Growth Architect, Costa Rica</a></span>
     <div class="links">
       <a href={`${base}rss.xml`} class="label">rss</a>
       <a href="https://github.com/Gnuboss" class="label">github</a>
@@ -70,6 +71,15 @@ const showForm = !path.startsWith(`${base}contact`) && !path.startsWith(`${base}
   .links a {
     text-decoration: none;
     color: var(--ink-faint);
+  }
+  .gacr {
+    color: inherit;
+    text-underline-offset: 3px;
+    text-decoration-color: var(--hairline);
+  }
+  .gacr:hover {
+    color: var(--accent);
+    text-decoration-color: currentColor;
   }
   .links a:hover {
     color: var(--accent);

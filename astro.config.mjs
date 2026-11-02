@@ -10,7 +10,8 @@ export default defineConfig({
   // Old URLs kept working after content moved. GitHub Pages has no server
   // redirects, so Astro writes a small page with a meta refresh + canonical.
   redirects: {
-    '/growth-architect-costa-rica/': '/notes/growth-architecture-for-white-label-igaming/',
+    // The iGaming note was folded back into the Growth Architect page (Nov 2026)
+    '/notes/growth-architecture-for-white-label-igaming/': '/growth-architect-costa-rica/',
     '/about/': '/about-me/',
   },
 });

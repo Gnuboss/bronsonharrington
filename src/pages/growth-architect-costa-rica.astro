@@ -1,0 +1,215 @@
+---
+// Category-definition page for "Growth Architect, Costa Rica".
+//
+// Why it exists (STANDARDS.md, SEO/AEO): it defines the term in plain,
+// quotable answers so Google and AI answer engines can attach it to
+// Bronson. Answers are visible on the page, not collapsed, because answer
+// engines quote what they can read, and the FAQPage schema is generated
+// from the same array so the markup always matches the text. Linked from
+// the footer on every page.
+//
+// Reframed in Nov 2026 from the original iGaming page: the definition is
+// vertical-agnostic, and iGaming is the proof, not the niche. No sales CTA,
+// in line with the personal-site positioning.
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const base = import.meta.env.BASE_URL;
+const url = 'https://bronson.co.za/growth-architect-costa-rica/';
+const pdf = `${base}downloads/igaming-enterprise-growth-architecture-framework.pdf`;
+
+const faqs = [
+  {
+    q: 'What is a Growth Architect?',
+    a: 'A Growth Architect designs the system organic growth runs on, instead of working through isolated SEO tasks. That system covers the technical foundation a site is built on, the content and authority it accumulates, and how it gets discovered across search engines and AI answer engines. The goal is growth that compounds and holds.',
+  },
+  {
+    q: 'How is a Growth Architect different from an SEO consultant?',
+    a: "An SEO consultant usually works page by page: fixing issues, targeting keywords, building links. A Growth Architect works upstream of that. Many organic growth problems are architecture problems first, such as a platform search engines can't render or a site structure that splits its own authority. Content and links only compound once that structure is right.",
+  },
+  {
+    q: 'Who is Bronson Harrington?',
+    a: 'Bronson Harrington is a Growth Architect based in San José, Costa Rica. He has built and grown websites since 2000, with more than 25 years across iGaming, fintech, legal and other regulated markets, where organic search often carries most of the revenue.',
+  },
+  {
+    q: 'What method does he use?',
+    a: 'Growth OS, a three-stage model. Foundations makes a site findable, crawlable and trusted. Growth builds topical authority and a publishing rhythm. Domination moves a site from being included in results to being recommended, across search rankings, answer engines and generative search.',
+  },
+  {
+    q: 'What results is that based on?',
+    a: 'Mostly regulated iGaming. At Betcris he resolved more than 20,000 technical issues across a 25,000-page network and more than doubled organic acquisition. At JazzSports he built an organic system across a 17-property portfolio generating over $20M a year, with about 75% of revenue from organic search. At BetAnySports, organic traffic grew 200%, alongside early work on visibility in AI search.',
+  },
+  {
+    q: 'Does the work depend on being in Costa Rica?',
+    a: 'No. Costa Rica is where Bronson is based, and it puts him in Americas time zones. The approach applies to any site where organic search and AI visibility matter.',
+  },
+];
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  '@id': `${url}#faq`,
+  url,
+  name: 'Growth Architect, Costa Rica',
+  about: { '@id': 'https://bronson.co.za/#/schema/person' },
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+
+// Defines the term itself, and ties it to the person who holds the title
+const termSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'DefinedTerm',
+  '@id': `${url}#term`,
+  name: 'Growth Architect',
+  description: faqs[0].a,
+  url,
+  inDefinedTermSet: {
+    '@type': 'DefinedTermSet',
+    name: 'Growth OS',
+    url: 'https://bronson.co.za/framework/',
+  },
+  subjectOf: { '@id': `${url}#faq` },
+};
+
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  '@id': 'https://bronson.co.za/#/schema/person',
+  name: 'Bronson Harrington',
+  jobTitle: 'Growth Architect',
+  homeLocation: { '@type': 'Place', name: 'San José, Costa Rica' },
+  knowsAbout: [
+    'Growth architecture',
+    'Search engine optimization',
+    'Answer engine optimization',
+    'AI search visibility',
+    'Technical SEO',
+    'Topical authority',
+    'iGaming organic acquisition',
+    'Server-side pre-rendering',
+  ],
+};
+---
+<BaseLayout
+  title="Growth Architect Costa Rica | Bronson Harrington"
+  description="What a Growth Architect is, how it differs from SEO consulting, and the results behind Bronson Harrington's work from Costa Rica. Quick answers inside."
+>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(termSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
+
+  <section class="hero container">
+    <p class="eyebrow">~/growth-architect/costa-rica</p>
+    <h1>Growth Architect, Costa Rica</h1>
+    <p class="lede">A Growth Architect designs the system organic growth runs on: the technical foundation, the authority a site builds, and how it's found across search and AI answer engines. Bronson Harrington does this work from San José, Costa Rica.</p>
+  </section>
+
+  <hr class="hairline" />
+
+  <section class="faq container" aria-labelledby="faq-title">
+    <p class="eyebrow">quick answers</p>
+    <h2 id="faq-title">The short version.</h2>
+    <div class="faq-list">
+      {faqs.map((f) => (
+        <article class="faq-item">
+          <h3>{f.q}</h3>
+          <p>{f.a}</p>
+        </article>
+      ))}
+    </div>
+    <p class="more">The full model: <a href={`${base}framework/`}>Growth OS</a>. The longer story: <a href={`${base}about-me/`}>about me</a>.</p>
+  </section>
+
+  <hr class="hairline" />
+
+  <section class="example container" aria-labelledby="example-title">
+    <p class="eyebrow">worked example</p>
+    <h2 id="example-title">White-label iGaming, without a rebuild.</h2>
+    <p class="lede">White-label iGaming platforms show the idea clearly. Their pages are rendered in the browser with JavaScript, so search crawlers and AI agents often see very little, and heavy browsing traffic competes with transactions for the same database.</p>
+    <p>The fix is architectural, not editorial. A server-side pre-rendered layer turns game lobbies and live odds into flat HTML served from edge caches, which crawlers and AI retrieval systems can read instantly. Edge caching and asynchronous event streams take the browsing load off the transaction database. It all deploys through DNS and CDN routing, with no change to the underlying platform or its compliance certificates.</p>
+    <a href={pdf} class="pdf" download>
+      <span class="pdf-title">iGaming Enterprise Growth Architecture Framework</span>
+      <span class="label">PDF · 4 pages · 69 KB · download →</span>
+    </a>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    padding-top: var(--space-6);
+    padding-bottom: var(--space-5);
+  }
+  .hero h1 {
+    margin-top: var(--space-1);
+  }
+  .lede {
+    font-size: var(--text-lg);
+    color: var(--ink-soft);
+    max-width: var(--content-narrow);
+    margin-top: var(--space-2);
+  }
+  .faq,
+  .example {
+    padding-top: var(--space-6);
+    padding-bottom: var(--space-6);
+  }
+  .faq h2,
+  .example h2 {
+    margin-top: var(--space-1);
+  }
+  .faq-list {
+    margin-top: var(--space-5);
+    border-bottom: 0.5px solid var(--hairline);
+  }
+  /* Genuine peer items: one uniform list */
+  .faq-item {
+    border-top: 0.5px solid var(--hairline);
+    padding: var(--space-3) 0;
+    display: grid;
+    grid-template-columns: 1fr 1.6fr;
+    gap: var(--space-4);
+  }
+  .faq-item h3 {
+    font-size: var(--text-base);
+    font-weight: 500;
+  }
+  .faq-item p {
+    margin: 0;
+    color: var(--ink-soft);
+  }
+  .more {
+    margin-top: var(--space-3);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--ink-muted);
+  }
+  .more a {
+    color: var(--accent);
+  }
+  .pdf {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    margin-top: var(--space-2);
+    padding: var(--space-3);
+    border: 0.5px solid var(--hairline);
+    border-top: 2px solid var(--rule-strong);
+    text-decoration: none;
+    max-width: var(--content-narrow);
+  }
+  .pdf-title {
+    font-family: var(--font-display);
+    font-weight: 500;
+    color: var(--ink);
+  }
+  .pdf:hover .pdf-title {
+    color: var(--accent);
+  }
+  @media (max-width: 720px) {
+    .faq-item { grid-template-columns: 1fr; gap: var(--space-1); }
+    .hero h1 { font-size: var(--text-2xl); }
+  }
+</style>
