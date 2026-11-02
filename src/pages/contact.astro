@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { socialGroups } from '../data/socials';
 
 const base = import.meta.env.BASE_URL;
 ---
@@ -53,13 +54,27 @@ const base = import.meta.env.BASE_URL;
       <p class="label">location</p>
       <p class="info-value">San José, Costa Rica</p>
     </div>
-    <div class="info-block">
-      <p class="label">linkedin</p>
-      <a href="https://www.linkedin.com/in/bronsonharrington/" class="info-value">in/bronsonharrington</a>
-    </div>
-    <div class="info-block">
-      <p class="label">github</p>
-      <a href="https://github.com/Gnuboss" class="info-value">Gnuboss</a>
+  </section>
+
+  <section class="elsewhere container">
+    <p class="eyebrow">~/elsewhere</p>
+    <h2>Find Me Elsewhere.</h2>
+    <div class="social-grid">
+      {socialGroups.map((g) => (
+        <div class="social-group">
+          <h3 class="label">{g.label}</h3>
+          <ul>
+            {g.links.map((l) => (
+              <li>
+                <a href={l.href} rel={l.profile ? 'me noopener' : 'noopener'}>
+                  <span class="s-name">{l.name}</span>
+                  <span class="label s-handle">{l.handle}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
     </div>
   </section>
 
@@ -139,6 +154,9 @@ const base = import.meta.env.BASE_URL;
     border-right: none;
     padding-right: 0;
   }
+  .info-block + .info-block {
+    padding-left: var(--space-4);
+  }
   .info-value {
     display: block;
     font-size: var(--text-base);
@@ -148,6 +166,47 @@ const base = import.meta.env.BASE_URL;
   }
   a.info-value:hover {
     color: var(--accent);
+  }
+  .elsewhere {
+    padding-top: var(--space-6);
+  }
+  .elsewhere h2 {
+    margin: var(--space-1) 0 var(--space-4);
+  }
+  /* Three genuine peer groups: uniform columns */
+  .social-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-5);
+  }
+  .social-group h3 {
+    font-weight: 400;
+    margin-bottom: var(--space-1);
+  }
+  .social-group ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-bottom: 0.5px solid var(--hairline);
+  }
+  .social-group li {
+    border-top: 0.5px solid var(--hairline);
+  }
+  .social-group a {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    padding: var(--space-2) 0;
+    text-decoration: none;
+  }
+  .s-name {
+    color: var(--ink);
+  }
+  .social-group a:hover .s-name {
+    color: var(--accent);
+  }
+  @media (max-width: 860px) {
+    .social-grid { grid-template-columns: 1fr; gap: var(--space-4); }
   }
   @media (max-width: 720px) {
     .info-strip {
@@ -161,6 +220,9 @@ const base = import.meta.env.BASE_URL;
     .info-block:last-child {
       border-bottom: none;
       padding-bottom: 0;
+    }
+    .info-block + .info-block {
+      padding-left: 0;
     }
   }
 </style>
