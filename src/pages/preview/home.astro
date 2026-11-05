@@ -1,0 +1,371 @@
+---
+// Design test: the home page as an ocean dive. Same content as the live home
+// page (src/pages/index.astro), set as big bold sections over the parallax
+// scene from the lab scroller. Hidden: noindex, left out of the sitemap and
+// not linked from the nav, so it can be reviewed and shared before anything
+// changes for visitors.
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import OceanScene from '../../components/OceanScene.astro';
+import { phases } from '../../data/framework';
+import { projects } from '../../data/projects';
+import { testimonials } from '../../data/testimonials';
+
+const base = import.meta.env.BASE_URL;
+const latestNotes = (await getCollection('notes', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 10);
+const fmt = (d: Date) => d.toISOString().slice(0, 10);
+
+// Top to bottom, the way you meet them on the dive: the visible tip first
+const stages = [...phases].reverse();
+
+const marks = [
+  { id: 'surface', depth: '0m', label: 'surface' },
+  { id: 'notes', depth: '20m', label: 'field notes' },
+  { id: 'builds', depth: '45m', label: 'builds' },
+  { id: 'framework', depth: '70m', label: 'growth os' },
+  { id: 'colleagues', depth: '110m', label: 'colleagues' },
+];
+---
+<BaseLayout
+  title="Home Page Design Test: Ocean Dive | Bronson Harrington"
+  description="A design test for the bronson.co.za home page: field notes, builds, the Growth OS framework and testimonials, laid out as a dive through a parallax ocean."
+>
+  <meta slot="head" name="robots" content="noindex, nofollow" />
+
+  <OceanScene marks={marks} seabed="colleagues" />
+
+  <div class="dive">
+    <!-- 0m: the surface. Big type straight on the sky -->
+    <section class="stop container" id="surface">
+      <div class="hero">
+        <p class="tag">~/bronson/costa-rica</p>
+        <h1>Bronson<br />Harrington.</h1>
+        <p class="sub">Growth Architect · SEO / AEO · builder</p>
+        <p class="lede">25 years building organic growth systems inside iGaming, fintech and other regulated markets. This is where I write about that work, think out loud about systems and digital sovereignty, and keep the tools I build on the side.</p>
+        <p class="actions">
+          <a class="btn" href="#notes">dive in ↓</a>
+          <a class="more" href={`${base}about-me/`}>more about me →</a>
+        </p>
+      </div>
+    </section>
+
+    <!-- 20m: field notes -->
+    <section class="stop container" id="notes">
+      <div class="block">
+        <header class="plate">
+          <p class="tag">20m / field notes</p>
+          <h2>Field Notes.</h2>
+        </header>
+        <ol class="notes panel">
+          {latestNotes.map((note) => (
+            <li>
+              <a href={`${base}notes/${note.slug}/`}>
+                <time datetime={fmt(note.data.date)}>{fmt(note.data.date)}</time>
+                <span class="title">{note.data.title}</span>
+              </a>
+            </li>
+          ))}
+          <li class="all"><a class="more" href={`${base}notes/`}>all field notes →</a></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- 45m: things I've built -->
+    <section class="stop container" id="builds">
+      <div class="block">
+        <header class="plate">
+          <p class="tag">45m / the lab</p>
+          <h2>Things I've Built.</h2>
+        </header>
+        <div class="builds">
+          {projects.map((p) => (
+            <article class="panel build">
+              <p class="label">{p.stack}</p>
+              <h3>{p.name}</h3>
+              <p>{p.summary}</p>
+              <a href={p.href} class="more">{p.linkLabel} →</a>
+            </article>
+          ))}
+        </div>
+        <p class="after"><a class="more chip" href={`${base}lab/`}>the whole lab →</a></p>
+      </div>
+    </section>
+
+    <!-- 70m: Growth OS, stepping down like the dive -->
+    <section class="stop container" id="framework">
+      <div class="block">
+        <header class="plate">
+          <p class="tag">70m / growth os</p>
+          <h2>How I Think About Growth.</h2>
+        </header>
+        <ol class="stair">
+          {stages.map((p) => (
+            <li>
+              <a class="panel step" href={`${base}framework/#${p.id}`}>
+                <span class="label">{p.num} · {p.name.toLowerCase()}</span>
+                <span class="headline">{p.headline}</span>
+              </a>
+            </li>
+          ))}
+        </ol>
+        <p class="after"><a class="more chip" href={`${base}framework/`}>read the framework →</a></p>
+      </div>
+    </section>
+
+    <!-- 110m: the seabed. What people I've worked with say -->
+    <section class="stop container" id="colleagues">
+      <div class="block">
+        <header class="plate">
+          <p class="tag">110m / colleagues</p>
+          <h2>What People Say.</h2>
+        </header>
+        <div class="quotes">
+          {testimonials.map((t) => (
+            <blockquote class="panel quote">
+              <p>"{t.quote}"</p>
+              <footer>
+                <span class="name">{t.name}</span>
+                <span class="label">{t.role}, {t.company}</span>
+              </footer>
+            </blockquote>
+          ))}
+        </div>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .stop {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding-top: var(--space-6);
+    padding-bottom: var(--space-6);
+  }
+  .block {
+    width: 100%;
+  }
+  .tag,
+  .label {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--accent);
+    margin: 0;
+  }
+  a.more {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--accent);
+    text-decoration: none;
+  }
+  a.more:hover {
+    text-decoration: underline;
+  }
+
+  /* Surface: big type straight on the sky, the copy dipping into the sea */
+  #surface {
+    align-items: flex-start;
+    padding-top: var(--space-4);
+  }
+  .hero {
+    max-width: 760px;
+  }
+  .hero h1 {
+    font-size: clamp(3.25rem, 10vw, 8rem);
+    line-height: 0.92;
+    letter-spacing: -0.03em;
+    margin: var(--space-2) 0 var(--space-3);
+  }
+  .sub {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--ink);
+    margin: 0 0 var(--space-3);
+  }
+  .lede {
+    font-size: var(--text-lg);
+    max-width: 600px;
+    color: var(--ink);
+    /* A soft wash of paper keeps the copy crisp where it crosses clouds and sea */
+    background: color-mix(in srgb, var(--paper) 82%, transparent);
+    padding: var(--space-2) var(--space-3);
+    margin: 0 0 var(--space-3) calc(var(--space-3) * -1);
+  }
+  .actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+  }
+  .btn {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    background: var(--ink);
+    color: var(--paper);
+    padding: 12px 20px;
+    text-decoration: none;
+  }
+  .btn:hover {
+    background: var(--accent);
+  }
+
+  /* Section plates: depth tag and a big bold heading on a slab of paper */
+  .plate {
+    display: inline-block;
+    background: var(--paper);
+    border-top: 2px solid var(--rule-strong);
+    padding: var(--space-3) var(--space-4) var(--space-2);
+    margin-bottom: var(--space-3);
+  }
+  .plate h2 {
+    font-size: clamp(2.25rem, 6.5vw, 5rem);
+    line-height: 0.95;
+    letter-spacing: -0.025em;
+    margin: var(--space-1) 0 0;
+  }
+
+  .panel {
+    background: var(--paper);
+    box-shadow: 0 10px 40px rgba(var(--ink-rgb), 0.18);
+  }
+
+  /* Field notes: date and title rows on one wide panel */
+  .notes {
+    list-style: none;
+    margin: 0;
+    padding: var(--space-2) var(--space-4);
+    max-width: 860px;
+  }
+  .notes li + li {
+    border-top: 1px solid var(--hairline);
+  }
+  .notes a {
+    display: grid;
+    grid-template-columns: 7.5rem 1fr;
+    gap: var(--space-2);
+    align-items: baseline;
+    padding: 14px 0;
+    text-decoration: none;
+    color: var(--ink);
+  }
+  .notes time {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--ink-faint);
+  }
+  .notes .title {
+    font-size: var(--text-lg);
+    font-weight: 500;
+    line-height: 1.3;
+  }
+  .notes a:hover .title {
+    color: var(--accent);
+  }
+  .notes .all a {
+    display: inline-block;
+    padding: 14px 0 6px;
+  }
+
+  /* Builds: four peers */
+  .builds {
+    display: grid;
+    gap: var(--space-3);
+  }
+  .build {
+    padding: var(--space-3);
+    border-top: 2px solid var(--rule-strong);
+    display: flex;
+    flex-direction: column;
+  }
+  .build h3 {
+    font-size: var(--text-xl);
+    margin: var(--space-1) 0;
+  }
+  .build p {
+    color: var(--ink-muted);
+    margin: 0 0 var(--space-2);
+  }
+  .build .more {
+    margin-top: auto;
+  }
+  .after {
+    margin: var(--space-3) 0 0;
+  }
+  .chip {
+    background: var(--paper);
+    padding: 8px 14px;
+  }
+
+  /* Growth OS: each stage steps further down and across, like the dive */
+  .stair {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-3);
+  }
+  .step {
+    display: block;
+    max-width: 560px;
+    padding: var(--space-3) var(--space-4);
+    border-top: 2px solid var(--rule-strong);
+    text-decoration: none;
+    color: var(--ink);
+  }
+  .step .headline {
+    display: block;
+    font-size: var(--text-xl);
+    font-weight: 600;
+    line-height: 1.2;
+    margin-top: var(--space-1);
+  }
+  .step:hover .headline {
+    color: var(--accent);
+  }
+
+  /* Testimonials */
+  .quotes {
+    display: grid;
+    gap: var(--space-3);
+  }
+  .quote {
+    margin: 0;
+    padding: var(--space-3);
+    border-top: 2px solid var(--rule-strong);
+  }
+  .quote > p {
+    margin: 0;
+    color: var(--ink);
+    line-height: 1.55;
+  }
+  .quote footer {
+    margin-top: var(--space-2);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .quote .name {
+    font-weight: 600;
+  }
+
+  @media (min-width: 720px) {
+    .builds { grid-template-columns: repeat(2, 1fr); }
+    .stair li:nth-child(2) { margin-left: 18%; }
+    .stair li:nth-child(3) { margin-left: 36%; }
+  }
+  @media (min-width: 980px) {
+    .builds { grid-template-columns: repeat(4, 1fr); }
+    .quotes { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 719px) {
+    /* Leave the depth gauge its own strip on the right */
+    .dive .container { padding-right: 52px; }
+    .plate { padding: var(--space-2) var(--space-3); }
+    .notes { padding: var(--space-1) var(--space-3); }
+    .notes a { grid-template-columns: 1fr; gap: 2px; }
+    .lede { margin-left: 0; }
+  }
+</style>

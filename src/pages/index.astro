@@ -8,6 +8,7 @@ import { phases } from '../data/framework';
 import { projects } from '../data/projects';
 import { profileUrls } from '../data/socials';
 import { CONTACT } from '../config/site';
+import { testimonials } from '../data/testimonials';
 
 const base = import.meta.env.BASE_URL;
 const latestNotes = (await getCollection('notes', ({ data }) => !data.draft))
@@ -15,20 +16,6 @@ const latestNotes = (await getCollection('notes', ({ data }) => !data.draft))
   .slice(0, 10); // home page shows the 10 most recent; the rest live on /notes/
 const fmt = (d: Date) => d.toISOString().slice(0, 10);
 
-const testimonials = [
-  {
-    quote: "I genuinely enjoyed the experience. He's incredibly sharp, always positive, and brings a level of strategic thinking that goes well beyond day-to-day execution. Bronson is constantly thinking long-term and building strategies that actually last, not just quick wins.",
-    name: 'Tarsis Tochi', role: 'Performance Marketing Manager', company: 'Disability Law Marketing LLC, Canada',
-  },
-  {
-    quote: "Nothing was impossible for Mr Harrington, merely challenges to overcome. He also was exceptionally well liked which meant that he could get the best out of others where others failed. Never a moment without a smile and a total 'can do' attitude.",
-    name: 'Richard De Waal', role: 'Founder', company: 'Tiburon Media, Africa',
-  },
-  {
-    quote: "Bronson was an outstanding director while at Downtown Ecommerce. He brought great value, creativity, and insights to our organization, and specifically with link building for topical authority. Any team that has Bronson on their staff is a force to reckon with.",
-    name: 'Patrick Tigue', role: 'Founder', company: 'Downtown eCommerce Partners, USA',
-  },
-];
 ---
 <BaseLayout
   title="Bronson Harrington | Growth Architect in Costa Rica"
