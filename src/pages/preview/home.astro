@@ -379,11 +379,12 @@ const marks = [
     .climb li:nth-child(3) { margin-left: 36%; }
   }
   @media (min-width: 980px) {
-    /* Wide screens: the stages climb left to right, 01 on the lowest step */
+    /* Wide screens: the stages step down left to right, like the dive:
+       Foundations top, Growth middle, Domination on the lowest step */
     .climb { grid-template-columns: repeat(3, 1fr); align-items: start; }
-    .climb li:nth-child(1) { margin: 5rem 0 0; }
+    .climb li:nth-child(1) { margin: 0; }
     .climb li:nth-child(2) { margin: 2.5rem 0 0; }
-    .climb li:nth-child(3) { margin: 0; }
+    .climb li:nth-child(3) { margin: 5rem 0 0; }
     .quotes { grid-template-columns: repeat(3, 1fr); }
   }
   @media (max-width: 719px) {
