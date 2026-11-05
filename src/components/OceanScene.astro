@@ -13,6 +13,28 @@
 // transform (compositor only). Reduced motion: the scene stays still.
 // Colours come from the palette tokens, so it reskins with each edition.
 
+import { palette } from '../config/palette.mjs';
+import { buildTokens, contrastChecks, mix } from '../config/theme.mjs';
+
+// The reef: the contact form and footer become dark rock at the bottom of
+// the dive. Same palette, roles flipped: rock is the background, paper is
+// the text, and the light highlight colour takes over links. buildTokens
+// runs the usual contrast fixes, and the build fails if any pair misses AA.
+const roles = palette.roles;
+const rock = mix(roles.ink, '#000000', 0.78);
+const reef = buildTokens({
+  roles: { paper: rock, ink: roles.paper, accent: roles.highlight, rule: roles.rule, highlight: roles.highlight },
+});
+const failing = contrastChecks(reef).filter((c) => c.ratio < c.min);
+if (failing.length) throw new Error(`Reef colours fail contrast: ${failing.map((c) => c.pair).join(', ')}`);
+// Reef edge shapes, generated once (scripts in the field note): a rough line of
+// boulders, and branching / fan / tube coral that rises behind them
+const ROCK_AND_CORAL = `:root{--rock-mask:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 120'><path d='M0 120 L0 72 Q14 45 56 49 Q94 54 107 63 Q117 69 147 75 Q172 78 181 60 Q189 74 214 72 Q244 75 254 64 Q266 29 302 34 Q354 35 372 52 Q387 39 434 37 Q468 48 479 53 Q483 47 494 43 Q521 50 530 88 Q543 42 582 45 Q603 47 610 91 Q624 43 667 42 Q704 53 716 80 Q729 49 768 46 Q794 56 803 92 Q811 54 836 54 Q875 59 888 57 Q895 48 916 45 Q954 57 967 74 Q974 55 996 57 Q1021 56 1030 86 Q1035 37 1050 36 Q1074 37 1082 92 Q1096 56 1138 53 Q1178 65 1192 67 Q1208 68 1255 65 Q1305 72 1322 75 Q1337 80 1382 77 Q1426 82 1440 72 L1440 120 Z'/></svg>");--coral-mask:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 120'><g fill='%23000' stroke='%23000' stroke-linecap='round'><path d='M40 90 L38 64' stroke-width='7.2'/><path d='M38 64 L42 48' stroke-width='5.2'/><path d='M42 48 L50 40' stroke-width='3.7'/><path d='M50 40 L57 37' stroke-width='2.7'/><path d='M50 40 L53 33' stroke-width='2.7'/><path d='M42 48 L42 37' stroke-width='3.7'/><path d='M42 37 L46 31' stroke-width='2.7'/><path d='M42 37 L38 30' stroke-width='2.7'/><path d='M38 64 L30 46' stroke-width='5.2'/><path d='M30 46 L31 33' stroke-width='3.7'/><path d='M31 33 L35 24' stroke-width='2.7'/><path d='M31 33 L30 23' stroke-width='2.7'/><path d='M30 46 L21 37' stroke-width='3.7'/><path d='M21 37 L18 29' stroke-width='2.7'/><path d='M21 37 L14 33' stroke-width='2.7'/><path d='M161 90 L160 61' stroke-width='7.0'/><path d='M160 61 L169 42' stroke-width='5.1'/><path d='M169 42 L182 35' stroke-width='3.7'/><path d='M182 35 L190 33' stroke-width='2.6'/><path d='M182 35 L188 27' stroke-width='2.6'/><path d='M169 42 L171 29' stroke-width='3.7'/><path d='M171 29 L176 21' stroke-width='2.6'/><path d='M171 29 L169 20' stroke-width='2.6'/><path d='M160 61 L151 42' stroke-width='5.1'/><path d='M151 42 L151 28' stroke-width='3.7'/><path d='M151 28 L156 21' stroke-width='2.6'/><path d='M151 28 L149 18' stroke-width='2.6'/><path d='M151 42 L140 31' stroke-width='3.7'/><path d='M140 31 L137 21' stroke-width='2.6'/><path d='M140 31 L130 28' stroke-width='2.6'/><path d='M337 90 L332 63' stroke-width='7.4'/><path d='M332 63 L338 45' stroke-width='5.3'/><path d='M338 45 L345 36' stroke-width='3.8'/><path d='M345 36 L354 33' stroke-width='2.8'/><path d='M345 36 L347 29' stroke-width='2.8'/><path d='M338 45 L337 32' stroke-width='3.8'/><path d='M337 32 L341 25' stroke-width='2.8'/><path d='M337 32 L332 24' stroke-width='2.8'/><path d='M332 63 L325 48' stroke-width='5.3'/><path d='M325 48 L325 37' stroke-width='3.8'/><path d='M325 37 L328 30' stroke-width='2.8'/><path d='M325 37 L321 30' stroke-width='2.8'/><path d='M325 48 L315 42' stroke-width='3.8'/><path d='M315 42 L312 35' stroke-width='2.8'/><path d='M315 42 L308 39' stroke-width='2.8'/><rect x='436' y='41' width='8' height='79' rx='4'/><rect x='447' y='40' width='8' height='80' rx='4'/><rect x='458' y='52' width='8' height='68' rx='4'/><path d='M575 90 L576 59' stroke-width='9.2'/><path d='M576 59 L583 38' stroke-width='6.6'/><path d='M583 38 L595 25' stroke-width='4.8'/><path d='M595 25 L604 20' stroke-width='3.4'/><path d='M595 25 L598 13' stroke-width='3.4'/><path d='M583 38 L581 23' stroke-width='4.8'/><path d='M581 23 L583 11' stroke-width='3.4'/><path d='M581 23 L575 13' stroke-width='3.4'/><path d='M576 59 L568 38' stroke-width='6.6'/><path d='M568 38 L569 25' stroke-width='4.8'/><path d='M569 25 L574 16' stroke-width='3.4'/><path d='M569 25 L565 16' stroke-width='3.4'/><path d='M568 38 L558 26' stroke-width='4.8'/><path d='M558 26 L555 16' stroke-width='3.4'/><path d='M558 26 L548 23' stroke-width='3.4'/><path d='M750 90 L752 63' stroke-width='8.4'/><path d='M752 63 L763 47' stroke-width='6.1'/><path d='M763 47 L775 40' stroke-width='4.4'/><path d='M775 40 L784 38' stroke-width='3.2'/><path d='M775 40 L782 34' stroke-width='3.2'/><path d='M763 47 L765 35' stroke-width='4.4'/><path d='M765 35 L771 27' stroke-width='3.2'/><path d='M765 35 L763 27' stroke-width='3.2'/><path d='M752 63 L744 47' stroke-width='6.1'/><path d='M744 47 L744 36' stroke-width='4.4'/><path d='M744 36 L747 28' stroke-width='3.2'/><path d='M744 36 L739 28' stroke-width='3.2'/><path d='M744 47 L735 38' stroke-width='4.4'/><path d='M735 38 L733 31' stroke-width='3.2'/><path d='M735 38 L727 35' stroke-width='3.2'/><path d='M865 90 L860 60' stroke-width='9.5'/><path d='M860 60 L867 41' stroke-width='6.8'/><path d='M867 41 L877 30' stroke-width='4.9'/><path d='M877 30 L887 26' stroke-width='3.5'/><path d='M877 30 L880 19' stroke-width='3.5'/><path d='M867 41 L866 27' stroke-width='4.9'/><path d='M866 27 L870 17' stroke-width='3.5'/><path d='M866 27 L861 18' stroke-width='3.5'/><path d='M860 60 L848 45' stroke-width='6.8'/><path d='M848 45 L846 31' stroke-width='4.9'/><path d='M846 31 L849 21' stroke-width='3.5'/><path d='M846 31 L842 23' stroke-width='3.5'/><path d='M848 45 L837 39' stroke-width='4.9'/><path d='M837 39 L830 32' stroke-width='3.5'/><path d='M837 39 L829 40' stroke-width='3.5'/><path d='M952 90 A36 36 0 0 1 1024 90 Z'/><path d='M1123 90 L1119 60' stroke-width='7.5'/><path d='M1119 60 L1128 42' stroke-width='5.4'/><path d='M1128 42 L1138 33' stroke-width='3.9'/><path d='M1138 33 L1147 32' stroke-width='2.8'/><path d='M1138 33 L1142 25' stroke-width='2.8'/><path d='M1128 42 L1129 27' stroke-width='3.9'/><path d='M1129 27 L1134 17' stroke-width='2.8'/><path d='M1129 27 L1125 19' stroke-width='2.8'/><path d='M1119 60 L1106 43' stroke-width='5.4'/><path d='M1106 43 L1104 28' stroke-width='3.9'/><path d='M1104 28 L1108 17' stroke-width='2.8'/><path d='M1104 28 L1100 19' stroke-width='2.8'/><path d='M1106 43 L1091 37' stroke-width='3.9'/><path d='M1091 37 L1082 29' stroke-width='2.8'/><path d='M1091 37 L1080 37' stroke-width='2.8'/><path d='M1248 90 L1251 58' stroke-width='9.9'/><path d='M1251 58 L1260 38' stroke-width='7.2'/><path d='M1260 38 L1270 27' stroke-width='5.2'/><path d='M1270 27 L1280 22' stroke-width='3.7'/><path d='M1270 27 L1274 19' stroke-width='3.7'/><path d='M1260 38 L1261 22' stroke-width='5.2'/><path d='M1261 22 L1265 12' stroke-width='3.7'/><path d='M1261 22 L1258 11' stroke-width='3.7'/><path d='M1251 58 L1247 35' stroke-width='7.2'/><path d='M1247 35 L1253 20' stroke-width='5.2'/><path d='M1253 20 L1260 13' stroke-width='3.7'/><path d='M1253 20 L1254 9' stroke-width='3.7'/><path d='M1247 35 L1237 20' stroke-width='5.2'/><path d='M1237 20 L1233 7' stroke-width='3.7'/><path d='M1237 20 L1225 13' stroke-width='3.7'/><path d='M1369 90 L1370 56' stroke-width='7.9'/><path d='M1370 56 L1379 34' stroke-width='5.7'/><path d='M1379 34 L1393 22' stroke-width='4.1'/><path d='M1393 22 L1405 18' stroke-width='2.9'/><path d='M1393 22 L1400 9' stroke-width='2.9'/><path d='M1379 34 L1378 18' stroke-width='4.1'/><path d='M1378 18 L1380 7' stroke-width='2.9'/><path d='M1378 18 L1372 9' stroke-width='2.9'/><path d='M1370 56 L1363 33' stroke-width='5.7'/><path d='M1363 33 L1366 17' stroke-width='4.1'/><path d='M1366 17 L1375 7' stroke-width='2.9'/><path d='M1366 17 L1363 6' stroke-width='2.9'/><path d='M1363 33 L1352 21' stroke-width='4.1'/><path d='M1352 21 L1348 10' stroke-width='2.9'/><path d='M1352 21 L1341 16' stroke-width='2.9'/></g></svg>")}`;
+const reefCss =
+  'html:has(.scene) .site-footer{' +
+  Object.entries(reef).map(([k, v]) => `${k}:${v}`).join(';') +
+  `;--coral:${mix(roles.rule, rock, 0.55)};--coral-2:${mix(roles.highlight, rock, 0.45)}}`;
+
 interface Mark { id?: string; depth: string; label: string; at?: number }
 interface Props { marks: Mark[]; seabed: string }
 const { marks: given, seabed } = Astro.props;
@@ -125,6 +147,9 @@ const bubbles = Array.from({ length: 22 }, () => ({ x: range(2, 98), y: range(35
     <span class="needle" aria-hidden="true"></span>
   </nav>
 
+
+<!-- Reef colours (flipped palette) and the rough rock / coral edge shapes -->
+<style is:inline set:html={reefCss + ROCK_AND_CORAL}></style>
 
 <style>
 
@@ -355,6 +380,14 @@ const bubbles = Array.from({ length: 22 }, () => ({ x: range(2, 98), y: range(35
   .gauge .d {
     color: var(--accent);
   }
+  /* The gauge steps aside once you reach the reef */
+  .gauge {
+    transition: opacity 0.3s;
+  }
+  .gauge.away {
+    opacity: 0;
+    pointer-events: none;
+  }
   .needle {
     position: absolute;
     left: -5px;
@@ -364,10 +397,49 @@ const bubbles = Array.from({ length: 22 }, () => ({ x: range(2, 98), y: range(35
     background: var(--accent);
   }
 
-  /* Keep the shared footer readable over the deep water */
+  /* The reef: the footer (and its contact form) as dark rock with a rough,
+     coral-topped edge, anchoring the bottom of the dive. Its colours are
+     the flipped reef tokens set inline above, so the form follows along */
   :global(.site-footer) {
-    background: var(--paper);
     position: relative;
+    background: var(--paper);
+    color: var(--ink);
+    margin-top: 110px;
+    /* Rock continues below the footer (e.g. behind the phone thumb nav's spacer) */
+    box-shadow: 0 50vh 0 50vh var(--paper);
+  }
+  :global(.site-footer::before),
+  :global(.site-footer::after) {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    pointer-events: none;
+    -webkit-mask-repeat: repeat-x;
+    mask-repeat: repeat-x;
+    -webkit-mask-position: left bottom;
+    mask-position: left bottom;
+    -webkit-mask-size: 1440px 120px;
+    mask-size: 1440px 120px;
+  }
+  /* Coral behind the rock, so the rock's edge sits in front of it */
+  :global(.site-footer::after) {
+    bottom: calc(100% - 1px);
+    height: 120px;
+    z-index: -1;
+    background: linear-gradient(90deg, var(--coral) 0 50%, var(--coral-2) 50% 100%) 0 0 / 720px 100% repeat-x;
+    -webkit-mask-image: var(--coral-mask);
+    mask-image: var(--coral-mask);
+  }
+  :global(.site-footer::before) {
+    bottom: calc(100% - 1px);
+    height: 120px;
+    background: var(--paper);
+    -webkit-mask-image: var(--rock-mask);
+    mask-image: var(--rock-mask);
+  }
+  :global(.site-footer > hr.hairline:first-child) {
+    display: none;
   }
 
   @media (max-width: 720px) {
@@ -390,6 +462,7 @@ const bubbles = Array.from({ length: 22 }, () => ({ x: range(2, 98), y: range(35
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const needle = document.querySelector<HTMLElement>('.gauge .needle');
   const gauge = document.querySelector<HTMLElement>('.gauge');
+  const footerEl = document.querySelector<HTMLElement>('.site-footer');
   let gaugeH = 0;
   let range = 1;
 
@@ -424,6 +497,7 @@ const bubbles = Array.from({ length: 22 }, () => ({ x: range(2, 98), y: range(35
     }
     // Move the needle directly: a page-wide CSS variable here would make the
     // browser restyle the whole document on every frame
+    if (gauge && footerEl) gauge.classList.toggle('away', footerEl.getBoundingClientRect().top < innerHeight * 0.75);
     if (needle) needle.style.transform = `translate3d(0, ${(Math.min(1, y / range) * gaugeH).toFixed(1)}px, 0)`;
   };
   const onScroll = () => {
