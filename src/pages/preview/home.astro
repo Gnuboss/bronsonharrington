@@ -388,17 +388,7 @@ const marks = [
     .quotes { grid-template-columns: repeat(3, 1fr); }
   }
   @media (max-width: 719px) {
-    /* The builds become a swipeable row, so that section fits one screen.
-       Growth OS and testimonials stack (those sections grow taller) */
-    .builds {
-      grid-auto-flow: column;
-      grid-auto-columns: 86%;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      scrollbar-width: none;
-      padding-bottom: var(--space-1);
-    }
-    .builds > * { scroll-snap-align: start; }
+    /* Peers stack on phones; these sections grow taller than one screen */
     .climb { gap: var(--space-2); }
     .intro { font-size: var(--text-base); padding: var(--space-2); }
     .step { padding: var(--space-2) var(--space-3); }
