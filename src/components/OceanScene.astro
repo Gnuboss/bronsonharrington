@@ -63,9 +63,13 @@ const bubbles = Array.from({ length: 22 }, () => ({ x: range(2, 98), y: range(35
         <path d="M900 120 L900 108 Q980 86 1050 98 Q1120 60 1210 92 Q1300 100 1440 96 L1440 120 Z" />
       </svg>
       <div class="water">
-        <svg class="waves" viewBox="0 0 1440 40" preserveAspectRatio="none">
-          <path d="M0 14 Q60 4 120 14 T240 14 T360 14 T480 14 T600 14 T720 14 T840 14 T960 14 T1080 14 T1200 14 T1320 14 T1440 14 L1440 40 L0 40 Z" />
-        </svg>
+        <!-- One wave period (240 units) wider than the screen, so sliding it
+             left by one period loops seamlessly -->
+        <div class="tide">
+          <svg class="waves" viewBox="0 0 1680 40" preserveAspectRatio="none">
+            <path d="M0 14 Q60 4 120 14 T240 14 T360 14 T480 14 T600 14 T720 14 T840 14 T960 14 T1080 14 T1200 14 T1320 14 T1440 14 T1560 14 T1680 14 L1680 40 L0 40 Z" />
+          </svg>
+        </div>
       </div>
     </div>
 
@@ -191,13 +195,33 @@ const bubbles = Array.from({ length: 22 }, () => ({ x: range(2, 98), y: range(35
       color-mix(in srgb, var(--ink) 88%, var(--paper))
     );
   }
-  .waves {
+  /* The waterline: the waves roll sideways while the tide slowly rises and
+     falls. Both are transform-only loops, so they stay on the compositor */
+  .tide {
     position: absolute;
     top: -14px;
     left: 0;
     width: 100%;
     height: 28px;
+  }
+  .waves {
+    display: block;
+    width: calc(100vw * 1680 / 1440);
+    height: 100%;
     fill: color-mix(in srgb, var(--ink) 28%, var(--paper));
+    /* One element, two loops: roll uses transform, tide uses translate */
+    animation: roll 14s linear infinite, tide 9s ease-in-out infinite alternate;
+    will-change: transform, translate;
+    /* Without strict containment the moving waves repaint the layer they sit in */
+    contain: strict;
+  }
+  @keyframes roll {
+    from { transform: translateX(0); }
+    to { transform: translateX(calc(-100vw * 240 / 1440)); }
+  }
+  @keyframes tide {
+    from { translate: 0 -4px; }
+    to { translate: 0 5px; }
   }
 
   .rays {
@@ -352,7 +376,7 @@ const bubbles = Array.from({ length: 22 }, () => ({ x: range(2, 98), y: range(35
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .school, .bubble, .kelp { animation: none; }
+    .school, .bubble, .kelp, .tide, .waves { animation: none; }
     .cloud { animation-play-state: paused; }
   }
 </style>
