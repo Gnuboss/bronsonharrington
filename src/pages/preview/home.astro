@@ -36,14 +36,14 @@ const marks = [
 
   <OceanScene marks={marks} seabed="colleagues" />
 
-  <div class="dive">
+  <div class="dive dive-home">
     <!-- 0m: the surface. Big type straight on the sky -->
     <section class="stop container" id="surface">
-      <div class="hero">
-        <p class="tag">~/bronson/costa-rica</p>
+      <div class="surface-copy">
+        <p class="depth">~/bronson/costa-rica</p>
         <h1>Bronson<br />Harrington.</h1>
         <p class="sub">Growth Architect · SEO / AEO · builder</p>
-        <p class="lede">25 years building organic growth systems inside iGaming, fintech and other regulated markets. This is where I write about that work, think out loud about systems and digital sovereignty, and keep the tools I build on the side.</p>
+        <p class="intro">25 years building organic growth systems inside iGaming, fintech and other regulated markets. This is where I write about that work, think out loud about systems and digital sovereignty, and keep the tools I build on the side.</p>
         <p class="actions">
           <a class="btn" href="#notes">dive in ↓</a>
           <a class="more" href={`${base}about-me/`}>more about me →</a>
@@ -55,7 +55,7 @@ const marks = [
     <section class="stop container" id="notes">
       <div class="block">
         <header class="plate">
-          <p class="tag">20m / field notes</p>
+          <p class="depth">20m / field notes</p>
           <h2>Field Notes.</h2>
         </header>
         <ol class="notes panel">
@@ -76,7 +76,7 @@ const marks = [
     <section class="stop container" id="builds">
       <div class="block">
         <header class="plate">
-          <p class="tag">45m / the lab</p>
+          <p class="depth">45m / the lab</p>
           <h2>Things I've Built.</h2>
         </header>
         <div class="builds">
@@ -97,10 +97,10 @@ const marks = [
     <section class="stop container" id="framework">
       <div class="block">
         <header class="plate">
-          <p class="tag">70m / growth os</p>
-          <h2>How I Think About Growth.</h2>
+          <p class="depth">70m / growth os</p>
+          <h2>How I Think<br />About Growth.</h2>
         </header>
-        <ol class="stair">
+        <ol class="climb">
           {stages.map((p) => (
             <li>
               <a class="panel step" href={`${base}framework/#${p.id}`}>
@@ -118,7 +118,7 @@ const marks = [
     <section class="stop container" id="colleagues">
       <div class="block">
         <header class="plate">
-          <p class="tag">110m / colleagues</p>
+          <p class="depth">110m / colleagues</p>
           <h2>What People Say.</h2>
         </header>
         <div class="quotes">
@@ -138,17 +138,25 @@ const marks = [
 </BaseLayout>
 
 <style>
+  /* One depth per screen. The page settles on the nearest section as you
+     scroll ("proximity", not "mandatory", so nothing is ever unreachable) */
+  :global(html:has(.dive-home)) {
+    scroll-snap-type: y proximity;
+  }
   .stop {
+    box-sizing: border-box;
     min-height: 100vh;
+    min-height: 100svh;
     display: flex;
     align-items: center;
-    padding-top: var(--space-6);
-    padding-bottom: var(--space-6);
+    padding-top: var(--space-4);
+    padding-bottom: var(--space-4);
+    scroll-snap-align: start;
   }
   .block {
     width: 100%;
   }
-  .tag,
+  .depth,
   .label {
     font-family: var(--font-mono);
     font-size: var(--text-xs);
@@ -170,11 +178,12 @@ const marks = [
     align-items: flex-start;
     padding-top: var(--space-4);
   }
-  .hero {
+  .surface-copy {
     max-width: 760px;
   }
-  .hero h1 {
-    font-size: clamp(3.25rem, 10vw, 8rem);
+  .surface-copy h1 {
+    /* Scales with the shorter side, so the hero fits short screens too */
+    font-size: clamp(3rem, min(10vw, 13vh), 8rem);
     line-height: 0.92;
     letter-spacing: -0.03em;
     margin: var(--space-2) 0 var(--space-3);
@@ -185,7 +194,7 @@ const marks = [
     color: var(--ink);
     margin: 0 0 var(--space-3);
   }
-  .lede {
+  .intro {
     font-size: var(--text-lg);
     max-width: 600px;
     color: var(--ink);
@@ -221,7 +230,7 @@ const marks = [
     margin-bottom: var(--space-3);
   }
   .plate h2 {
-    font-size: clamp(2.25rem, 6.5vw, 5rem);
+    font-size: clamp(2rem, min(6.5vw, 9vh), 5rem);
     line-height: 0.95;
     letter-spacing: -0.025em;
     margin: var(--space-1) 0 0;
@@ -300,7 +309,7 @@ const marks = [
   }
 
   /* Growth OS: each stage steps across from the one it's built on */
-  .stair {
+  .climb {
     list-style: none;
     margin: 0;
     padding: 0;
@@ -353,19 +362,46 @@ const marks = [
 
   @media (min-width: 720px) {
     .builds { grid-template-columns: repeat(2, 1fr); }
-    .stair li:nth-child(2) { margin-left: 18%; }
-    .stair li:nth-child(3) { margin-left: 36%; }
+    .climb li:nth-child(2) { margin-left: 18%; }
+    .climb li:nth-child(3) { margin-left: 36%; }
   }
   @media (min-width: 980px) {
+    /* Wide screens: the stages climb left to right, 01 on the lowest step */
+    .climb { grid-template-columns: repeat(3, 1fr); align-items: start; }
+    .climb li:nth-child(1) { margin: 5rem 0 0; }
+    .climb li:nth-child(2) { margin: 2.5rem 0 0; }
+    .climb li:nth-child(3) { margin: 0; }
     .builds { grid-template-columns: repeat(4, 1fr); }
     .quotes { grid-template-columns: repeat(3, 1fr); }
   }
   @media (max-width: 719px) {
+    /* Peers become a swipeable row, so the section still fits one screen */
+    .builds,
+    .quotes,
+    .climb {
+      grid-auto-flow: column;
+      grid-auto-columns: 86%;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      padding-bottom: var(--space-1);
+    }
+    .builds > *,
+    .quotes > *,
+    .climb > * { scroll-snap-align: start; }
+    .climb .step { height: 100%; }
+    .intro { font-size: var(--text-base); padding: var(--space-2); }
+    .step { padding: var(--space-2) var(--space-3); }
+    .notes a { padding: 10px 0; }
+    .notes .title { font-size: var(--text-base); }
+    /* Six notes fit one phone screen; the rest are a tap away */
+    .notes li:nth-child(n + 7):not(.all) { display: none; }
+    .surface-copy h1 { margin-bottom: var(--space-2); }
     /* Leave the depth gauge its own strip on the right */
     .dive .container { padding-right: 52px; }
     .plate { padding: var(--space-2) var(--space-3); }
     .notes { padding: var(--space-1) var(--space-3); }
     .notes a { grid-template-columns: 1fr; gap: 2px; }
-    .lede { margin-left: 0; }
+    .intro { margin-left: 0; }
   }
 </style>
