@@ -75,10 +75,13 @@ const marks = [
     <!-- 45m: things I've built -->
     <section class="stop container" id="builds">
       <div class="block">
-        <header class="plate">
+        <div class="head">
+          <header class="plate">
           <p class="depth">45m / the lab</p>
           <h2>Things I've Built.</h2>
         </header>
+          <a class="more chip" href={`${base}lab/`}>the whole lab →</a>
+        </div>
         <div class="builds">
           {projects.map((p) => (
             <article class="panel build">
@@ -89,17 +92,19 @@ const marks = [
             </article>
           ))}
         </div>
-        <p class="after"><a class="more chip" href={`${base}lab/`}>the whole lab →</a></p>
       </div>
     </section>
 
     <!-- 70m: Growth OS, stepping down like the dive -->
     <section class="stop container" id="framework">
       <div class="block">
-        <header class="plate">
+        <div class="head">
+          <header class="plate">
           <p class="depth">70m / growth os</p>
           <h2>How I Think<br />About Growth.</h2>
         </header>
+          <a class="more chip" href={`${base}framework/`}>read the framework →</a>
+        </div>
         <ol class="climb">
           {stages.map((p) => (
             <li>
@@ -110,7 +115,6 @@ const marks = [
             </li>
           ))}
         </ol>
-        <p class="after"><a class="more chip" href={`${base}framework/`}>read the framework →</a></p>
       </div>
     </section>
 
@@ -282,16 +286,17 @@ const marks = [
   .builds {
     display: grid;
     gap: var(--space-3);
+    max-width: 1040px;
   }
   .build {
-    padding: var(--space-3);
+    padding: var(--space-2) var(--space-3) var(--space-3);
     border-top: 2px solid var(--rule-strong);
     display: flex;
     flex-direction: column;
   }
   .build h3 {
     font-size: var(--text-xl);
-    margin: var(--space-1) 0;
+    margin: 4px 0;
   }
   .build p {
     color: var(--ink-muted);
@@ -300,8 +305,16 @@ const marks = [
   .build .more {
     margin-top: auto;
   }
-  .after {
-    margin: var(--space-3) 0 0;
+  /* Section heading with its "see all" link beside it */
+  .head {
+    display: flex;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-3);
+    margin-bottom: var(--space-3);
+  }
+  .head .plate {
+    margin-bottom: 0;
   }
   .chip {
     background: var(--paper);
@@ -371,7 +384,6 @@ const marks = [
     .climb li:nth-child(1) { margin: 5rem 0 0; }
     .climb li:nth-child(2) { margin: 2.5rem 0 0; }
     .climb li:nth-child(3) { margin: 0; }
-    .builds { grid-template-columns: repeat(4, 1fr); }
     .quotes { grid-template-columns: repeat(3, 1fr); }
   }
   @media (max-width: 719px) {
