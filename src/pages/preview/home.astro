@@ -17,8 +17,8 @@ const latestNotes = (await getCollection('notes', ({ data }) => !data.draft))
   .slice(0, 10);
 const fmt = (d: Date) => d.toISOString().slice(0, 10);
 
-// Top to bottom, the way you meet them on the dive: the visible tip first
-const stages = [...phases].reverse();
+// Read in build order, 01 to 03: each stage stands on the one before it
+const stages = phases;
 
 const marks = [
   { id: 'surface', depth: '0m', label: 'surface' },
@@ -299,7 +299,7 @@ const marks = [
     padding: 8px 14px;
   }
 
-  /* Growth OS: each stage steps further down and across, like the dive */
+  /* Growth OS: each stage steps across from the one it's built on */
   .stair {
     list-style: none;
     margin: 0;
