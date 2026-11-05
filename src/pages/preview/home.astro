@@ -142,11 +142,7 @@ const marks = [
 </BaseLayout>
 
 <style>
-  /* One depth per screen. The page settles on the nearest section as you
-     scroll ("proximity", not "mandatory", so nothing is ever unreachable) */
-  :global(html:has(.dive-home)) {
-    scroll-snap-type: y proximity;
-  }
+  /* One depth per screen, scrolled freely (no snapping) */
   .stop {
     box-sizing: border-box;
     min-height: 100vh;
@@ -155,7 +151,6 @@ const marks = [
     align-items: center;
     padding-top: var(--space-4);
     padding-bottom: var(--space-4);
-    scroll-snap-align: start;
   }
   .block {
     width: 100%;
