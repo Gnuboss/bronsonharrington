@@ -2,10 +2,10 @@
 import ContactForm from './ContactForm.astro';
 const base = import.meta.env.BASE_URL;
 const year = new Date().getFullYear();
-// The contact page has the full form and the thank-you page just used one,
-// so the footer form steps aside on both.
+// The contact and work-with-me pages have the full form, and the thank-you
+// page just used one, so the footer form steps aside on all three.
 const path = Astro.url.pathname;
-const showForm = !path.startsWith(`${base}contact`) && !path.startsWith(`${base}thanks`);
+const showForm = !['contact', 'work-with-me', 'thanks'].some((p) => path.startsWith(`${base}${p}`));
 ---
 <footer class="site-footer">
   {showForm && (
