@@ -1,0 +1,197 @@
+---
+import { personSchema, PERSON_ID } from '../data/person';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import Section from '../components/Section.astro';
+import ContactForm from '../components/ContactForm.astro';
+import { CONTACT } from '../config/site';
+
+const base = import.meta.env.BASE_URL;
+const url = 'https://bronson.co.za/work-with-me/';
+
+// Three ways to work together. Genuine peers (none is the "real" offer),
+// so one uniform row of cards.
+const doors = [
+  {
+    id: 'in-house',
+    tag: '01 · in-house',
+    title: 'Join your team',
+    pitch: 'A senior SEO, GEO or growth lead who can own the channel, run a team and report in revenue, not rankings.',
+    gets: [
+      'Head of SEO, SEO manager or team lead roles',
+      'Remote, worldwide; Central Time overlap from Costa Rica',
+      'Team leadership: most recently a six-person SEO team',
+    ],
+    link: { href: `${base}downloads/bronson-harrington-cv.pdf`, label: 'download my CV (PDF)' },
+    service: 'In-house SEO and growth leadership',
+  },
+  {
+    id: 'fractional',
+    tag: '02 · fractional',
+    title: 'Bring me in',
+    pitch: 'Fractional or project work for teams that need the system built, fixed or scaled, without hiring a full-time lead.',
+    gets: [
+      'Growth OS engagements: foundations, growth, domination',
+      'Technical SEO, authority building and AI-search visibility',
+      'Retainer or fixed scope; currently on retainer with a regulated sportsbook',
+    ],
+    link: { href: `${base}framework/`, label: 'how I work: Growth OS' },
+    service: 'Fractional SEO and growth architecture',
+  },
+  {
+    id: 'advisory',
+    tag: '03 · advisory',
+    title: 'Pick my brain',
+    pitch: 'A second opinion from someone who has been doing this for 25 years. One call, an audit or a standing advisory slot.',
+    gets: [
+      'Site, platform and vendor audits',
+      'Expert-network and advisory calls',
+      'AI-search and authority strategy sessions',
+    ],
+    link: { href: `${base}growth-architect-costa-rica/`, label: 'what a Growth Architect does' },
+    service: 'SEO and AI-search advisory',
+  },
+];
+
+// Results behind the claim. Each line traceable to a role on /about-me/.
+const proof = [
+  { k: '$20M+', v: 'annual revenue from an organic acquisition system across a 17-property sportsbook and casino portfolio (JazzSports, ~75% of revenue from organic search)' },
+  { k: '200%', v: 'organic traffic growth, with GEO/AEO implementation for AI-search visibility (BetAnySports, SEO lead)' },
+  { k: '20,000+', v: 'technical SEO issues resolved across a 25,000-page network, doubling organic acquisition (Betcris, SEO manager)' },
+  { k: '3 months', v: 'to stabilise and launch a failing sportsbook platform (WeezyBet, SEO team lead)' },
+  { k: '20+', v: 'person team led, 400+ SEO site builds, 300% productivity uplift (White Shark Media, director of web)' },
+];
+---
+<BaseLayout
+  title="Work With Bronson Harrington | SEO & AEO Leadership"
+  description="Hire Bronson Harrington in-house, bring him in fractionally or book an advisory call: 25 years of SEO, AEO and growth in regulated markets. Start here."
+>
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@graph": [
+      personSchema(),
+      {
+        "@type": "WebPage",
+        "@id": `${url}#webpage`,
+        "url": url,
+        "name": "Work with Bronson Harrington",
+        "about": { "@id": PERSON_ID },
+        "isPartOf": { "@id": "https://bronson.co.za/#website" },
+        "mainEntity": { "@id": `${url}#ways` }
+      },
+      {
+        "@type": "ItemList",
+        "@id": `${url}#ways`,
+        "name": "Ways to work with Bronson Harrington",
+        "itemListElement": doors.map((d, i) => ({
+          "@type": "ListItem",
+          "position": i + 1,
+          "item": {
+            "@type": "Service",
+            "name": d.service,
+            "description": d.pitch,
+            "provider": { "@id": PERSON_ID },
+            "areaServed": { "@type": "Place", "name": "Worldwide" }
+          }
+        }))
+      }
+    ]
+  })} />
+
+  <PageHero eyebrow="~/work-with-me" title="Work With Me" subtitle="available now · in-house, fractional or advisory">
+    <p class="lede">I build organic and AI-search growth for brands in tough markets: 25 years across iGaming, fintech, legal and other regulated verticals. I'm open to a senior in-house role, fractional or project work, and advisory calls. Pick the door that fits and I'll take it from there.</p>
+  </PageHero>
+
+  <hr class="hairline" />
+
+  <!-- Three genuine peers: one uniform row -->
+  <Section eyebrow="~/doors" title="Three Ways In.">
+    <div class="g">
+      {doors.map((d) => (
+        <article class="card s-4 door" id={d.id}>
+          <p class="label">{d.tag}</p>
+          <h3>{d.title}</h3>
+          <p>{d.pitch}</p>
+          <ul>
+            {d.gets.map((g) => <li>{g}</li>)}
+          </ul>
+          <a href="#write" class="more">talk about this →</a>
+          <a href={d.link.href} class="more quiet">{d.link.label} →</a>
+        </article>
+      ))}
+    </div>
+  </Section>
+
+  <hr class="hairline" />
+
+  <!-- Results read like a datasheet: figure in the key column -->
+  <Section eyebrow="~/proof" title="What That Looks Like." intro="A few results from the roles behind this page. The full story is on my about page." more={{ href: `${base}about-me/`, label: 'about me' }}>
+    <div class="hang">
+      <dl class="spec hang-body">
+        {proof.map((p) => (
+          <div><dt>{p.k}</dt><dd>{p.v}</dd></div>
+        ))}
+      </dl>
+    </div>
+  </Section>
+
+  <hr class="hairline" />
+
+  <!-- Qualifier: who this suits, and who it doesn't -->
+  <Section eyebrow="~/fit" title="Good Fit, Bad Fit." tight>
+    <div class="hang">
+      <div class="hang-body prose">
+        <p><strong>A good fit</strong> if organic search and AI answers drive real revenue for you, you're in a competitive or regulated market, and you want someone who thinks in systems: foundations first, then growth, then share of market.</p>
+        <p><strong>Not a fit</strong> if you need a link-buying vendor, guaranteed rankings by Friday, or someone to run the playbook without asking why. I'll tell you that on the first call.</p>
+      </div>
+    </div>
+  </Section>
+
+  <hr class="hairline" />
+
+  <Section eyebrow="~/write" title="Start the Conversation." id="write">
+    <div class="hang">
+      <div class="hang-body">
+        <ContactForm variant="full" location="work-with-me" />
+        <p class="direct">Prefer email or a call? <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a> · <a href={CONTACT.phoneHref}>{CONTACT.phoneDisplay}</a></p>
+      </div>
+    </div>
+  </Section>
+</BaseLayout>
+
+<style>
+  .door {
+    display: flex;
+    flex-direction: column;
+  }
+  .door ul {
+    margin: var(--space-2) 0 var(--space-3);
+    padding-left: 1.1em;
+    font-size: var(--text-sm);
+    color: var(--ink-muted);
+  }
+  .door ul li + li {
+    margin-top: 4px;
+  }
+  .door .more:first-of-type {
+    margin-top: auto;
+  }
+  .door .more.quiet {
+    color: var(--ink-muted);
+  }
+  .spec dt {
+    color: var(--accent);
+    font-size: var(--text-sm);
+  }
+  .direct {
+    margin-top: var(--space-3);
+    font-size: var(--text-sm);
+    color: var(--ink-muted);
+  }
+  .direct a {
+    color: var(--accent);
+  }
+  @media (min-width: 720px) and (max-width: 979px) {
+    .door.s-4 { grid-column: span 8; }
+  }
+</style>

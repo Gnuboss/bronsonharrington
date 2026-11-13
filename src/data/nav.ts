@@ -9,5 +9,5 @@ export const nav = [
   { label: 'solutions', href: `${base}solutions/` },
   { label: 'services', href: `${base}services/` },
   { label: 'about', href: `${base}about-me/` },
-  { label: 'contact', href: `${base}contact/`, cta: true },
+  { label: 'work with me', href: `${base}work-with-me/`, cta: true },
 ];

@@ -19,7 +19,7 @@ const fmt = (d: Date) => d.toISOString().slice(0, 10);
 ---
 <BaseLayout
   title="Bronson Harrington | Growth Architect in Costa Rica"
-  description="Bronson Harrington, growth architect in Costa Rica. Notes on SEO, AEO and growth systems, plus the tools he builds. Read the latest notes."
+  description="Bronson Harrington, growth architect in Costa Rica: 25 years of SEO, AEO and organic growth. Open to in-house, fractional and advisory work."
 >
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
@@ -37,8 +37,9 @@ const fmt = (d: Date) => d.toISOString().slice(0, 10);
     ]
   })} />
 
-  <PageHero eyebrow="~/bronson/costa-rica" title="Bronson Harrington" subtitle="Growth Architect · SEO / AEO · builder">
-    <p class="lede">I've spent 25 years building organic growth systems inside iGaming, fintech and other regulated markets. This is where I write about that work, think out loud about systems and digital sovereignty, and keep the tools I build on the side. <a href={`${base}about-me/`}>More about me →</a></p>
+  <PageHero eyebrow="~/bronson/costa-rica" title="Bronson Harrington" subtitle="Growth Architect · SEO / AEO · available now">
+    <p class="lede">I build organic and AI-search growth for brands in tough markets: 25 years across iGaming, fintech, legal and other regulated verticals. In-house, fractional or by the project. This is also where I write about that work and keep the tools I build. <a href={`${base}about-me/`}>More about me →</a></p>
+    <a href={`${base}work-with-me/`} class="more avail">open to senior roles, fractional work and advisory →</a>
   </PageHero>
 
   <hr class="hairline" />
@@ -117,6 +118,10 @@ const fmt = (d: Date) => d.toISOString().slice(0, 10);
 <style>
   .lede a {
     color: var(--accent);
+  }
+  .avail {
+    display: inline-block;
+    margin-top: var(--space-3);
   }
   .step {
     text-decoration: none;
