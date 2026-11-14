@@ -25,18 +25,6 @@ const latestNotes = (await getCollection('notes', ({ data }) => !data.draft))
   .slice(0, 3);
 const fmt = (d: Date) => d.toISOString().slice(0, 10);
 
-// Hero rain: columns of betting and search glyphs, built at compile time.
-const tokens = '1X2 +150 -110 o2.5 FTD GGR CPA 301 404 h1 KYC RTP odds bonus seo geo cite rank schema'.split(' ');
-const rain = Array.from({ length: 24 }, (_, i) => ({
-  text: Array.from({ length: 40 }, (_, j) => {
-    const tk = tokens[(i * 5 + j * 3) % tokens.length];
-    return tk.charAt((i + j) % tk.length);
-  }).join('\n'),
-  tone: i % 6 === 0 ? 'amber' : i % 4 === 0 ? 'bright' : 'dim',
-  dur: `${9 + ((i * 13) % 11)}s`,
-  delay: `-${(i * 17) % 9}s`,
-}));
-
 const inside = [
   { co: 'JazzSports', role: 'organic acquisition · 17 properties' },
   { co: 'Betcris', role: 'SEO manager' },
@@ -143,38 +131,38 @@ const meters = [
     ]
   })} />
 
-  <!-- 01 · BOOT -->
+  <!-- 01 · BOOT: the operator image is the page's one graphic; copy sits on its dark left side -->
   <section class="boot">
-    <div class="rain" aria-hidden="true">
-      {rain.map((c) => <div class:list={['col', c.tone]} style={`animation-duration:${c.dur};animation-delay:${c.delay}`}>{c.text}</div>)}
-    </div>
-    <div class="container boot-grid">
-      <div class="panel hero">
-        <p class="prompt">ops@your-sportsbook:~$ ./search-health --market za</p>
-        <pre class="log" aria-label="Example search health check">[ ok ] launch ................. live
-[ ok ] branded search ......... 100%
-<span class="fail">[FAIL]</span> non-branded search ..... 0 queries
-<span class="warn">[warn]</span> money terms ............ owned by affiliates
-<span class="warn">[warn]</span> ai answers ............. recommending competitors</pre>
-        <h1>Your book launched. Your search is still just your name.<span class="cursor" aria-hidden="true">_</span></h1>
-        <p class="lede">I've run SEO from inside sportsbooks and casinos: Betcris, JazzSports, BetAnySports, WeezyBet. The Authority Engine wins the non-branded searches affiliates own today, in Google and AI answers, inside your platform and your licence.</p>
-        <div class="ctas">
-          <a href="#apply" class="btn solid">$ run free operator audit</a>
-          <a href="#diagnose" class="btn">$ diagnose my errors</a>
-        </div>
-        <p class="fine">month 1 free if fewer than 10 revenue fixes found · specs your provider can ship · no lock-in after 90 days</p>
+    <picture class="hero-art">
+      <source media="(max-width: 760px)" type="image/avif" srcset="/images/hero/operator-sq.avif" />
+      <source media="(max-width: 760px)" type="image/webp" srcset="/images/hero/operator-sq.webp" />
+      <source type="image/avif" srcset="/images/hero/operator-1080.avif 1080w, /images/hero/operator-1600.avif 1600w, /images/hero/operator-2172.avif 2172w" sizes="100vw" />
+      <source type="image/webp" srcset="/images/hero/operator-1080.webp 1080w, /images/hero/operator-1600.webp 1600w, /images/hero/operator-2172.webp 2172w" sizes="100vw" />
+      <img src="/images/hero/operator-1600.webp" width="2172" height="724" alt="" fetchpriority="high" decoding="async" />
+    </picture>
+    <div class="hero-shade" aria-hidden="true"></div>
+    <div class="container hero-copy">
+      <p class="prompt">ops@your-sportsbook:~$ ./search-health --market za</p>
+      <p class="status"><span class="fail">[FAIL]</span> non-branded search: 0 queries · <span class="warn">[warn]</span> money terms owned by affiliates</p>
+      <h1>Your book launched. Your search is still just your name.<span class="cursor" aria-hidden="true">_</span></h1>
+      <p class="lede">I've run SEO from inside sportsbooks and casinos. The Authority Engine wins the non-branded searches affiliates own today, in Google and AI answers, inside your platform and your licence.</p>
+      <div class="ctas">
+        <a href="#apply" class="btn solid">$ run free operator audit</a>
+        <a href="#diagnose" class="btn">$ diagnose my errors</a>
       </div>
-      <div class="panel who">
-        <p class="amber">$ whoami --history</p>
-        <ul>
-          {inside.map((r) => <li><strong>{r.co}</strong><span>{r.role}</span></li>)}
-        </ul>
-        <p class="soft">location: san josé, costa rica<br />origin: south africa · live za operator client</p>
-        <p>status: {seatsLine}</p>
-      </div>
+      <p class="fine">month 1 free if fewer than 10 revenue fixes found · no lock-in after 90 days · {seatsLine}</p>
     </div>
-    <div class="container proof-bar">
-      {proofBar.map((p) => <div><span class="big">{p.k}</span><span class="soft">{p.v}</span></div>)}
+  </section>
+
+  <!-- Who and what: worked-inside list and proof numbers, right under the hero -->
+  <section class="creds" aria-label="Track record">
+    <div class="container">
+      <p class="inside"><span class="amber">$ whoami --history</span>
+        {inside.map((r) => <span class="co"><strong>{r.co}</strong> <span class="soft">{r.role}</span></span>)}
+      </p>
+      <div class="proof-bar">
+        {proofBar.map((p) => <div><span class="big">{p.k}</span><span class="soft">{p.v}</span></div>)}
+      </div>
     </div>
   </section>
 
@@ -411,30 +399,39 @@ next quarterly za betting &amp; casino research index</pre>
   @keyframes blink { 50% { opacity: 0; } }
 
   /* Boot / hero */
-  .boot { position: relative; overflow: hidden; padding: var(--space-6) 0 0; border-bottom: 1px solid var(--hairline); }
-  .rain { position: absolute; inset: 0; display: flex; justify-content: space-between; opacity: 0.35; pointer-events: none; overflow: hidden; }
-  .col { width: 22px; white-space: pre; text-align: center; font-family: var(--font-mono); font-size: 13px; line-height: 18px; animation: fall linear infinite; }
-  .col.dim { color: var(--rule-strong); }
-  .col.bright { color: var(--ink); }
-  .col.amber { color: var(--accent); }
-  @keyframes fall { from { transform: translateY(-100%); } to { transform: translateY(100%); } }
-  .boot-grid { position: relative; display: flex; flex-wrap: wrap; gap: var(--space-4); align-items: stretch; }
-  .hero { flex: 999 1 560px; min-width: 0; background: color-mix(in srgb, var(--paper) 92%, transparent); display: flex; flex-direction: column; gap: var(--space-2); }
-  .who { flex: 1 1 320px; min-width: 0; background: color-mix(in srgb, var(--paper) 92%, transparent); font-size: var(--text-sm); }
-  .who ul { list-style: none; margin: var(--space-2) 0; padding: 0; }
-  .who li { display: flex; flex-direction: column; border-top: 1px dashed var(--hairline); padding: var(--space-1) 0; }
-  .who li strong { color: var(--ink); }
-  .who li span { color: var(--ink-soft); }
-  .prompt { font-size: var(--text-sm); color: var(--ink-faint); margin: 0; }
-  .log { margin: 0; font-family: var(--font-mono); font-size: var(--text-sm); line-height: 1.7; color: var(--ink-soft); white-space: pre-wrap; }
-  .log .fail { color: var(--danger); }
-  .log .warn { color: var(--accent); }
-  .hero h1 { margin-top: var(--space-1); }
+  .boot { position: relative; overflow: hidden; min-height: max(580px, 33.4vw); display: flex; align-items: center; border-bottom: 1px solid var(--hairline); }
+  /* Image at full width, pinned to the bottom, so the figure always sits at
+     about 60% across, right of the copy. The section is never shorter than
+     the image; a top fade blends its edge into the paper. */
+  .hero-art img {
+    position: absolute; right: 0; bottom: 0; width: 100%; height: auto;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 18%);
+    mask-image: linear-gradient(to bottom, transparent 0, #000 18%);
+  }
+  .hero-shade {
+    position: absolute; inset: 0; pointer-events: none;
+    background:
+      linear-gradient(90deg, var(--paper) 0%, color-mix(in srgb, var(--paper) 85%, transparent) 30%, transparent 52%),
+      linear-gradient(0deg, var(--paper) 0%, transparent 22%);
+  }
+  .hero-copy { position: relative; width: 100%; padding-top: var(--space-5); padding-bottom: var(--space-5); }
+  .hero-copy > * { max-width: 500px; }
+  .hero-copy > .ctas { max-width: 640px; }
+  .hero-copy h1 { font-size: 3.6rem; }
+  .prompt { font-size: var(--text-sm); color: var(--ink-faint); margin: 0 0 var(--space-1); }
+  .status { font-size: var(--text-xs); color: var(--ink-soft); margin: 0 0 var(--space-2); }
+  .status .fail { color: var(--danger); }
+  .status .warn { color: var(--accent); }
+  .hero-copy h1 { margin-bottom: var(--space-3); }
   .lede { font-size: var(--text-base); line-height: 1.7; color: var(--ink-soft); }
-  .ctas { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+  .ctas { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-bottom: var(--space-2); }
   .fine { font-size: var(--text-xs); color: var(--ink-faint); margin: 0; }
-  .proof-bar { position: relative; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-top: var(--space-5); border-top: 1px solid var(--hairline); }
-  .proof-bar div { display: flex; flex-direction: column; gap: 4px; padding: var(--space-3) var(--space-2); }
+
+  .creds { padding: var(--space-4) 0 var(--space-3); border-bottom: 1px solid var(--hairline); }
+  .inside { display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-3); font-size: var(--text-sm); max-width: none; margin: 0 0 var(--space-2); }
+  .inside strong { color: var(--ink); }
+  .proof-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); border-top: 1px solid var(--hairline); }
+  .proof-bar div { display: flex; flex-direction: column; gap: 4px; padding: var(--space-3) var(--space-2) var(--space-1) 0; }
   .proof-bar .soft { font-size: var(--text-xs); }
 
   /* Bands */
@@ -515,13 +512,21 @@ next quarterly za betting &amp; casino research index</pre>
   .notes { list-style: none; margin: 0; padding: 0; }
   .notes li { display: flex; gap: var(--space-3); padding: var(--space-1) 0; border-top: 1px dashed var(--hairline); flex-wrap: wrap; }
 
+  /* Narrower screens: image on top, full width, copy underneath */
+  @media (max-width: 1100px) {
+    .boot { display: block; min-height: 0; }
+    .hero-art img { position: relative; display: block; width: 100%; height: auto; -webkit-mask-image: none; mask-image: none; }
+    .hero-shade { background: linear-gradient(0deg, var(--paper) 0%, transparent 35%); bottom: auto; height: 33.4vw; }
+    .hero-copy { margin-top: -6vw; padding-top: 0; padding-bottom: var(--space-5); }
+    .hero-copy > * { max-width: 640px; }
+  }
   @media (max-width: 760px) {
-    .hero h1 { font-size: 2.6rem; }
-    .log { font-size: 11px; white-space: pre; overflow-x: auto; }
-    .rain { opacity: 0.18; }
+    .hero-shade { height: 100vw; }
+    .hero-copy { margin-top: -14vw; }
+    .hero-copy h1 { font-size: 2.6rem; }
     .meter { grid-template-columns: 110px 1fr 48px; }
   }
   @media (prefers-reduced-motion: reduce) {
-    .col, .cursor { animation: none; }
+    .cursor { animation: none; }
   }
 </style>
