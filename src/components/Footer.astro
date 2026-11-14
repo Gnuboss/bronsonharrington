@@ -2,10 +2,10 @@
 import ContactForm from './ContactForm.astro';
 const base = import.meta.env.BASE_URL;
 const year = new Date().getFullYear();
-// The contact and work-with-me pages have the full form, and the thank-you
-// page just used one, so the footer form steps aside on all three.
+// Home, contact and work-with-me have the full form, and the thank-you
+// page just used one, so the footer form steps aside on all four.
 const path = Astro.url.pathname;
-const showForm = !['contact', 'work-with-me', 'thanks'].some((p) => path.startsWith(`${base}${p}`));
+const showForm = path !== base && !['contact', 'work-with-me', 'thanks'].some((p) => path.startsWith(`${base}${p}`));
 ---
 <footer class="site-footer">
   {showForm && (
@@ -59,7 +59,8 @@ const showForm = !['contact', 'work-with-me', 'thanks'].some((p) => path.startsW
   }
   .links {
     display: flex;
-    gap: var(--space-3);
+    flex-wrap: wrap; /* five links outgrow a phone's width on one line */
+    gap: var(--space-1) var(--space-3);
   }
   .links a {
     text-decoration: none;

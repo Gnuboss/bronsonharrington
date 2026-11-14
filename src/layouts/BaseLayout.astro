@@ -73,7 +73,7 @@ const { title, description } = Astro.props;
   )}
 
   <!-- Self-hosted fonts, subsetted, woff2 only -->
-  <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/vt323.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin />
   <style is:global>
     @font-face {
@@ -83,10 +83,25 @@ const { title, description } = Astro.props;
       font-display: swap;
     }
     @font-face {
+      font-family: 'VT323';
+      src: url('/fonts/vt323.woff2') format('woff2');
+      font-weight: 400;
+      font-display: swap;
+    }
+    @font-face {
       font-family: 'JetBrains Mono';
       src: url('/fonts/jetbrains-mono-var.woff2') format('woff2');
       font-weight: 100 800;
       font-display: swap;
+    }
+    /* CRT scanlines over the whole page: decoration only, never blocks clicks */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      pointer-events: none;
+      background: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.16) 0px, rgba(0, 0, 0, 0.16) 1px, transparent 1px, transparent 3px);
     }
   </style>
 </head>

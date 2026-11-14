@@ -78,7 +78,8 @@ export function buildTokens({ roles }) {
     // Form states. Error red is fixed across palettes (it has to read as "error"),
     // only darkened if a palette's paper needs it. Field borders are UI
     // component boundaries, so 3:1 (WCAG 1.4.11), unlike the decorative hairline.
-    '--danger': fix('danger', '#B3261E', 4.5),
+    // Dark editions get a light red: darkening a red toward light ink turns it olive.
+    '--danger': fix('danger', luminance(paper) < 0.2 ? '#FF6B6B' : '#B3261E', 4.5),
     // Valid-field state follows the highlight role, so it never shares a hue
     // with links when a palette's accent is red.
     '--valid': hl,

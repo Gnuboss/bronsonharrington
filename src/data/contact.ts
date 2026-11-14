@@ -13,6 +13,7 @@ export const RESPONSE_PROMISE = 'I read everything · Replies usually within a f
 
 export const topics = [
   { value: 'hello', label: 'Just saying hello', button: 'Get a reply' },
+  { value: 'audit', label: 'A free operator audit', button: 'Send my audit request' },
   { value: 'role', label: 'Hiring for a role', button: 'Start the hiring conversation' },
   { value: 'notes', label: 'Compare notes on SEO / AEO', button: 'Start the conversation' },
   { value: 'build', label: 'A build or tool of mine', button: 'Ask about the build' },
@@ -28,5 +29,6 @@ export function topicForPath(pathname: string): TopicValue {
   if (pathname.startsWith('/lab/')) return 'build';
   if (pathname.startsWith('/framework/')) return 'notes';
   if (pathname.startsWith('/work-with-me/')) return 'role';
+  if (pathname === '/') return 'audit';
   return 'hello';
 }

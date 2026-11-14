@@ -18,31 +18,53 @@
 // ============================================================
 
 export const palette = {
-  edition: '02',
-  name: 'Nutcracker',
-  source: 'https://coolors.co/palette/780000-c1121f-fdf0d5-003049-669bbc',
-  date: '2026-11-01', // when this edition went live
-  swatches: ['#FDF0D5', '#003049', '#780000', '#C1121F', '#669BBC'],
+  edition: '03',
+  name: 'Phosphor Terminal',
+  source: '', // hand-picked: CRT phosphor green, amber warnings, near-black glass
+  date: '2026-11-14', // when this edition went live
+  swatches: ['#050805', '#3DFF7A', '#FFB000', '#1F9E48', '#B6FFCB'],
   fonts: {
-    display: 'Inter',
-    body: 'Inter',
+    display: 'VT323',
+    body: 'JetBrains Mono',
     mono: 'JetBrains Mono',
   },
-  // Festive edition. Navy and cream with two reds, the nutcracker's uniform.
-  // Links take the deep wine red rather than the bright one, so link text
-  // never reads as a form error (errors use the fixed --danger red).
+  // First dark edition, made for the Authority Engine relaunch. Green on
+  // near-black like an old terminal; amber takes links and warnings so
+  // anything clickable stands apart from the green copy.
   roles: {
-    paper: '#FDF0D5',
-    ink: '#003049',
-    accent: '#780000',
-    rule: '#C1121F',
-    highlight: '#669BBC',
+    paper: '#050805',
+    ink: '#3DFF7A',
+    accent: '#FFB000',
+    rule: '#1F9E48',
+    highlight: '#FFB000',
   },
 };
 
 // Previous editions, kept for reference and easy rollback:
 // copy one back into `palette` above to restore it.
 export const history = [
+  {
+    edition: '02',
+    name: 'Nutcracker',
+    source: 'https://coolors.co/palette/780000-c1121f-fdf0d5-003049-669bbc',
+    date: '2026-11-01', // when this edition went live
+    swatches: ['#FDF0D5', '#003049', '#780000', '#C1121F', '#669BBC'],
+    fonts: {
+      display: 'Inter',
+      body: 'Inter',
+      mono: 'JetBrains Mono',
+    },
+    // Festive edition. Navy and cream with two reds, the nutcracker's uniform.
+    // Links take the deep wine red rather than the bright one, so link text
+    // never reads as a form error (errors use the fixed --danger red).
+    roles: {
+      paper: '#FDF0D5',
+      ink: '#003049',
+      accent: '#780000',
+      rule: '#C1121F',
+      highlight: '#669BBC',
+    },
+  },
   {
     edition: '01',
     name: 'Swiss Terminal',
