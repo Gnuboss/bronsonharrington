@@ -1,25 +1,110 @@
 ---
+// Home: The Authority Engine for iGaming, in the terminal edition.
+// One offer, told as a terminal session: health check -> diagnose ->
+// method -> 90-day plan -> track record -> pricing -> FAQ -> audit form.
+// Interactive bits (error picker, plan toggle) are progressive: with JS
+// off, every error and both plans are still readable.
 import { personSchema, businessSchema } from '../data/person';
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import PageHero from '../components/PageHero.astro';
-import Section from '../components/Section.astro';
-import { phases } from '../data/framework';
-import { projects } from '../data/projects';
-import { profileUrls } from '../data/socials';
+import ContactForm from '../components/ContactForm.astro';
 import { CONTACT } from '../config/site';
-import { testimonials } from '../data/testimonials';
 
 const base = import.meta.env.BASE_URL;
+const url = 'https://bronson.co.za/';
+
+// Seats and prices: the only numbers to edit when they change.
+const SEATS_TOTAL = 6;
+const SEATS_OPEN = 4;
+const PRICE = { operator: 3500, affiliate: 1750 };
+const usd = (n: number) => '$' + n.toLocaleString('en-US');
+const seatsLine = SEATS_OPEN > 0 ? `${SEATS_OPEN}/${SEATS_TOTAL} seats open` : `${SEATS_TOTAL}/${SEATS_TOTAL} seats taken · waitlist open`;
+
 const latestNotes = (await getCollection('notes', ({ data }) => !data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
-  .slice(0, 10); // home page shows the 10 most recent; the rest live on /notes/
+  .slice(0, 3);
 const fmt = (d: Date) => d.toISOString().slice(0, 10);
 
+// Hero rain: columns of betting and search glyphs, built at compile time.
+const tokens = '1X2 +150 -110 o2.5 FTD GGR CPA 301 404 h1 KYC RTP odds bonus seo geo cite rank schema'.split(' ');
+const rain = Array.from({ length: 24 }, (_, i) => ({
+  text: Array.from({ length: 40 }, (_, j) => {
+    const tk = tokens[(i * 5 + j * 3) % tokens.length];
+    return tk.charAt((i + j) % tk.length);
+  }).join('\n'),
+  tone: i % 6 === 0 ? 'amber' : i % 4 === 0 ? 'bright' : 'dim',
+  dur: `${9 + ((i * 13) % 11)}s`,
+  delay: `-${(i * 17) % 9}s`,
+}));
+
+const inside = [
+  { co: 'JazzSports', role: 'organic acquisition · 17 properties' },
+  { co: 'Betcris', role: 'SEO manager' },
+  { co: 'BetAnySports', role: 'SEO lead' },
+  { co: 'WeezyBet', role: 'SEO team lead' },
+];
+
+const proofBar = [
+  { k: '$20M+', v: 'yearly revenue from one organic system' },
+  { k: '~75%', v: 'of that revenue from organic search' },
+  { k: '+200%', v: 'organic traffic with AI-search work' },
+  { k: '3 mo', v: 'to relaunch a failing sportsbook' },
+];
+
+const errors = [
+  { code: 'E01', title: 'every search includes our brand name', cause: 'zero non-branded footprint after launch', fix: 'Build top-level casino, sports and promotions hubs and briefs for money terms, so new players find you before they find a review site.', layer: 'growth · days 31–60' },
+  { code: 'E02', title: 'we pay CPA for searches we could own', cause: 'affiliates hold the market’s money terms', fix: 'Win the terms you can, and get listed by the affiliates that don’t cover you yet, using a research index they want to cite.', layer: 'domination · days 61–90+' },
+  { code: 'E03', title: 'bonus pages search engines can’t read', cause: 'image banners, modal terms, duplicate ID URLs', fix: 'Evergreen promotion URLs by type, crawlable HTML terms, and a redirect map so relaunches stop wiping authority.', layer: 'foundations · days 1–30' },
+  { code: 'E04', title: 'our provider ignores SEO tickets', cause: 'recommendations not written for the platform', fix: 'Platform-ready specs: routing, server rendering, taxonomy, redirects and schema, in a brief the provider can implement.', layer: 'foundations · days 1–30' },
+  { code: 'E05', title: 'AI recommends the big books', cause: 'the web doesn’t vouch for you yet', fix: 'Close the verification gap: entity and licence data, reviews, affiliate listings and press that AI answers lean on.', layer: 'domination · days 61–90+' },
+  { code: 'E06', title: 'we can’t tie SEO to FTDs or GGR', cause: 'tracking and reporting built on rankings', fix: 'Key events for registrations and deposits, plus a live dashboard joined to PAM data where available.', layer: 'foundations · days 1–30' },
+];
+
+const gap = [
+  { n: '01', title: 'audit what you claim', body: 'architecture, promotions, schema, licence and entity data' },
+  { n: '02', title: 'audit what the market confirms', body: 'affiliate listings, reviews, press, regulator lists, competitor links' },
+  { n: '03', title: 'become the cited source', body: 'fix the platform, own the money pages, publish the index the market quotes' },
+];
+
+const phases = [
+  { when: 'days 1–30 · foundations', name: 'Fix the leaks.', goal: 'Stop losing authority before spending on content.', dir: '/foundations', items: [['-rw-', 'crawl-index-canonical.audit'], ['-rw-', 'promotions-redirect.map'], ['-rwx', 'platform-brief.pdf'], ['-rwx', 'ftd-tracking.ga4']] },
+  { when: 'days 31–60 · growth', name: 'Win non-branded.', goal: 'Casino, sports and bonus searches that bring new players.', dir: '/growth', items: [['drwx', 'casino-sports-promo-hubs/'], ['drwx', 'money-page-briefs/'], ['-rw-', 'affiliate-gap.csv'], ['-rw-', 'ai-citation-baseline.json']] },
+  { when: 'days 61–90+ · domination', name: 'Get cited.', goal: 'Become the operator the market, and AI, vouches for.', dir: '/domination', items: [['drwx', 'market-research-index/'], ['-rwx', 'coverage-campaign.sh'], ['-rwx', 'signup-conversion.sh'], ['drwx', 'tournaments/']] },
+];
+
+const wins = [
+  { k: '$20M+', v: 'annual revenue from an organic acquisition system across 17 sportsbook and casino properties.', who: 'jazzsports · 2019–2023' },
+  { k: '+200%', v: 'organic traffic and 80% stronger engagement, with GEO/AEO for AI search.', who: 'betanysports · 2024' },
+  { k: '20,000+', v: 'technical issues resolved across a 25,000-page network; organic acquisition doubled.', who: 'betcris · 2018–2019' },
+  { k: '3 mo', v: 'to stabilise and relaunch a failing sportsbook platform.', who: 'weezybet · 2024–2025' },
+];
+
+const plans = [
+  { id: 'operator', flag: '--type=operator', price: usd(PRICE.operator), who: 'For licensed sportsbooks and casinos, especially in their first two years.', items: ['platform-ready briefs and redirect maps', 'promotions, casino and sports architecture', 'quarterly market research index', 'affiliate gap analysis and listing outreach', 'live dashboard on sign-ups and GGR', 'monthly strategy session with your team'] },
+  { id: 'affiliate', flag: '--type=affiliate', price: usd(PRICE.affiliate), who: 'For affiliates and review sites fighting for the same money terms.', items: ['money-page and comparison-page audit', 'content briefs built for AI citation', 'entity, author and trust-signal fixes', 'quarterly linkable data asset', 'live dashboard on clicks out and FTDs', 'monthly strategy call'] },
+];
+
+const faqs = [
+  { q: 'We’re on a turnkey platform. Can SEO even work?', a: 'Yes. Most of my operator work has been on platforms with limits. The trick is specs the provider can implement. I’ve written those briefs for BetConstruct.' },
+  { q: 'Won’t this compete with our affiliates?', a: 'It rebalances. Keep the affiliates that send real players, and stop depending on them for searches you should win. The research index also gets you listed by affiliates who don’t cover you yet.' },
+  { q: 'How do you handle compliance and advertising rules?', a: 'Every brief respects your licence and market rules: responsible-gambling messaging, age gating, bonus terms in crawlable text. Your compliance team signs off before anything ships.' },
+  { q: 'Which markets do you know?', a: 'South Africa, Latin America and international .com books, plus crypto-friendly operators. I’m based in Costa Rica.' },
+  { q: 'What about AI search?', a: 'Players ask ChatGPT and Gemini which books to trust. Those answers lean on reviews, affiliates and press. Closing the verification gap moves rankings and AI recommendations together.' },
+  { q: 'What happens after 90 days?', a: 'Month to month, or you leave with everything we built: briefs, assets and the dashboard.' },
+];
+
+const bar = (k: number) => '█'.repeat(k) + '░'.repeat(24 - k);
+const meters = [
+  { label: 'registrations', bar: bar(17), value: '412' },
+  { label: 'ftds', bar: bar(12), value: '186' },
+  { label: 'non-branded clicks', bar: bar(15), value: '9.8K' },
+  { label: 'ai citations', bar: bar(7), value: '27' },
+  { label: 'backlog shipped', bar: bar(16), value: '65%' },
+];
 ---
 <BaseLayout
-  title="Bronson Harrington | Growth Architect in Costa Rica"
-  description="Bronson Harrington, growth architect in Costa Rica: 25 years of SEO, AEO and organic growth. Open to in-house, fractional and advisory work."
+  title="The Authority Engine: SEO for Sportsbooks and Casinos"
+  description="SEO and AI-search growth for licensed sportsbooks, casinos and affiliates, from a strategist who worked inside them. Get a free operator audit."
 >
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
@@ -31,127 +116,412 @@ const fmt = (d: Date) => d.toISOString().slice(0, 10);
         "@id": "https://bronson.co.za/#website",
         "url": "https://bronson.co.za",
         "name": "Bronson Harrington",
-        "description": "Notes, builds and the Growth OS framework from Bronson Harrington",
+        "description": "The Authority Engine, field notes and builds from Bronson Harrington, growth architect",
         "publisher": { "@id": "https://bronson.co.za/#/schema/person" }
+      },
+      {
+        "@type": "Service",
+        "@id": `${url}#authority-engine`,
+        "name": "The Authority Engine",
+        "serviceType": "SEO and AI-search visibility for iGaming",
+        "description": "Monthly SEO, authority and AI-search programme for licensed sportsbooks, casinos and affiliates, capped at six clients.",
+        "provider": { "@id": "https://bronson.co.za/#/schema/person" },
+        "areaServed": { "@type": "Place", "name": "Worldwide" },
+        "audience": { "@type": "BusinessAudience", "name": "Licensed iGaming operators and affiliates" },
+        "offers": plans.map((p) => ({
+          "@type": "Offer",
+          "name": `Authority Engine (${p.id})`,
+          "description": p.who,
+          "priceSpecification": { "@type": "UnitPriceSpecification", "price": PRICE[p.id as 'operator' | 'affiliate'], "priceCurrency": "USD", "unitText": "MONTH" }
+        }))
+      },
+      {
+        "@type": "FAQPage",
+        "@id": `${url}#faq`,
+        "mainEntity": faqs.map((f) => ({ "@type": "Question", "name": f.q, "acceptedAnswer": { "@type": "Answer", "text": f.a } }))
       }
     ]
   })} />
 
-  <PageHero eyebrow="~/bronson/costa-rica" title="Bronson Harrington" subtitle="Growth Architect · SEO / AEO · available now">
-    <p class="lede">I build organic and AI-search growth for brands in tough markets: 25 years across iGaming, fintech, legal and other regulated verticals. In-house, fractional or by the project. This is also where I write about that work and keep the tools I build. <a href={`${base}about-me/`}>More about me →</a></p>
-    <a href={`${base}work-with-me/`} class="more avail">open to senior roles, fractional work and advisory →</a>
-  </PageHero>
+  <!-- 01 · BOOT -->
+  <section class="boot">
+    <div class="rain" aria-hidden="true">
+      {rain.map((c) => <div class:list={['col', c.tone]} style={`animation-duration:${c.dur};animation-delay:${c.delay}`}>{c.text}</div>)}
+    </div>
+    <div class="container boot-grid">
+      <div class="panel hero">
+        <p class="prompt">ops@your-sportsbook:~$ ./search-health --market za</p>
+        <pre class="log" aria-label="Example search health check">[ ok ] launch ................. live
+[ ok ] branded search ......... 100%
+<span class="fail">[FAIL]</span> non-branded search ..... 0 queries
+<span class="warn">[warn]</span> money terms ............ owned by affiliates
+<span class="warn">[warn]</span> ai answers ............. recommending competitors</pre>
+        <h1>Your book launched. Your search is still just your name.<span class="cursor" aria-hidden="true">_</span></h1>
+        <p class="lede">I've run SEO from inside sportsbooks and casinos: Betcris, JazzSports, BetAnySports, WeezyBet. The Authority Engine wins the non-branded searches affiliates own today, in Google and AI answers, inside your platform and your licence.</p>
+        <div class="ctas">
+          <a href="#apply" class="btn solid">$ run free operator audit</a>
+          <a href="#diagnose" class="btn">$ diagnose my errors</a>
+        </div>
+        <p class="fine">month 1 free if fewer than 10 revenue fixes found · specs your provider can ship · no lock-in after 90 days</p>
+      </div>
+      <div class="panel who">
+        <p class="amber">$ whoami --history</p>
+        <ul>
+          {inside.map((r) => <li><strong>{r.co}</strong><span>{r.role}</span></li>)}
+        </ul>
+        <p class="soft">location: san josé, costa rica<br />origin: south africa · live za operator client</p>
+        <p>status: {seatsLine}</p>
+      </div>
+    </div>
+    <div class="container proof-bar">
+      {proofBar.map((p) => <div><span class="big">{p.k}</span><span class="soft">{p.v}</span></div>)}
+    </div>
+  </section>
 
-  <hr class="hairline" />
-
-  <!-- Field notes: a dated sequence, so rows with the date in the margin column -->
-  <Section eyebrow="~/field-notes" title="Field Notes." more={{ href: `${base}notes/`, label: 'all field notes' }}>
-    <ol class="rows">
-      {latestNotes.map((note) => (
-        <li>
-          <a href={`${base}notes/${note.slug}/`} class="row hang">
-            <time class="hang-label" datetime={fmt(note.data.date)}>{fmt(note.data.date)}</time>
-            <div class="hang-body">
-              <h3>{note.data.title}</h3>
-              <p>{note.data.description}</p>
+  <!-- 02 · DIAGNOSE -->
+  <section class="sec-band" id="diagnose">
+    <div class="container">
+      <p class="tag">~/diagnose · select the error your book is throwing</p>
+      <h2>Affiliates own your market's searches. You pay them for it.</h2>
+      <div class="split">
+        <div class="pick-list" role="group" aria-label="Common errors">
+          {errors.map((e, i) => (
+            <button type="button" class="pick" data-code={e.code} aria-pressed={i === 0 ? 'true' : 'false'} aria-controls="diagnosis">
+              <span class="amber">{e.code}</span> {e.title}
+            </button>
+          ))}
+        </div>
+        <div class="panel out" id="diagnosis" aria-live="polite">
+          {errors.map((e, i) => (
+            <div class="diag" data-for={e.code} hidden={i !== 0}>
+              <p class="soft">$ diagnose --error {e.code}</p>
+              <p class="amber">cause: {e.cause}</p>
+              <p>{e.fix}</p>
+              <p class="green">→ patched in: {e.layer}</p>
             </div>
-          </a>
-        </li>
-      ))}
-    </ol>
-  </Section>
+          ))}
+          <a href="#plan" class="go">$ cat ./90-day-plan<span class="cursor" aria-hidden="true">_</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
 
-  <hr class="hairline" />
+  <!-- 03 · METHOD -->
+  <section class="sec-band alt">
+    <div class="container split center">
+      <div>
+        <p class="tag">$ man authority-verification-gap</p>
+        <h2>Become the source the market cites.</h2>
+        <p class="soft">Google and AI assistants trust the operators the web vouches for: reviews, affiliates, press, regulator lists. Buying links doesn't change that. Closing the gap between what you claim and what the market confirms does.</p>
+      </div>
+      <ol class="panel listing">
+        {gap.map((g) => <li><span class="amber">{g.n}</span><span><strong>{g.title}</strong><span class="soft">{g.body}</span></span></li>)}
+      </ol>
+    </div>
+  </section>
 
-  <!-- Builds: genuine peers, one uniform row -->
-  <Section eyebrow="~/lab" title="Things I've Built." more={{ href: `${base}lab/`, label: 'the lab' }}>
-    <div class="g">
-      {projects.map((p) => (
-        <article class="card s-3">
-          <p class="label">{p.stack}</p>
-          <h3>{p.name}</h3>
-          <p>{p.summary}</p>
-          <a href={p.href} class="more">{p.linkLabel} →</a>
-        </article>
+  <!-- 04 · 90-DAY PLAN -->
+  <section class="sec-band" id="plan">
+    <div class="container">
+      <p class="tag">$ cat ./90-day-plan</p>
+      <h2>Built for turnkey platforms.</h2>
+      <p class="soft intro">Locked on BetConstruct or another provider? Normal. I write the briefs, redirect maps and specs the provider needs, so changes actually ship.</p>
+      {phases.map((l) => (
+        <div class="phase split">
+          <div>
+            <p class="amber">{l.when}</p>
+            <h3>{l.name}</h3>
+            <p class="soft">{l.goal}</p>
+          </div>
+          <div class="panel listing">
+            <p class="soft">$ ls -la {l.dir}</p>
+            <ul>{l.items.map(([perm, name]) => <li><span class="perm">{perm}</span><span>{name}</span></li>)}</ul>
+          </div>
+        </div>
       ))}
     </div>
-  </Section>
+  </section>
 
-  <hr class="hairline" />
-
-  <!-- Growth OS: a real sequence, so the staircase -->
-  <Section
-    eyebrow="~/framework"
-    title="How I Think About Growth."
-    intro="Growth OS is the model I've refined over 25 years: organic growth moves through three stages, each built on the one before it."
-    more={{ href: `${base}framework/`, label: 'read the framework' }}
-  >
-    <div class="g stair">
-      {phases.map((p) => (
-        <a href={`${base}framework/#${p.id}`} class="card step">
-          <p class="label">{p.num} · {p.name.toLowerCase()}</p>
-          <h3>{p.headline}</h3>
-        </a>
-      ))}
+  <!-- 05 · TRACK RECORD -->
+  <section class="sec-band alt" id="logs">
+    <div class="container">
+      <p class="tag">$ tail /var/log/operators.log</p>
+      <h2>Production logs from inside the industry.</h2>
+      <div class="wins">
+        {wins.map((w) => <div class="panel win"><span class="big">{w.k}</span><span class="soft">{w.v}</span><span class="amber small">{w.who}</span></div>)}
+      </div>
+      <div class="panel live">
+        <p class="amber">$ tail -f live/za-operator.log</p>
+        <pre>wk1  search console: 100% branded queries · 0 non-branded
+wk2  51 duplicate promotion URLs found · no crawlable text
+wk2  promotions page: 109K impressions · 3.7% CTR
+wk3  13-page platform brief + redirect map → provider
+next quarterly za betting &amp; casino research index</pre>
+      </div>
     </div>
-  </Section>
+  </section>
 
-  <hr class="hairline" />
-
-  <!-- Testimonials: peers, natural height (the quotes differ in length) -->
-  <Section eyebrow="~/colleagues" title="What People I've Worked With Say.">
-    <div class="g">
-      {testimonials.map((t) => (
-        <blockquote class="card s-4 quote">
-          <p>"{t.quote}"</p>
-          <footer>
-            <span class="name">{t.name}</span>
-            <span class="label">{t.role}</span>
-            <span class="label">{t.company}</span>
-          </footer>
-        </blockquote>
-      ))}
+  <!-- 06 · PRICING -->
+  <section class="sec-band" id="pricing">
+    <div class="container">
+      <p class="tag">$ authority-engine install --type</p>
+      <h2>Two engines. {SEATS_TOTAL} seats total.</h2>
+      <p class="soft intro">One senior strategist, no juniors, no account managers. When the seats are full there's a waitlist.</p>
+      <div class="tabs" role="tablist" aria-label="Choose your business type">
+        {plans.map((p, i) => (
+          <button type="button" role="tab" id={`tab-${p.id}`} aria-controls={`plan-${p.id}`} aria-selected={i === 0 ? 'true' : 'false'} class="tab" data-plan={p.id}>--{p.id}</button>
+        ))}
+      </div>
+      <div class="split">
+        <div>
+          {plans.map((p) => (
+            <article class="panel plan" id={`plan-${p.id}`} role="tabpanel" aria-labelledby={`tab-${p.id}`} data-panel={p.id}>
+              <p class="soft">{p.flag}</p>
+              <p class="price"><span class="big amber">{p.price}</span><span class="soft">/mo</span></p>
+              <p class="soft">{p.who}</p>
+              <ul>{p.items.map((i) => <li>+ {i}</li>)}</ul>
+              <a href="#apply" class="btn solid">$ apply · {SEATS_OPEN} seats open</a>
+            </article>
+          ))}
+        </div>
+        <aside class="panel guarantee">
+          <p class="amber">$ cat guarantee.txt</p>
+          <p>If month one doesn't uncover at least 10 fixes that affect sign-ups or GGR, month one is free.</p>
+          <p>After 90 days: month to month. Every brief, asset and dashboard stays with you.</p>
+          <p class="faint">Never a ranking or link-count guarantee. Nobody honest offers one.</p>
+        </aside>
+      </div>
     </div>
-  </Section>
+  </section>
+
+  <!-- 07 · DASHBOARD -->
+  <section class="sec-band alt">
+    <div class="container split center">
+      <div>
+        <p class="tag">$ top --operator yours</p>
+        <h2>Players, not rankings.</h2>
+        <p class="soft">One live dashboard tied to registrations, FTDs and GGR, plus the backlog, so your team sees every task.</p>
+      </div>
+      <figure class="panel meters" aria-label="Example operator dashboard with sample numbers">
+        <figcaption class="soft"><span>your-book · 30d</span><span>sample data</span></figcaption>
+        {meters.map((m) => <div class="meter"><span class="soft">{m.label}</span><span class="green bars" aria-hidden="true">{m.bar}</span><span class="amber">{m.value}</span></div>)}
+        <p class="faint small">sources: search console · ga4 · ai visibility · crm/pam · backlog</p>
+      </figure>
+    </div>
+  </section>
+
+  <!-- 08 · FAQ -->
+  <section class="sec-band" id="faq">
+    <div class="container narrow">
+      <p class="tag">$ faq --operators</p>
+      <h2>Operator questions.</h2>
+      <div class="faqs">
+        {faqs.map((f, i) => (
+          <details class="panel" open={i === 0}>
+            <summary>&gt; {f.q}</summary>
+            <p class="soft">{f.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 09 · APPLY -->
+  <section class="sec-band alt" id="apply">
+    <div class="container split">
+      <div>
+        <p class="tag">$ sudo request-audit</p>
+        <h2 class="huge">Ready to deploy?<span class="cursor" aria-hidden="true">_</span></h2>
+        <p class="soft">Within three business days: a short video with your branded vs non-branded split, which affiliates outrank you in your own market, the three biggest platform-level gaps, and what I'd patch first.</p>
+        <p class="soft">Include your site and licensed market in the message. B2B only: licensed operators, affiliates and platforms. NDA on request.</p>
+        <p class="soft">Or email <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a> · {seatsLine}</p>
+      </div>
+      <div class="panel">
+        <ContactForm variant="full" location="home" />
+      </div>
+    </div>
+  </section>
+
+  <!-- 10 · ALSO HERE: the rest of the site -->
+  <section class="sec-band" aria-labelledby="also-title">
+    <div class="container">
+      <p class="tag">$ ls ~/bronson</p>
+      <h2 id="also-title">Also on this machine.</h2>
+      <ul class="also">
+        <li><a href={`${base}notes/`}>notes/</a><span class="soft">field notes on SEO, AEO and growth systems</span></li>
+        <li><a href={`${base}lab/`}>lab/</a><span class="soft">tools and builds</span></li>
+        <li><a href={`${base}framework/`}>growth-os/</a><span class="soft">the framework behind the engine</span></li>
+        <li><a href={`${base}work-with-me/`}>work-with-me/</a><span class="soft">in-house roles, fractional work and advisory</span></li>
+      </ul>
+      <ol class="notes">
+        {latestNotes.map((n) => <li><time class="faint" datetime={fmt(n.data.date)}>{fmt(n.data.date)}</time><a href={`${base}notes/${n.slug}/`}>{n.data.title}</a></li>)}
+      </ol>
+    </div>
+  </section>
 </BaseLayout>
 
+<script>
+  // Error picker: show one diagnosis at a time
+  const picks = document.querySelectorAll<HTMLButtonElement>('.pick');
+  const diags = document.querySelectorAll<HTMLElement>('.diag');
+  picks.forEach((b) => b.addEventListener('click', () => {
+    picks.forEach((p) => p.setAttribute('aria-pressed', String(p === b)));
+    diags.forEach((d) => { d.hidden = d.dataset.for !== b.dataset.code; });
+  }));
+
+  // Plan toggle: operator / affiliate. Without JS both plans stay visible.
+  const tabs = document.querySelectorAll<HTMLButtonElement>('.tab');
+  const panels = document.querySelectorAll<HTMLElement>('[data-panel]');
+  const show = (id: string) => {
+    tabs.forEach((t) => t.setAttribute('aria-selected', String(t.dataset.plan === id)));
+    panels.forEach((p) => { p.hidden = p.dataset.panel !== id; });
+  };
+  tabs.forEach((t) => t.addEventListener('click', () => show(t.dataset.plan!)));
+  if (tabs.length) show(tabs[0].dataset.plan!);
+</script>
+
 <style>
-  .lede a {
-    color: var(--accent);
+  [hidden] { display: none !important; }
+  .amber { color: var(--accent); }
+  .green { color: var(--ink); }
+  .soft { color: var(--ink-soft); }
+  .faint { color: var(--ink-faint); }
+  .small { font-size: var(--text-xs); }
+  .tag { font-family: var(--font-mono); font-size: var(--text-sm); color: var(--ink-faint); margin: 0 0 var(--space-2); }
+  .big { font-family: var(--font-display); font-size: 3rem; line-height: 0.9; color: var(--ink); }
+  .narrow { max-width: var(--content-narrow); }
+
+  .panel {
+    background: var(--paper-dim);
+    border: 1px solid var(--rule-strong);
+    border-radius: var(--radius);
+    padding: var(--space-4);
   }
-  .avail {
-    display: inline-block;
-    margin-top: var(--space-3);
+  .panel p:last-child { margin-bottom: 0; }
+
+  .btn {
+    display: inline-flex; align-items: center; min-height: 52px; padding: 0 var(--space-3);
+    border: 2px solid var(--rule-strong); border-radius: var(--radius);
+    color: var(--ink-soft); text-decoration: none; font-family: var(--font-mono); font-weight: 700;
   }
-  .step {
-    text-decoration: none;
+  .btn.solid { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+  .btn:hover { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+
+  .cursor { animation: blink 1s step-end infinite; color: var(--ink); }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* Boot / hero */
+  .boot { position: relative; overflow: hidden; padding: var(--space-6) 0 0; border-bottom: 1px solid var(--hairline); }
+  .rain { position: absolute; inset: 0; display: flex; justify-content: space-between; opacity: 0.35; pointer-events: none; overflow: hidden; }
+  .col { width: 22px; white-space: pre; text-align: center; font-family: var(--font-mono); font-size: 13px; line-height: 18px; animation: fall linear infinite; }
+  .col.dim { color: var(--rule-strong); }
+  .col.bright { color: var(--ink); }
+  .col.amber { color: var(--accent); }
+  @keyframes fall { from { transform: translateY(-100%); } to { transform: translateY(100%); } }
+  .boot-grid { position: relative; display: flex; flex-wrap: wrap; gap: var(--space-4); align-items: stretch; }
+  .hero { flex: 999 1 560px; min-width: 0; background: color-mix(in srgb, var(--paper) 92%, transparent); display: flex; flex-direction: column; gap: var(--space-2); }
+  .who { flex: 1 1 320px; min-width: 0; background: color-mix(in srgb, var(--paper) 92%, transparent); font-size: var(--text-sm); }
+  .who ul { list-style: none; margin: var(--space-2) 0; padding: 0; }
+  .who li { display: flex; flex-direction: column; border-top: 1px dashed var(--hairline); padding: var(--space-1) 0; }
+  .who li strong { color: var(--ink); }
+  .who li span { color: var(--ink-soft); }
+  .prompt { font-size: var(--text-sm); color: var(--ink-faint); margin: 0; }
+  .log { margin: 0; font-family: var(--font-mono); font-size: var(--text-sm); line-height: 1.7; color: var(--ink-soft); white-space: pre-wrap; }
+  .log .fail { color: var(--danger); }
+  .log .warn { color: var(--accent); }
+  .hero h1 { margin-top: var(--space-1); }
+  .lede { font-size: var(--text-base); line-height: 1.7; color: var(--ink-soft); }
+  .ctas { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+  .fine { font-size: var(--text-xs); color: var(--ink-faint); margin: 0; }
+  .proof-bar { position: relative; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-top: var(--space-5); border-top: 1px solid var(--hairline); }
+  .proof-bar div { display: flex; flex-direction: column; gap: 4px; padding: var(--space-3) var(--space-2); }
+  .proof-bar .soft { font-size: var(--text-xs); }
+
+  /* Bands */
+  .sec-band { padding: var(--space-7) 0; border-bottom: 1px solid var(--hairline); }
+  .sec-band.alt { background: color-mix(in srgb, var(--ink) 3%, var(--paper)); }
+  .sec-band h2 { margin-bottom: var(--space-3); max-width: 22ch; }
+  .intro { max-width: 70ch; margin-bottom: var(--space-4); }
+  .split { display: flex; flex-wrap: wrap; gap: var(--space-5); }
+  .split > * { flex: 1 1 400px; min-width: 0; }
+  .split.center { align-items: center; }
+
+  /* Diagnose */
+  .pick-list { display: flex; flex-direction: column; gap: var(--space-1); }
+  .pick {
+    text-align: left; min-height: 52px; padding: 12px 16px; border-radius: var(--radius);
+    background: transparent; border: 1px solid var(--rule-strong); color: var(--ink-soft);
+    font-family: var(--font-mono); font-size: var(--text-sm); cursor: pointer;
   }
-  .step h3 {
-    font-size: var(--text-lg);
+  .pick:hover, .pick[aria-pressed='true'] { border-color: var(--ink); color: var(--ink); background: var(--paper-dim); }
+  .out { display: flex; flex-direction: column; gap: var(--space-2); min-height: 320px; }
+  .diag p { margin-bottom: var(--space-2); }
+  .go { margin-top: auto; font-weight: 700; }
+
+  /* Listings */
+  .listing { list-style: none; margin: 0; font-size: var(--text-sm); }
+  .listing li, .listing ul li { display: flex; gap: var(--space-2); padding: var(--space-1) 0; border-top: 1px dashed var(--hairline); }
+  .listing li > span:last-child { display: flex; flex-direction: column; }
+  .listing strong { color: var(--ink); }
+  .listing ul { list-style: none; margin: 0; padding: 0; }
+  .perm { color: var(--rule-strong); flex: 0 0 56px; }
+  .phase { padding: var(--space-5) 0; border-top: 1px solid var(--hairline); }
+  .phase h3 { margin: var(--space-1) 0; }
+
+  /* Track record */
+  .wins { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--space-2); margin-bottom: var(--space-4); }
+  .win { display: flex; flex-direction: column; gap: var(--space-1); font-size: var(--text-sm); }
+  .live { border-color: var(--accent); max-width: 900px; }
+  .live pre { margin: 0; font-family: var(--font-mono); font-size: var(--text-sm); line-height: 1.8; color: var(--ink-soft); white-space: pre-wrap; }
+
+  /* Pricing */
+  .tabs { display: flex; gap: var(--space-1); flex-wrap: wrap; margin-bottom: var(--space-3); }
+  .tab {
+    min-height: 48px; padding: 0 var(--space-3); border-radius: var(--radius); cursor: pointer;
+    font-family: var(--font-mono); font-weight: 700; font-size: var(--text-base);
+    background: transparent; color: var(--ink); border: 2px solid var(--rule-strong);
   }
-  .step:hover h3 {
-    color: var(--accent);
+  .tab[aria-selected='true'] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .plan { border: 2px solid var(--ink); display: flex; flex-direction: column; gap: var(--space-2); margin-bottom: var(--space-2); }
+  .plan ul { list-style: none; margin: 0; padding: 0; color: var(--ink); font-size: var(--text-sm); line-height: 1.9; }
+  .price { display: flex; align-items: baseline; gap: var(--space-1); margin: 0; }
+  .price .big { font-size: 4rem; color: var(--accent); }
+  .plan .btn { justify-content: center; }
+  .guarantee { border-style: dashed; border-color: var(--accent); align-self: flex-start; }
+
+  /* Dashboard */
+  .meters { margin: 0; display: flex; flex-direction: column; gap: var(--space-1); font-size: var(--text-sm); }
+  .meters figcaption { display: flex; justify-content: space-between; margin-bottom: var(--space-1); }
+  .meter { display: grid; grid-template-columns: 150px 1fr 56px; gap: var(--space-2); align-items: center; }
+  .meter .bars { white-space: pre; overflow: hidden; }
+  .meter span:last-child { text-align: right; }
+
+  /* FAQ */
+  .faqs { display: flex; flex-direction: column; gap: var(--space-1); }
+  .faqs details { padding: 0; }
+  .faqs summary { min-height: 56px; padding: var(--space-2) var(--space-3); cursor: pointer; color: var(--ink); font-weight: 700; list-style: none; }
+  .faqs summary::-webkit-details-marker { display: none; }
+  .faqs summary::after { content: ' [+]'; color: var(--accent); }
+  .faqs details[open] summary::after { content: ' [-]'; }
+  .faqs details p { padding: 0 var(--space-3) var(--space-3); margin: 0; }
+
+  /* Apply */
+  .huge { font-size: calc(var(--text-3xl) * 1.5); }
+
+  /* Also here */
+  .also { list-style: none; margin: 0 0 var(--space-4); padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--space-2); }
+  .also li { display: flex; flex-direction: column; gap: 4px; border-top: 2px solid var(--rule-strong); padding-top: var(--space-2); }
+  .also a { font-weight: 700; }
+  .notes { list-style: none; margin: 0; padding: 0; }
+  .notes li { display: flex; gap: var(--space-3); padding: var(--space-1) 0; border-top: 1px dashed var(--hairline); flex-wrap: wrap; }
+
+  @media (max-width: 760px) {
+    .hero h1 { font-size: 2.6rem; }
+    .log { font-size: 11px; white-space: pre; overflow-x: auto; }
+    .rain { opacity: 0.18; }
+    .meter { grid-template-columns: 110px 1fr 48px; }
   }
-  .quote {
-    margin: 0;
-  }
-  .quote > p {
-    margin: 0;
-    font-size: var(--text-base);
-    color: var(--ink);
-    line-height: 1.5;
-  }
-  .quote footer {
-    margin-top: var(--space-3);
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-  .quote .name {
-    color: var(--ink);
-    font-weight: 500;
-  }
-  @media (min-width: 720px) and (max-width: 979px) {
-    .quote.s-4 { grid-column: span 8; }
+  @media (prefers-reduced-motion: reduce) {
+    .col, .cursor { animation: none; }
   }
 </style>

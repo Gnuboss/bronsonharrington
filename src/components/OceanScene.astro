@@ -14,16 +14,20 @@
 // Colours come from the palette tokens, so it reskins with each edition.
 
 import { palette } from '../config/palette.mjs';
-import { buildTokens, contrastChecks, mix } from '../config/theme.mjs';
+import { buildTokens, contrastChecks, contrast, mix } from '../config/theme.mjs';
 
 // The reef: the contact form and footer become dark rock at the bottom of
 // the dive. Same palette, roles flipped: rock is the background, paper is
 // the text, and the light highlight colour takes over links. buildTokens
 // runs the usual contrast fixes, and the build fails if any pair misses AA.
 const roles = palette.roles;
-const rock = mix(roles.ink, '#000000', 0.78);
+// Light editions: ink makes the rock, paper the text. Dark editions flip that,
+// so the reef text is always the palette's lighter colour.
+const paperIsLight = contrast(roles.paper, '#000000') > contrast(roles.ink, '#000000');
+const reefText = paperIsLight ? roles.paper : roles.ink;
+const rock = mix(paperIsLight ? roles.ink : roles.paper, '#000000', 0.78);
 const reef = buildTokens({
-  roles: { paper: rock, ink: roles.paper, accent: roles.highlight, rule: roles.rule, highlight: roles.highlight },
+  roles: { paper: rock, ink: reefText, accent: roles.highlight, rule: roles.rule, highlight: roles.highlight },
 });
 const failing = contrastChecks(reef).filter((c) => c.ratio < c.min);
 if (failing.length) throw new Error(`Reef colours fail contrast: ${failing.map((c) => c.pair).join(', ')}`);
