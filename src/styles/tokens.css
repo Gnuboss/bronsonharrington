@@ -112,6 +112,16 @@ a {
   }
 }
 
+/* Site chrome (top bar, header, footer bar) runs wider than the content on
+   desktop: full width with a generous margin either side, capped on very
+   large screens. */
+@media (min-width: 980px) {
+  .container.wide {
+    max-width: 1680px;
+    padding: 0 clamp(var(--space-6), 4vw, 5rem);
+  }
+}
+
 .hairline {
   border: none;
   border-top: 0.5px solid var(--hairline);
