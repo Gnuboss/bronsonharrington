@@ -1,0 +1,83 @@
+---
+import { personSchema, PERSON_ID } from '../data/person';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import Section from '../components/Section.astro';
+import { RESOURCE_GROUPS } from '../data/resources';
+
+const url = 'https://bronson.co.za/resources/';
+const all = RESOURCE_GROUPS.flatMap((g) => g.items);
+---
+<BaseLayout
+  title="Resources | Tools Bronson Harrington Uses for SEO & Reporting"
+  description="The tools and services behind Bronson Harrington's client work: data connectors, reporting and SEO stack. Affiliate links are labelled."
+>
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@graph": [
+      personSchema(),
+      {
+        "@type": "CollectionPage",
+        "@id": `${url}#webpage`,
+        "url": url,
+        "name": "Resources",
+        "author": { "@id": PERSON_ID },
+        "isPartOf": { "@id": "https://bronson.co.za/#website" },
+        "mainEntity": {
+          "@type": "ItemList",
+          "itemListElement": all.map((r, i) => ({ "@type": "ListItem", "position": i + 1, "name": r.name, "url": r.href }))
+        }
+      }
+    ]
+  })} />
+
+  <PageHero eyebrow="~/resources" title="Resources" subtitle="the stack behind the work">
+    <p class="lede">Tools I actually use in client work, and why. Nothing here is listed just for the commission. Where a link is an affiliate link it's labelled, and it costs you nothing extra.</p>
+  </PageHero>
+
+  {RESOURCE_GROUPS.map((g) => (
+    <>
+      <hr class="hairline" />
+      <Section eyebrow={`~/${g.id}`} title={g.title} id={g.id}>
+        <div class="hang">
+          <ul class="hang-body res">
+            {g.items.map((r) => (
+              <li class="card">
+                <p class="label">
+                  <a href={r.href} rel={r.affiliate ? 'sponsored noopener' : 'noopener'} target="_blank" class="name">{r.name} ↗</a>
+                  {r.affiliate && <span class="aff">affiliate</span>}
+                </p>
+                <p>{r.what}</p>
+                <p class="why"><span class="k">why:</span> {r.why}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </Section>
+    </>
+  ))}
+
+  <hr class="hairline" />
+  <Section eyebrow="~/disclosure" title="Disclosure" tight>
+    <div class="hang">
+      <p class="hang-body fine">Links marked affiliate pay me a commission if you sign up through them. It doesn't change your price, and it doesn't change what I recommend: if a tool stops earning its place in my own stack, it comes off this page.</p>
+    </div>
+  </Section>
+</BaseLayout>
+
+<style>
+  .res { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--space-3); }
+  .res .name { color: var(--accent); font-size: var(--text-base); text-decoration: none; }
+  .res .name:hover { text-decoration: underline; }
+  .aff {
+    margin-left: var(--space-2);
+    font-size: var(--text-xs, 0.75rem);
+    border: 1px solid var(--rule);
+    padding: 1px 6px;
+    color: var(--ink-muted);
+  }
+  .res p + p { margin-top: var(--space-2); }
+  .why { color: var(--ink-muted); font-size: var(--text-sm); }
+  .why .k { color: var(--accent); }
+  .fine { color: var(--ink-muted); font-size: var(--text-sm); }
+</style>

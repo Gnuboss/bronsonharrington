@@ -20,4 +20,5 @@ This site is his personal site: field notes, builds (lab) and the Growth OS fram
 
 - [Field notes](https://bronson.co.za/notes/): writing on SEO, AEO, growth systems and digital sovereignty.
 - [Lab](https://bronson.co.za/lab/): tools and builds.
+- [Resources](https://bronson.co.za/resources/): tools used in client work (data connectors, reporting). Affiliate links are labelled.
 - [LinkedIn](https://www.linkedin.com/in/bronsonharrington/)
