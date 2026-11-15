@@ -133,14 +133,14 @@ const meters = [
 
   <!-- 01 · BOOT: the operator image is the page's one graphic; copy sits on its dark left side -->
   <section class="boot">
-    <picture class="hero-art">
-      <source media="(max-width: 760px)" type="image/avif" srcset="/images/hero/dice-sq.avif" />
-      <source media="(max-width: 760px)" type="image/webp" srcset="/images/hero/dice-sq.webp" />
-      <source type="image/avif" srcset="/images/hero/dice-1080.avif 1080w, /images/hero/dice-1600.avif 1600w, /images/hero/dice-2172.avif 2172w" sizes="100vw" />
-      <source type="image/webp" srcset="/images/hero/dice-1080.webp 1080w, /images/hero/dice-1600.webp 1600w, /images/hero/dice-2172.webp 2172w" sizes="100vw" />
-      <img src="/images/hero/dice-1600.webp" width="2172" height="724" alt="" fetchpriority="high" decoding="async" />
-    </picture>
-    <div class="hero-shade" aria-hidden="true"></div>
+    <div class="hero-art" aria-hidden="true">
+      <!-- 1.3s teleport-in, played once; the poster is its last frame, so
+           reduced motion (or no autoplay) shows the operator standing -->
+      <video class="teleport" muted playsinline preload="auto" width="760" height="1012"
+        poster="/images/hero/teleport-poster.webp" tabindex="-1">
+        <source src="/images/hero/teleport.mp4" type="video/mp4" />
+      </video>
+    </div>
     <div class="container hero-copy">
       <p class="prompt">ops@your-sportsbook:~$ ./search-health --market za</p>
       <p class="status"><span class="fail">[FAIL]</span> non-branded search: 0 queries · <span class="warn">[warn]</span> money terms owned by affiliates</p>
@@ -349,6 +349,13 @@ next quarterly za betting &amp; casino research index</pre>
 </BaseLayout>
 
 <script>
+  // Hero: the operator teleports in once. With reduced motion the poster
+  // (the clip's last frame) stays, so he's simply standing there.
+  const tp = document.querySelector<HTMLVideoElement>('.teleport');
+  if (tp && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    tp.play().catch(() => { /* autoplay refused: the poster stands in */ });
+  }
+
   // Error picker: show one diagnosis at a time
   const picks = document.querySelectorAll<HTMLButtonElement>('.pick');
   const diags = document.querySelectorAll<HTMLElement>('.diag');
@@ -400,21 +407,19 @@ next quarterly za betting &amp; casino research index</pre>
 
   /* Boot / hero */
   .boot { position: relative; overflow: hidden; min-height: max(580px, 33.4vw); display: flex; align-items: center; border-bottom: 1px solid var(--hairline); }
-  /* Image at full width, pinned to the bottom, so the figure always sits at
-     about 60% across, right of the copy. The section is never shorter than
-     the image; a top fade blends its edge into the paper. */
-  .hero-art img {
-    position: absolute; right: 0; bottom: 0; width: 100%; height: auto;
-    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 18%);
-    mask-image: linear-gradient(to bottom, transparent 0, #000 18%);
-    opacity: 0.2; /* dimmed so the hero copy keeps its contrast */
+  /* Operator teleports in on the right. The clip is on black, so screen
+     blending drops the black and keeps only the light; a radial mask
+     dissolves the clip's edges into the page. */
+  .hero-art {
+    position: absolute; bottom: 0; top: 0;
+    right: max(var(--space-3), calc((100vw - var(--content-width)) / 2 - 3rem));
+    display: flex; align-items: flex-end; pointer-events: none;
   }
-  .hero-shade {
-    position: absolute; inset: 0; pointer-events: none;
-    background:
-      radial-gradient(ellipse 70% 85% at 66% 50%, transparent 40%, var(--paper) 100%),
-      linear-gradient(90deg, var(--paper) 0%, color-mix(in srgb, var(--paper) 85%, transparent) 30%, transparent 52%),
-      linear-gradient(0deg, var(--paper) 0%, transparent 22%);
+  .teleport {
+    display: block; height: 100%; max-height: 760px; width: auto;
+    mix-blend-mode: screen;
+    -webkit-mask-image: radial-gradient(ellipse 50% 52% at 50% 50%, #000 62%, transparent 100%);
+    mask-image: radial-gradient(ellipse 50% 52% at 50% 50%, #000 62%, transparent 100%);
   }
   .hero-copy { position: relative; width: 100%; padding-top: var(--space-5); padding-bottom: var(--space-5); }
   .hero-copy > * { max-width: 500px; }
@@ -518,14 +523,14 @@ next quarterly za betting &amp; casino research index</pre>
   /* Narrower screens: image on top, full width, copy underneath */
   @media (max-width: 1100px) {
     .boot { display: block; min-height: 0; }
-    .hero-art img { position: relative; display: block; width: 100%; height: auto; -webkit-mask-image: none; mask-image: none; }
-    .hero-shade { background: radial-gradient(ellipse 75% 90% at 55% 45%, transparent 45%, var(--paper) 100%), linear-gradient(0deg, var(--paper) 0%, transparent 35%); bottom: auto; height: 33.4vw; }
+    .hero-art { position: relative; right: auto; justify-content: center; padding-top: var(--space-2); }
+    .teleport { height: auto; width: min(64vw, 420px); }
     .hero-copy { margin-top: -6vw; padding-top: 0; padding-bottom: var(--space-5); }
     .hero-copy > * { max-width: 640px; }
   }
   @media (max-width: 760px) {
-    .hero-shade { height: 100vw; background: radial-gradient(ellipse 80% 80% at 50% 40%, transparent 45%, var(--paper) 100%), linear-gradient(0deg, var(--paper) 0%, transparent 35%); }
-    .hero-copy { margin-top: -14vw; }
+    .teleport { width: 78vw; }
+    .hero-copy { margin-top: -2vw; }
     .hero-copy h1 { font-size: 2.6rem; }
     .meter { grid-template-columns: 110px 1fr 48px; }
   }
