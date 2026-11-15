@@ -118,7 +118,8 @@ a {
 @media (min-width: 980px) {
   .container.wide {
     max-width: 1680px;
-    padding: 0 clamp(var(--space-6), 4vw, 5rem);
+    padding-left: clamp(var(--space-6), 4vw, 5rem);
+    padding-right: clamp(var(--space-6), 4vw, 5rem);
   }
 }
 
