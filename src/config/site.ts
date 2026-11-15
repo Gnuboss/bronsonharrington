@@ -21,7 +21,7 @@ export const CONTACT = {
 // Page background.
 //   'grid'     ultrafine pixel grid (paper texture) with the roving spotlight
 //   'snowfall' festive glyph snowfall with the same spotlight
-//   'ripples'  a fixed perspective grid with a roaming terminal cursor; dots near it
+//   'ripples'  a fixed perspective grid; on desktop, dots near the mouse
 //              brighten, and droplets send green echoes through the grid
 //   'auto'     snowfall during the festive season below, grid the rest of the year
 // Preview any of them on any page with ?bg=grid, ?bg=snowfall or ?bg=ripples
