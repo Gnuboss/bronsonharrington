@@ -1,76 +1,155 @@
 ---
-import ContactForm from './ContactForm.astro';
+import { CONTACT } from '../config/site';
 const base = import.meta.env.BASE_URL;
 const year = new Date().getFullYear();
-// Home, contact and work-with-me have the full form, and the thank-you
-// page just used one, so the footer form steps aside on all four.
+
+// One footer on every page, same structure and footprint:
+//   left   say hello: a short prompt and a button to the contact form (or to
+//          the form already on the page), plus direct email and phone
+//   right  three short link columns, so every page is one click from the rest
+//   bar    copyright and the category link
 const path = Astro.url.pathname;
-const showForm = path !== base && !['contact', 'work-with-me', 'thanks'].some((p) => path.startsWith(`${base}${p}`));
+const onPage: Record<string, string> = { [base]: '#apply', [`${base}work-with-me/`]: '#write', [`${base}contact/`]: '#form' };
+const jump = onPage[path] ?? (path.startsWith(`${base}thanks`) ? 'thanks' : null);
+
+const cols = [
+  { title: 'work', links: [
+    { label: 'work with me', href: `${base}work-with-me/` },
+    { label: 'services', href: `${base}services/` },
+    { label: 'solutions', href: `${base}solutions/` },
+    { label: 'framework', href: `${base}framework/` },
+  ] },
+  { title: 'read', links: [
+    { label: 'field notes', href: `${base}notes/` },
+    { label: 'lab', href: `${base}lab/` },
+    { label: 'resources', href: `${base}resources/` },
+    { label: 'about', href: `${base}about-me/` },
+  ] },
+  { title: 'connect', links: [
+    { label: 'contact', href: `${base}contact/` },
+    { label: 'linkedin', href: 'https://www.linkedin.com/in/bronsonharrington/' },
+    { label: 'github', href: 'https://github.com/Gnuboss' },
+    { label: 'rss', href: `${base}rss.xml` },
+  ] },
+];
 ---
 <footer class="site-footer">
-  {showForm && (
-    <>
-      <hr class="hairline" />
-      <section class="container sec say-hello" aria-labelledby="footer-form-title">
-        <div class="hang">
-          <p class="hang-label tag">~/say-hello</p>
-          <div class="hang-body">
-            <h2 id="footer-form-title">Get in touch.</h2>
-            <p class="intro">Something here worth talking about? Leave your name and email and I'll write back.</p>
-            <ContactForm variant="compact" location="footer" />
-          </div>
-        </div>
-      </section>
-    </>
-  )}
   <hr class="hairline" />
-  <div class="container wide inner">
+  <div class="container wide top">
+    <section class="hello" aria-labelledby="footer-hello-title">
+      <p class="tag">~/say-hello</p>
+      <h2 id="footer-hello-title">Get in touch.</h2>
+      {jump === 'thanks' ? (
+        <p class="intro">Message received. While you wait, the field notes are a good place to start.</p>
+      ) : (
+        <p class="intro">Something here worth talking about? Send a note and I'll write back, usually within a few days.</p>
+      )}
+      <div class="jumps">
+        {jump === 'thanks'
+          ? <a href={`${base}notes/`} class="jump">$ read the field notes →</a>
+          : <a href={jump ?? `${base}contact/`} class="jump">{jump ? '$ go to the form ↑' : '$ write to me →'}</a>}
+        <a href={`mailto:${CONTACT.email}`} class="jump ghost">{CONTACT.email}</a>
+      </div>
+      <p class="direct">or call <a href={CONTACT.phoneHref}>{CONTACT.phoneDisplay}</a> · Central Time overlap from Costa Rica</p>
+    </section>
+
+    <nav class="cols" aria-label="Footer">
+      {cols.map((c) => (
+        <div>
+          <p class="tag">$ {c.title}</p>
+          <ul>
+            {c.links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+          </ul>
+        </div>
+      ))}
+    </nav>
+  </div>
+  <hr class="hairline" />
+  <div class="container wide bar">
     <!-- The category phrase links to its definition page on every page (SEO/AEO) -->
     <span class="label">© {year} Bronson Harrington - <a href={`${base}growth-architect-costa-rica/`} class="gacr">Growth Architect, Costa Rica</a></span>
-    <div class="links">
-      <a href={`${base}contact/`} class="label">contact</a>
-      <a href={`${base}resources/`} class="label">resources</a>
-      <a href={`${base}rss.xml`} class="label">rss</a>
-      <a href="https://github.com/Gnuboss" class="label">github</a>
-      <a href="https://www.linkedin.com/in/bronsonharrington/" class="label">linkedin</a>
-      <a href="mailto:im@bronson.co.za" class="label">im@bronson.co.za</a>
-    </div>
+    <span class="label quiet">San José, Costa Rica · working remote, worldwide</span>
   </div>
 </footer>
 
 <style>
-  .site-footer {
-    margin-top: 0;
+  .top {
+    display: grid;
+    gap: var(--space-5);
+    padding-top: var(--space-5);
+    padding-bottom: var(--space-5);
   }
-  .say-hello h2 {
+  @media (min-width: 980px) {
+    .top {
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+      gap: clamp(var(--space-5), 6vw, var(--space-7));
+      align-items: start;
+    }
+  }
+  .hello { max-width: 620px; }
+  .hello h2 {
     font-size: var(--text-xl);
+    margin-top: var(--space-1);
   }
-  .say-hello .intro {
+  .intro {
     color: var(--ink-muted);
-    margin: var(--space-2) 0 var(--space-4);
+    margin: var(--space-2) 0 var(--space-3);
   }
-  .inner {
+  .jumps { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+  .jump {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--paper);
+    background: var(--ink);
+    padding: 0.6rem 1rem;
+    border-radius: var(--radius);
+    text-decoration: none;
+  }
+  .jump:hover { background: var(--accent); color: var(--paper); }
+  .jump.ghost { background: transparent; color: var(--ink); border: 1px solid var(--rule-strong); }
+  .jump.ghost:hover { border-color: var(--accent); color: var(--accent); background: transparent; }
+  .direct {
+    margin-top: var(--space-3);
+    font-size: var(--text-sm);
+    color: var(--ink-faint);
+  }
+  .direct a { color: var(--accent); text-decoration: none; }
+  .direct a:hover { text-decoration: underline; }
+
+  .cols {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-3);
+  }
+  .cols ul {
+    list-style: none;
+    margin: var(--space-2) 0 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-1);
+  }
+  .cols a {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--ink-muted);
+    text-decoration: none;
+  }
+  .cols a:hover { color: var(--accent); }
+
+  .bar {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--space-1) var(--space-3);
     padding-top: var(--space-3);
     padding-bottom: var(--space-4);
-    flex-wrap: wrap;
-    gap: var(--space-2);
-  }
-  .links {
-    display: flex;
-    flex-wrap: wrap; /* five links outgrow a phone's width on one line */
-    gap: var(--space-1) var(--space-3);
   }
   @media (min-width: 980px) {
-    .inner { padding-top: var(--space-4); padding-bottom: var(--space-4); }
-    .links { gap: var(--space-1) clamp(var(--space-3), 2.4vw, 2.75rem); }
+    .bar { padding-top: var(--space-4); padding-bottom: var(--space-4); }
   }
-  .links a {
-    text-decoration: none;
-    color: var(--ink-faint);
-  }
+  .quiet { color: var(--ink-faint); }
   .gacr {
     color: inherit;
     text-underline-offset: 3px;
@@ -79,8 +158,5 @@ const showForm = path !== base && !['contact', 'work-with-me', 'thanks'].some((p
   .gacr:hover {
     color: var(--accent);
     text-decoration-color: currentColor;
-  }
-  .links a:hover {
-    color: var(--accent);
   }
 </style>
