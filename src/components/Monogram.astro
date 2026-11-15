@@ -6,9 +6,10 @@
 //   <Monogram />                      plain: ink letters on the page
 //   <Monogram variant="dark" />       paper letters in an ink square
 //   <Monogram variant="light" />      ink letters in a paper square with a hairline
+//   <Monogram variant="term" />       terminal prompt: letters then a blinking block cursor
 //   <Monogram size="4rem" still />    larger, cursor not blinking
 interface Props {
-  variant?: 'plain' | 'dark' | 'light';
+  variant?: 'plain' | 'dark' | 'light' | 'term';
   size?: string;
   still?: boolean;
   label?: string; // accessible name; pass '' when the full name sits next to it
@@ -78,6 +79,19 @@ const { variant = 'plain', size = '1em', still = false, label = 'Bronson Harring
     margin-left: 0.06em;
     width: 0.26em;
     height: 0.08em;
+  }
+  /* Terminal: "BH" then a block cursor, like the headline's caret */
+  .term {
+    align-items: center;
+    letter-spacing: 0.02em;
+  }
+  .term .cursor {
+    width: 0.55em;
+    height: 0.95em;
+    margin-left: 0.12em;
+    background: var(--ink);
+    box-shadow: 0 0 8px color-mix(in srgb, var(--ink) 45%, transparent);
+    animation-duration: 1s;
   }
   .still .cursor {
     animation: none;
