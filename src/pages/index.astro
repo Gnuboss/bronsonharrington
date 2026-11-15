@@ -134,10 +134,13 @@ const meters = [
   <!-- 01 · BOOT: the operator image is the page's one graphic; copy sits on its dark left side -->
   <section class="boot">
     <picture class="hero-art">
-      <source type="image/avif" srcset="/images/hero/operator-cut-560.avif 560w, /images/hero/operator-cut-840.avif 840w, /images/hero/operator-cut-1133.avif 1133w" sizes="(max-width: 1100px) 78vw, 560px" />
-      <source type="image/webp" srcset="/images/hero/operator-cut-560.webp 560w, /images/hero/operator-cut-840.webp 840w, /images/hero/operator-cut-1133.webp 1133w" sizes="(max-width: 1100px) 78vw, 560px" />
-      <img src="/images/hero/operator-cut-840.webp" width="1133" height="1388" alt="" fetchpriority="high" decoding="async" />
+      <source media="(max-width: 760px)" type="image/avif" srcset="/images/hero/dice-sq.avif" />
+      <source media="(max-width: 760px)" type="image/webp" srcset="/images/hero/dice-sq.webp" />
+      <source type="image/avif" srcset="/images/hero/dice-1080.avif 1080w, /images/hero/dice-1600.avif 1600w, /images/hero/dice-2172.avif 2172w" sizes="100vw" />
+      <source type="image/webp" srcset="/images/hero/dice-1080.webp 1080w, /images/hero/dice-1600.webp 1600w, /images/hero/dice-2172.webp 2172w" sizes="100vw" />
+      <img src="/images/hero/dice-1600.webp" width="2172" height="724" alt="" fetchpriority="high" decoding="async" />
     </picture>
+    <div class="hero-shade" aria-hidden="true"></div>
     <div class="container hero-copy">
       <p class="prompt">ops@your-sportsbook:~$ ./search-health --market za</p>
       <p class="status"><span class="fail">[FAIL]</span> non-branded search: 0 queries · <span class="warn">[warn]</span> money terms owned by affiliates</p>
@@ -397,16 +400,22 @@ next quarterly za betting &amp; casino research index</pre>
 
   /* Boot / hero */
   .boot { position: relative; overflow: hidden; min-height: max(580px, 33.4vw); display: flex; align-items: center; border-bottom: 1px solid var(--hairline); }
-  /* Cut-out operator on the right, standing on the section's bottom edge,
-     with a soft phosphor glow. The copy sits on the clear left side. */
+  /* Image at full width, pinned to the bottom, so the figure always sits at
+     about 60% across, right of the copy. The section is never shorter than
+     the image; a top fade blends its edge into the paper. */
   .hero-art img {
-    position: absolute; bottom: 0; height: 100%; width: auto; max-height: 720px;
-    right: max(var(--space-4), calc((100vw - var(--content-width)) / 2 - 2rem));
-    opacity: 0.92;
-    filter: drop-shadow(0 0 28px rgba(61, 255, 122, 0.18));
+    position: absolute; right: 0; bottom: 0; width: 100%; height: auto;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 18%);
+    mask-image: linear-gradient(to bottom, transparent 0, #000 18%);
+    opacity: 0.2; /* dimmed so the hero copy keeps its contrast */
   }
-  /* Feet fade into the section's bottom edge (a mask on the image would clip its glow to a box) */
-  .hero-shade { position: absolute; inset: auto 0 0 0; height: 18%; pointer-events: none; background: linear-gradient(0deg, var(--paper) 0%, transparent 100%); }
+  .hero-shade {
+    position: absolute; inset: 0; pointer-events: none;
+    background:
+      radial-gradient(ellipse 70% 85% at 66% 50%, transparent 40%, var(--paper) 100%),
+      linear-gradient(90deg, var(--paper) 0%, color-mix(in srgb, var(--paper) 85%, transparent) 30%, transparent 52%),
+      linear-gradient(0deg, var(--paper) 0%, transparent 22%);
+  }
   .hero-copy { position: relative; width: 100%; padding-top: var(--space-5); padding-bottom: var(--space-5); }
   .hero-copy > * { max-width: 500px; }
   .hero-copy > .ctas { max-width: 640px; }
@@ -506,20 +515,17 @@ next quarterly za betting &amp; casino research index</pre>
   .notes { list-style: none; margin: 0; padding: 0; }
   .notes li { display: flex; gap: var(--space-3); padding: var(--space-1) 0; border-top: 1px dashed var(--hairline); flex-wrap: wrap; }
 
-  /* Narrower screens: figure on top, right-aligned, copy overlapping its feet */
+  /* Narrower screens: image on top, full width, copy underneath */
   @media (max-width: 1100px) {
-    .boot { display: block; min-height: 0; padding-top: var(--space-3); }
-    .hero-art img {
-      position: relative; display: block; right: auto; height: auto; max-height: none;
-      width: min(60vw, 440px); margin: 0 var(--space-4) 0 auto;
-    }
-    .hero-shade { display: none; }
-    .hero-copy { position: relative; margin-top: -4vw; padding-top: 0; padding-bottom: var(--space-5); }
+    .boot { display: block; min-height: 0; }
+    .hero-art img { position: relative; display: block; width: 100%; height: auto; -webkit-mask-image: none; mask-image: none; }
+    .hero-shade { background: radial-gradient(ellipse 75% 90% at 55% 45%, transparent 45%, var(--paper) 100%), linear-gradient(0deg, var(--paper) 0%, transparent 35%); bottom: auto; height: 33.4vw; }
+    .hero-copy { margin-top: -6vw; padding-top: 0; padding-bottom: var(--space-5); }
     .hero-copy > * { max-width: 640px; }
   }
   @media (max-width: 760px) {
-    .hero-art img { width: 74vw; margin: 0 auto; }
-    .hero-copy { margin-top: var(--space-2); }
+    .hero-shade { height: 100vw; background: radial-gradient(ellipse 80% 80% at 50% 40%, transparent 45%, var(--paper) 100%), linear-gradient(0deg, var(--paper) 0%, transparent 35%); }
+    .hero-copy { margin-top: -14vw; }
     .hero-copy h1 { font-size: 2.6rem; }
     .meter { grid-template-columns: 110px 1fr 48px; }
   }
