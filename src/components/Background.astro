@@ -72,16 +72,6 @@
     }
     .pixel-grid.snowfall, .pixel-grid.ripples { background: var(--paper); }
     .pixel-grid canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
-    /* Terminal block cursor: blinks at rest, solid while it moves */
-    .pixel-grid .caret {
-      position: absolute; left: 0; top: 0; width: 11px; height: 20px; /* = POND.cell */
-      background: var(--ink); opacity: .42;
-      box-shadow: 0 0 14px color-mix(in srgb, var(--ink) 45%, transparent);
-      will-change: transform;
-      animation: caret-blink 1.06s steps(1, end) infinite;
-    }
-    .pixel-grid .caret.moving, .pixel-grid .caret.still { animation: none; }
-    @keyframes caret-blink { 50% { opacity: 0; } }
     /* Tile is opaque except a DOT-sized square hole, which is the pixel */
     .pixel-grid .mask {
       position: absolute; inset: 0; background: var(--paper);
@@ -101,12 +91,12 @@
     bg.innerHTML = MODE === 'grid'
       ? '<div class="glow"></div><div class="mask"></div><div class="wash"></div>'
       : MODE === 'ripples'
-        ? '<canvas></canvas><div class="caret"></div>'
+        ? '<canvas></canvas>'
         : '<canvas></canvas><div class="wash"></div>';
     document.body.prepend(bg);
 
     if (MODE === 'ripples') {
-      pond(bg.querySelector('canvas') as HTMLCanvasElement, bg.querySelector('.caret') as HTMLElement);
+      pond(bg.querySelector('canvas') as HTMLCanvasElement);
       return;
     }
 
@@ -246,14 +236,12 @@
   }
 
   // Ripples: a fixed grid of faint dots seen in perspective, like looking
-  // across a pond (rows tighten and fade toward the top). A terminal block
-  // cursor roams over it: it wanders on its own and, on desktop, drifts after
-  // the mouse. Dots near the cursor brighten and grow a little. Droplets land
+  // across a pond (rows tighten and fade toward the top). On desktop, dots
+  // near the mouse brighten and grow a little. Droplets land
   // at random, where the mouse moves and on click; each sends out rings that
   // echo through the dots in the ink green with a faint glow, then fade.
   //  - The grid never moves: it's drawn once to an offscreen canvas and
-  //    copied in; only the area around the cursor and active rings is redrawn.
-  //  - The cursor is a DOM element moved by transform only.
+  //    copied in; only the area around the mouse and active rings is redrawn.
   const POND = {
     spacing: 26, // world px between dots (on-screen spacing at the bottom edge)
     horizon: -0.35, // horizon line, as a fraction of screen height (negative = above the top)
@@ -265,11 +253,10 @@
     rings: 3, // concentric rings per droplet
     ringGap: 46, // world px between rings
     ringWidth: 22, // world px, softness of each ring
-    halo: 120, // screen px: how far from the cursor dots brighten
-    cell: [11, 20], // cursor block size, and the character grid it snaps to
+    halo: 120, // screen px: how far from the mouse dots brighten
   };
 
-  function pond(canvas: HTMLCanvasElement, caretEl: HTMLElement) {
+  function pond(canvas: HTMLCanvasElement) {
     const ctx = canvas.getContext('2d')!;
     const css = getComputedStyle(document.documentElement);
     const ink = css.getPropertyValue('--ink').trim() || '#3DFF7A';
@@ -279,9 +266,8 @@
     let base: HTMLCanvasElement;
     type Drop = { X: number; Z: number; born: number };
     const drops: Drop[] = [];
-    const [CW, CH] = POND.cell;
-    // Cursor centre on screen (snapped to the character grid)
-    let caret = { x: innerWidth * 0.7, y: innerHeight * 0.3 };
+    // Mouse position on screen; off-screen until the mouse moves (and on touch)
+    let caret = { x: -9999, y: -9999 };
     let lastCaret = { ...caret };
     let caretMoved = false;
 
@@ -292,15 +278,6 @@
     const unproject = (sx: number, sy: number) => {
       const k = Math.max(0.05, (sy - hz) / (h - hz));
       return { X: (sx - w / 2) / k, Z: D / k - D };
-    };
-
-    const placeCaret = (x: number, y: number) => {
-      const cx = Math.round(x / CW) * CW, cy = Math.round(y / CH) * CH;
-      const next = { x: cx + CW / 2, y: cy + CH / 2 };
-      if (next.x === caret.x && next.y === caret.y) return false;
-      caret = next;
-      caretEl.style.transform = `translate3d(${cx}px, ${cy}px, 0)`;
-      return true;
     };
 
     const build = () => {
@@ -419,10 +396,9 @@
       drop(p.X, p.Z);
     };
 
-    placeCaret(caret.x, caret.y);
     build();
     addEventListener('resize', build, { passive: true });
-    if (reduced) { caretEl.classList.add('still'); return; } // resting grid and a still cursor
+    if (reduced) return; // resting grid only
 
     const schedule = () => {
       const [a, b] = POND.dropEvery;
@@ -433,6 +409,7 @@
     if (matchMedia('(pointer: fine)').matches) {
       let last = 0;
       addEventListener('pointermove', (e) => {
+        caret = { x: e.clientX, y: e.clientY }; caretMoved = true;
         const now = performance.now();
         if (now - last < POND.cursorEvery) return;
         last = now;
@@ -442,15 +419,6 @@
         const p = unproject(e.clientX, e.clientY); drop(p.X, p.Z);
       }, { passive: true });
     }
-
-    // The cursor roams (wander + follow) and steps from cell to cell; it's
-    // solid while moving and blinks once it settles.
-    let movedAt = 0, solid = false;
-    animate((x, y, _b, t) => {
-      if (placeCaret(x - CW / 2, y - CH / 2)) { caretMoved = true; movedAt = t; }
-      const s = t - movedAt < 600;
-      if (s !== solid) { solid = s; caretEl.classList.toggle('moving', s); }
-    });
 
     let prev = 0;
     const frame = (t: number) => {
