@@ -134,12 +134,12 @@ const meters = [
   <!-- 01 · BOOT: the operator image is the page's one graphic; copy sits on its dark left side -->
   <section class="boot">
     <div class="hero-art" aria-hidden="true">
-      <!-- 1.3s teleport-in, played once; the poster is its last frame, so
-           reduced motion (or no autoplay) shows the operator standing -->
-      <video class="teleport" muted playsinline preload="auto" width="760" height="1012"
-        poster="/images/hero/teleport-poster.webp" tabindex="-1">
-        <source src="/images/hero/teleport.mp4" type="video/mp4" />
-      </video>
+      <!-- Six-frame landing, played once (animated WebP, loop count 1), ending
+           on the operator standing; reduced motion gets that last frame only -->
+      <picture>
+        <source media="(prefers-reduced-motion: reduce)" srcset="/images/hero/landing-still.webp" />
+        <img class="teleport" src="/images/hero/landing.webp" width="417" height="619" alt="" fetchpriority="high" decoding="async" />
+      </picture>
     </div>
     <div class="container hero-copy">
       <p class="prompt">ops@your-sportsbook:~$ ./search-health --market za</p>
@@ -349,13 +349,6 @@ next quarterly za betting &amp; casino research index</pre>
 </BaseLayout>
 
 <script>
-  // Hero: the operator teleports in once. With reduced motion the poster
-  // (the clip's last frame) stays, so he's simply standing there.
-  const tp = document.querySelector<HTMLVideoElement>('.teleport');
-  if (tp && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    tp.play().catch(() => { /* autoplay refused: the poster stands in */ });
-  }
-
   // Error picker: show one diagnosis at a time
   const picks = document.querySelectorAll<HTMLButtonElement>('.pick');
   const diags = document.querySelectorAll<HTMLElement>('.diag');
@@ -407,9 +400,9 @@ next quarterly za betting &amp; casino research index</pre>
 
   /* Boot / hero */
   .boot { position: relative; overflow: hidden; min-height: max(580px, 33.4vw); display: flex; align-items: center; border-bottom: 1px solid var(--hairline); }
-  /* Operator teleports in on the right. The clip is on black, so screen
+  /* Operator lands on the right. The animation is on black, so screen
      blending drops the black and keeps only the light; a radial mask
-     dissolves the clip's edges into the page. */
+     dissolves its edges into the page. */
   .hero-art {
     position: absolute; bottom: 0; top: 0;
     right: max(var(--space-3), calc((100vw - var(--content-width)) / 2 - 3rem));
