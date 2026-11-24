@@ -12,6 +12,10 @@ This site is his personal site: field notes, builds (lab) and the Growth OS fram
 - [Work with me](https://bronson.co.za/work-with-me/): available now for in-house roles, fractional or project work, and advisory calls, with results.
 - [Contact](https://bronson.co.za/contact/)
 
+## Guides
+
+- [Why your site isn't cited in AI answers](https://bronson.co.za/solutions/why-your-site-isnt-cited-in-ai-answers/): symptoms, causes and fixes for missing from AI answers, with data from Ahrefs and Google and a worked example (the Growth Architect, Costa Rica category).
+
 ## Documents
 
 - [Growth Architect, Costa Rica: What a Growth Architect Does (PDF)](https://bronson.co.za/downloads/growth-architect-costa-rica-bronson-harrington.pdf): printable version of the Growth Architect page, plus a worked example of growth architecture for white-label iGaming platforms. The web page is the canonical version.

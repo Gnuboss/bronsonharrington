@@ -2,17 +2,19 @@
 title: Why your site isn't cited in AI answers
 seoTitle: Why Isn't My Site Cited in AI Answers? Causes and Fixes
 description: Your competitors appear in AI answers and you don't. The symptoms, the four usual causes and the fixes in order, with data and a real example.
-answer: Most sites missing from AI answers have one of four problems. The page isn't eligible to show with a snippet, the answer is buried, the content is hard to crawl, or the brand has few trust signals beyond its own pages. Check eligibility first, then rewrite your top pages to lead with the answer.
+answer: Most sites missing from AI answers have one of five problems. The page isn't eligible to show with a snippet, the answer is buried, the content is hard to crawl, the brand has few trust signals, or the category itself isn't defined. Check eligibility first, then define your category and lead with the answer.
 date: 2026-11-23
 problem: We don't show up in AI answers
 fix: V05
 stage: domination
-draft: true
+draft: false
 faq:
   - q: Does ranking on page one guarantee an AI citation?
     a: No. Ahrefs found that about 38% of URLs cited in Google AI Overviews also ranked in the top 10 for the query, so most cited pages came from somewhere else. Ranking helps, but it is not the whole picture.
   - q: Do I need special schema or an llms.txt file to be cited?
     a: For Google's AI features, Google says no. Its documentation states there is no special schema.org markup to add and no new machine-readable or AI text files needed. Other assistants publish less guidance, so treat these files as housekeeping rather than a lever.
+  - q: What if search engines confuse my category with something else?
+    a: Define it. Publish one page that says what the term means for you, in question-and-answer form, and back it with a downloadable document. I did this for the term "Growth Architect, Costa Rica", where results were mostly architecture firms. The page now ranks for the term and I appear in AI Overviews for it.
   - q: How do I check whether my brand is being cited?
     a: Run your 10 to 20 most important buyer questions through ChatGPT, Perplexity and Google in a private window. Log whether you are cited, which pages are, and which competitors appear. Repeat monthly. Dedicated tracking tools exist, but a manual log is a reasonable start.
   - q: How long do changes take to show up?
@@ -60,6 +62,10 @@ Pages that open with history, definitions and context before getting to the poin
 
 An anonymous author, a brand name written three different ways across the web, and no mentions from sites your buyers read all make it harder for a system to treat you as a source worth citing. Topics where bad advice can cause harm get more caution still. To test, search for your brand and author name and look at whether the results agree with each other.
 
+### The category itself isn't defined
+
+If your term means something else to a search engine, it can't match you to the query. Search for "growth architect Costa Rica" and the results are mostly architectural firms, because that is what the words usually mean. A system that doesn't recognise the category has nothing to cite you for. To test, search your service term plus your location and see who the results are about.
+
 ### The platform hides content from crawlers
 
 If the answer only appears after JavaScript runs, or sits behind a platform that serves thin pages to bots, crawlers may see little. This is common on turnkey platforms. I wrote about one approach in [growth architecture for white-label iGaming stacks](/notes/growth-architecture-for-white-label-igaming/). To test, view the page source and check that the answer text is in the HTML.
@@ -76,27 +82,35 @@ Check indexing, noindex tags, robots.txt and snippet settings on every page you 
 
 For each key page, use a heading that matches the question, follow it with a 40 to 60 word answer, then give the detail. Break long pages into sections that each answer one question on their own.
 
-### 3. Make the answer visible to crawlers
+### 3. Define the category if it isn't obvious
+
+Publish one dedicated page that states what the term means, how it differs from the look-alike meaning, and who it is for. Write it as questions and answers, and give it a downloadable document that restates the definition. Keep the name, description and author details identical everywhere. This is the least obvious fix on the list, and it worked for me, as the next section shows.
+
+### 4. Make the answer visible to crawlers
 
 Serve the answer text in the HTML the server sends. If your platform can't do that, put the pages that matter on a layer that can.
 
-### 4. Build one consistent entity
+### 5. Build one consistent entity
 
 Use one brand name, one author bio and one short description everywhere you appear. Mark up the organisation and author with schema so the details match. It isn't required for Google's AI features, but it keeps the signals consistent for people and machines alike.
 
-### 5. Earn mentions where your buyers read
+### 6. Earn mentions where your buyers read
 
 Original data, useful tools and expert commentary get cited by others. Aim for a few mentions on sites your audience trusts rather than many on sites they don't.
 
-### 6. Track monthly
+### 7. Track monthly
 
 Keep the buyer-question log going. Note which pages are cited and what changed in the month before.
 
 ## From my work
 
-At BetAnySports I was SEO lead, and we added GEO and AEO implementation to the SEO programme. Organic traffic grew 200%. Traffic growth like that can't be credited to one change, so I don't claim the AI work did it alone. It was part of a programme that also covered technical fixes and content.
+When I searched for "Growth Architect, Costa Rica", the results were filled with architectural firms. Search engines didn't recognise the category, and I wasn't mentioned in AI Overviews either.
 
-<!-- CONFIRM before publishing: add the date range and one specific change you made for AI visibility, with what happened after it. A guide needs one detail only you can give. -->
+So I published a [Growth Architect, Costa Rica page](/growth-architect-costa-rica/) written in a question-and-answer style that defines the term, and attached a [PDF](/downloads/growth-architect-costa-rica-bronson-harrington.pdf) that restates it. The page has since built rankings in the category, helped define it, and I now appear in AI Overviews for the term.
+
+Two cautions. This is one site and one niche phrase, so I wouldn't expect the same result for a crowded keyword. And I made several changes together, so I can't say how much each one contributed.
+
+At BetAnySports, where I was SEO lead, we added GEO and AEO implementation to a wider SEO programme and organic traffic grew 200%. That programme also covered technical fixes and content, so I don't credit the AI work alone.
 
 ## The data
 
