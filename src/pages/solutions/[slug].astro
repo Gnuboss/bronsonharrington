@@ -1,0 +1,165 @@
+---
+// One guide per pain point on /solutions/. Fixed template (see the content
+// plan): short answer, body with symptoms / causes / remedies / example / data,
+// visible questions, when to get help, sources. FAQ schema is built from the
+// same data as the visible questions so the two can't drift apart.
+import { getCollection, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { byCode } from '../../data/services';
+
+export async function getStaticPaths() {
+  const guides = await getCollection('guides', ({ data }) => !data.draft);
+  return guides.map((guide) => ({ params: { slug: guide.slug }, props: { guide } }));
+}
+
+interface Props {
+  guide: CollectionEntry<'guides'>;
+}
+
+const base = import.meta.env.BASE_URL;
+const { guide } = Astro.props;
+const { data } = guide;
+const { Content } = await guide.render();
+const fmt = (d: Date) => d.toISOString().slice(0, 10);
+const url = `https://bronson.co.za/solutions/${guide.slug}/`;
+const service = byCode[data.fix];
+const withName = `${data.title} | Bronson Harrington`;
+const pageTitle = data.seoTitle ?? (withName.length <= 60 ? withName : data.title);
+
+const schema = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": data.title,
+    "description": data.description,
+    "datePublished": fmt(data.date),
+    "dateModified": fmt(data.updated ?? data.date),
+    "url": url,
+    "mainEntityOfPage": url,
+    "author": { "@id": "https://bronson.co.za/#/schema/person" },
+    "citation": data.sources.map((s) => s.url),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://bronson.co.za/" },
+      { "@type": "ListItem", "position": 2, "name": "Solutions", "item": "https://bronson.co.za/solutions/" },
+      { "@type": "ListItem", "position": 3, "name": data.title, "item": url },
+    ],
+  },
+  ...(data.faq.length
+    ? [{
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": data.faq.map((f) => ({
+          "@type": "Question",
+          "name": f.q,
+          "acceptedAnswer": { "@type": "Answer", "text": f.a },
+        })),
+      }]
+    : []),
+];
+---
+<BaseLayout title={pageTitle} description={data.description}>
+  {schema.map((s) => <script type="application/ld+json" set:html={JSON.stringify(s)} />)}
+
+  <article class="guide">
+    <header class="hero container hang">
+      <a href={`${base}solutions/`} class="hang-label tag back">~/solutions</a>
+      <div class="hang-body">
+        <h1>{data.title}</h1>
+        <p class="lede">{data.answer}</p>
+      </div>
+    </header>
+
+    <hr class="hairline" />
+
+    <div class="container sec">
+      <div class="hang">
+        <aside class="hang-label meta" aria-label="About this guide">
+          <dl>
+            <div><dt>problem</dt><dd>{data.problem}</dd></div>
+            <div><dt>fix</dt><dd><a href={`${base}services/#${data.fix.toLowerCase()}`}>{service.name.toLowerCase()}</a></dd></div>
+            <div><dt>stage</dt><dd><a href={`${base}services/#${data.stage}`}>{data.stage}</a></dd></div>
+            <div><dt>published</dt><dd><time datetime={fmt(data.date)}>{fmt(data.date)}</time></dd></div>
+            {data.updated && <div><dt>updated</dt><dd><time datetime={fmt(data.updated)}>{fmt(data.updated)}</time></dd></div>}
+            <div><dt>author</dt><dd><a href={`${base}about-me/`}>Bronson Harrington</a></dd></div>
+          </dl>
+        </aside>
+
+        <div class="hang-body prose">
+          <Content />
+
+          {data.faq.length > 0 && (
+            <>
+              <h2 id="questions">Questions</h2>
+              {data.faq.map((f) => (
+                <>
+                  <h3>{f.q}</h3>
+                  <p>{f.a}</p>
+                </>
+              ))}
+            </>
+          )}
+
+          <h2 id="get-help">When to get help</h2>
+          <p>Most of this you can check yourself with Search Console and a list of buyer questions. If you want a second pair of eyes or hands on it, the fix is <a href={`${base}services/#${data.fix.toLowerCase()}`}>{service.name.toLowerCase()}</a> on the services menu, part of the <a href={`${base}framework/`}>Growth OS framework</a>. Or <a href={`${base}contact/`}>describe what you're seeing</a> and I'll tell you where I'd start.</p>
+
+          {data.sources.length > 0 && (
+            <>
+              <h2 id="sources">Sources</h2>
+              <ul>
+                {data.sources.map((s) => (
+                  <li><a href={s.url} rel="noopener">{s.title}</a>, {s.publisher}{s.date ? `, ${s.date}` : ''}</li>
+                ))}
+              </ul>
+            </>
+          )}
+        </div>
+      </div>
+      <div class="hang guide-foot">
+        <span class="hang-label"></span>
+        <a href={`${base}solutions/`} class="hang-body more">← all solutions</a>
+      </div>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .back { text-decoration: none; }
+  .hero h1 { font-size: clamp(2rem, 5vw, var(--text-2xl)); }
+  .meta dl {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1) var(--space-3);
+  }
+  .meta dt { color: var(--ink-faint); }
+  .meta dd { margin: 0; color: var(--ink); }
+  .meta a { color: var(--accent); text-underline-offset: 3px; }
+  @media (min-width: 720px) {
+    .meta dl {
+      display: block;
+      position: sticky;
+      top: var(--space-3);
+      border-top: 2px solid var(--rule-strong);
+      padding-top: var(--space-1);
+    }
+    .meta dl > div {
+      padding: var(--space-1) 0;
+      border-bottom: 0.5px solid var(--hairline);
+    }
+  }
+  .prose { font-size: 1.0625rem; }
+  .prose :global(h2:first-child),
+  .prose :global(p:first-child) { margin-top: 0; }
+  .prose :global(a) { color: var(--accent); text-underline-offset: 3px; }
+  .guide-foot {
+    margin-top: var(--space-6);
+    padding-top: var(--space-3);
+    border-top: 0.5px solid var(--hairline);
+  }
+</style>

@@ -2,10 +2,13 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHero from '../components/PageHero.astro';
 import Section from '../components/Section.astro';
+import { getCollection } from 'astro:content';
 import { groups, fixInfo } from '../data/solutions';
 
 const base = import.meta.env.BASE_URL;
 const all = groups.flatMap((g) => g.problems);
+// A problem links to its guide only once that guide is published
+const published = new Set((await getCollection('guides', ({ data }) => !data.draft)).map((g) => g.slug));
 
 const schema = {
   "@context": "https://schema.org",
@@ -60,6 +63,9 @@ const schema = {
                   <span class="leader" aria-hidden="true"></span>
                   <a class="for" href={`${base}services/#${f.anchor}`}>{f.label} →</a>
                   <p class="desc">{p.why}</p>
+                  {p.guide && published.has(p.guide) && (
+                    <p class="read"><a href={`${base}solutions/${p.guide}/`}>read the breakdown →</a></p>
+                  )}
                 </li>
               );
             })}
@@ -119,6 +125,15 @@ const schema = {
   .menu h3.dish {
     font-size: var(--text-base);
     margin: 0;
+  }
+  .menu .read {
+    margin: var(--space-1) 0 0;
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+  }
+  .menu .read a {
+    color: var(--accent);
+    text-underline-offset: 3px;
   }
   .menu a.for {
     color: var(--accent);

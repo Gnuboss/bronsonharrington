@@ -9,6 +9,8 @@ export interface Problem {
   problem: string;
   fix: string; // service code (e.g. 'V03') or a course id (e.g. 'growth')
   why: string;
+  /** Slug of the guide in src/content/guides/ (omit until one is published) */
+  guide?: string;
 }
 
 export interface Group {
@@ -63,7 +65,7 @@ export const groups: Group[] = [
     title: 'Included, but Not Chosen.',
     intro: 'You show up, but you are not the one recommended. These are the problems of moving from inclusion to share of market.',
     problems: [
-      { problem: "We don't show up in AI answers", fix: 'V05', why: 'A site answer engines can read, quote and trust, so you are cited and recommended.' },
+      { problem: "We don't show up in AI answers", fix: 'V05', why: 'A site answer engines can read, quote and trust, so you are cited and recommended.', guide: 'why-your-site-isnt-cited-in-ai-answers' },
       { problem: 'Good results faded after the work stopped', fix: 'domination', why: 'Compounding authority and measurement systems that keep gains from eroding.' },
       { problem: 'Every core update knocks us back', fix: 'C03', why: 'Authority and trust signals strong enough to hold through updates, with early warning when they weaken.' },
       { problem: 'Plenty of visitors, too few enquiries', fix: 'W02', why: 'Experience, messaging and calls to action improved so attention turns into revenue.' },
