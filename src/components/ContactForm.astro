@@ -105,6 +105,15 @@ const thanks = new URL(`/thanks/?src=${location}`, Astro.site).href;
     <p class="counter" id={id('note-count')} data-counter data-max={noteMax}>0 / {noteMax}</p>
   </div>
 
+  <div class="field consent" data-field="consent">
+    <label class="check" for={id('consent')}>
+      <input type="checkbox" id={id('consent')} name="Consent to privacy notice" value="Agreed" required
+        aria-describedby={id('consent-error')} />
+      <span>I agree to my details being used to reply to this message, as set out in the <a href={`${import.meta.env.BASE_URL}privacy/`}>privacy notice</a>.</span>
+    </label>
+    <p class="error" id={id('consent-error')} aria-live="polite"></p>
+  </div>
+
   <button type="submit" class="primary" data-submit>
     <span class="spinner" aria-hidden="true"></span>
     <span data-submit-label>{defaultButton}</span> <span aria-hidden="true">→</span>
@@ -114,7 +123,7 @@ const thanks = new URL(`/thanks/?src=${location}`, Astro.site).href;
   <p class="or"><span>or</span></p>
   <a class="secondary" href={`mailto:${CONTACT.email}`}>Email {CONTACT.email}</a>
 
-  <p class="privacy">Your details are only used to reply. No newsletter, no lists.</p>
+  <p class="privacy">No newsletter, no lists. <a href={`${import.meta.env.BASE_URL}privacy/`}>Privacy notice</a></p>
 </form>
 
 <style>
@@ -341,6 +350,28 @@ const thanks = new URL(`/thanks/?src=${location}`, Astro.site).href;
     color: var(--accent);
     border-color: var(--accent);
   }
+  .check {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    margin: 0;
+    font-weight: 400;
+    font-size: var(--text-sm);
+    color: var(--ink-muted);
+    cursor: pointer;
+  }
+  .check input {
+    flex: none;
+    width: 22px;
+    min-height: 22px;
+    height: 22px;
+    margin: 1px 0 0;
+    padding: 0;
+    accent-color: var(--accent);
+  }
+  .check a { color: var(--accent); text-underline-offset: 3px; }
+  .field.is-error .check input { outline: 2px solid var(--danger); outline-offset: 2px; }
+  .privacy a { color: inherit; }
   .privacy {
     margin: 0;
     font-size: 0.6875rem;
@@ -395,6 +426,7 @@ const thanks = new URL(`/thanks/?src=${location}`, Astro.site).href;
   const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
   const rules: Record<string, (v: string) => string> = {
     name: (v) => (v.trim().length >= 2 ? '' : 'Enter your name'),
+    consent: (v) => (v === 'on' ? '' : 'Please tick the box so I can use your details to reply'),
     email: (v) =>
       !v.trim() ? 'Enter your email, so I can reply' : EMAIL.test(v.trim()) ? '' : 'Check your email address',
   };
@@ -416,11 +448,12 @@ const thanks = new URL(`/thanks/?src=${location}`, Astro.site).href;
     const fields = Array.from(form.querySelectorAll<HTMLElement>('[data-field]')).map((wrap) => {
       const name = wrap.dataset.field!;
       const input = wrap.querySelector('input')!;
+      const value = () => (input.type === 'checkbox' ? (input.checked ? 'on' : '') : input.value);
       const msg = wrap.querySelector<HTMLElement>('.error')!;
       let shownError = false; // once an error has shown, re-check as they type
       let completed = false;
       const check = (showErrors: boolean) => {
-        const error = rules[name](input.value);
+        const error = rules[name](value());
         wrap.classList.toggle('is-valid', !error);
         if (!error && !completed) {
           completed = true;
@@ -440,7 +473,8 @@ const thanks = new URL(`/thanks/?src=${location}`, Astro.site).href;
       };
       // Never red while typing a field for the first time; only after leaving it
       input.addEventListener('input', () => check(false));
-      input.addEventListener('blur', () => { if (input.value) check(true); });
+      input.addEventListener('change', () => check(false));
+      input.addEventListener('blur', () => { if (value()) check(true); });
       return { input, check };
     });
 

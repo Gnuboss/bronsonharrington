@@ -1,0 +1,67 @@
+---
+// Privacy and POPIA notice. Plain-language housekeeping page; not legal advice.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import { CONTACT } from '../config/site';
+
+const updated = '23 November 2026';
+---
+<BaseLayout
+  title="Privacy Policy and POPIA Notice | Bronson Harrington"
+  description="How this site handles your personal information under South Africa's POPIA: what the contact form collects, why, who receives it, and your rights."
+>
+  <PageHero eyebrow="~/privacy" title="Privacy and POPIA notice" subtitle={`updated ${updated}`}>
+    <p class="lede">This page explains what personal information this website collects, why, who receives it, and your rights under South Africa's Protection of Personal Information Act (POPIA).</p>
+  </PageHero>
+
+  <hr class="hairline" />
+
+  <section class="container sec hang">
+    <p class="hang-label tag">~/notice</p>
+    <div class="hang-body prose">
+      <h2>Who is responsible</h2>
+      <p>Bronson Harrington, based in San José, Costa Rica, is the responsible party for this website. Contact: <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a> or <a href={CONTACT.phoneHref}>{CONTACT.phoneDisplay}</a>.</p>
+
+      <h2>What I collect</h2>
+      <ul>
+        <li>Contact form: your name, email address, the topic you pick, your optional message, and a record that you agreed to this notice.</li>
+        <li>With the form, the page you sent it from, the first page you landed on, where you came from and any campaign tags in the link. This tells me which page led to the message.</li>
+        <li>Anything you choose to share when you email or phone me.</li>
+        <li>Optional analytics, only if you accept: anonymous usage data such as pages viewed, device type, approximate location and taps on email and phone links, collected with Google Analytics cookies.</li>
+      </ul>
+
+      <h2>Why I collect it</h2>
+      <ul>
+        <li>To read and reply to your message.</li>
+        <li>To understand which parts of the site are useful, and improve them.</li>
+      </ul>
+      <p>I don't sell your information, add you to a newsletter or use it for unrelated marketing.</p>
+
+      <h2>Who receives it</h2>
+      <p>Service providers handle information only to run this site for me:</p>
+      <ul>
+        <li>FormSubmit delivers contact form messages to my inbox.</li>
+        <li>My email provider receives the messages sent to {CONTACT.email}.</li>
+        <li>Google Analytics, only if you accept cookies.</li>
+        <li>GitHub Pages hosts the site and may log visitor IP addresses.</li>
+      </ul>
+      <p>Some of these providers store data outside South Africa, including in the United States and Europe.</p>
+
+      <h2>Cookies and local storage</h2>
+      <p>The site only sets analytics cookies if you choose <strong>Accept</strong> in the cookie notice. If you choose <strong>Decline</strong>, no analytics cookies are stored. You can change your mind at any time with "cookie settings" in the footer.</p>
+      <p>Separately, your browser keeps a small non-personal setting that remembers which version of the mobile menu you were shown, plus your cookie choice. These never leave your device.</p>
+
+      <h2>How long I keep it</h2>
+      <p>Messages are kept as long as needed to reply and follow up on your enquiry. Ask me and I'll delete them sooner.</p>
+
+      <h2>How it's protected</h2>
+      <p>The site is served over HTTPS and form messages go only to my inbox, which is access-controlled.</p>
+
+      <h2>Your rights</h2>
+      <p>Under POPIA you can ask to see the information I hold about you, have it corrected or deleted, object to its use, or withdraw your consent. Email <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a> and I'll respond. You can also complain to the <a href="https://inforegulator.org.za" rel="noopener">Information Regulator of South Africa</a>.</p>
+
+      <h2>Changes to this notice</h2>
+      <p>If this changes, the updated version will be posted here with a new date at the top.</p>
+    </div>
+  </section>
+</BaseLayout>

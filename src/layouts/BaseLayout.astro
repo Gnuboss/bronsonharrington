@@ -4,6 +4,7 @@ import Footer from '../components/Footer.astro';
 import Background from '../components/Background.astro';
 import TopBar from '../components/TopBar.astro';
 import ThumbNav from '../components/ThumbNav.astro';
+import CookieNotice from '../components/CookieNotice.astro';
 import '../styles/tokens.css';
 import '../styles/grid.css';
 import { GA_MEASUREMENT_ID, GSC_VERIFICATION } from '../config/site';
@@ -58,16 +59,43 @@ const { title, description } = Astro.props;
 
   {GA_MEASUREMENT_ID && (
     <>
-      <!-- Google Analytics 4: async, so it never blocks rendering -->
-      <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}></script>
+      <!-- Google Analytics 4, consent-gated (POPIA). Nothing from Google loads
+           and no analytics cookies are set until the visitor presses Accept in
+           the cookie notice; the choice is remembered in localStorage and can be
+           changed from "Cookie settings" in the footer. gtag is defined up front
+           so event calls elsewhere are harmless no-ops while consent is absent. -->
       <script is:inline define:vars={{ id: GA_MEASUREMENT_ID }}>
         window.dataLayer = window.dataLayer || [];
-        // Global, so the click-tracking script can send events
         window.gtag = function () { window.dataLayer.push(arguments); };
-        window.gtag('js', new Date());
-        // Nav test group, so every report can be split by it
-        window.gtag('set', 'user_properties', { nav_variant: document.documentElement.getAttribute('data-nav') });
-        window.gtag('config', id);
+        var loaded = false;
+        window.loadAnalytics = function () {
+          if (loaded) return;
+          loaded = true;
+          window['ga-disable-' + id] = false;
+          var s = document.createElement('script');
+          s.async = true;
+          s.src = 'https://www.googletagmanager.com/gtag/js?id=' + id;
+          document.head.appendChild(s);
+          window.gtag('js', new Date());
+          // Nav test group, so every report can be split by it
+          window.gtag('set', 'user_properties', { nav_variant: document.documentElement.getAttribute('data-nav') });
+          window.gtag('config', id);
+        };
+        window.stopAnalytics = function () {
+          window['ga-disable-' + id] = true;
+          // Remove GA cookies set earlier (best effort: host and parent domain)
+          var host = location.hostname.split('.');
+          var domains = ['', location.hostname, host.length > 1 ? '.' + host.slice(-2).join('.') : ''];
+          document.cookie.split(';').forEach(function (c) {
+            var name = c.split('=')[0].trim();
+            if (name === '_ga' || name.indexOf('_ga_') === 0) {
+              domains.forEach(function (d) {
+                document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/' + (d ? '; domain=' + d : '');
+              });
+            }
+          });
+        };
+        try { if (localStorage.getItem('cookieConsent') === 'granted') window.loadAnalytics(); } catch (e) {}
       </script>
     </>
   )}
@@ -114,6 +142,7 @@ const { title, description } = Astro.props;
   </main>
   <Footer />
   <ThumbNav />
+  <CookieNotice />
   <!-- GA4 events: email and phone taps anywhere on the site (no-op until the GA tag has loaded) -->
   <script>
     document.addEventListener('click', (event) => {

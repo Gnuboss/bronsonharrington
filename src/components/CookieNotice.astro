@@ -1,0 +1,84 @@
+---
+// Cookie notice (POPIA housekeeping). Analytics only runs after Accept.
+// Choice is stored in localStorage ('cookieConsent' = granted | denied); the
+// footer's "cookie settings" button reopens this. Without JS nothing shows and
+// nothing tracks, which is the safe default.
+const base = import.meta.env.BASE_URL;
+---
+<div class="cookie-notice" role="region" aria-label="Cookie notice" data-cookie-notice hidden>
+  <p>
+    I use Google Analytics cookies to see which pages are useful. They only run if you accept.
+    <a href={`${base}privacy/`}>Privacy notice</a>
+  </p>
+  <div class="actions">
+    <button type="button" data-cookie="denied">Decline</button>
+    <button type="button" data-cookie="granted" class="accept">Accept</button>
+  </div>
+</div>
+
+<style>
+  .cookie-notice {
+    position: fixed;
+    left: var(--space-2);
+    right: var(--space-2);
+    bottom: var(--space-2);
+    z-index: 10000; /* above the scanline overlay */
+    max-width: 640px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2);
+    background: var(--paper);
+    border: 1.5px solid var(--ink);
+    border-radius: var(--radius);
+    font-size: var(--text-sm);
+    color: var(--ink);
+  }
+  .cookie-notice[hidden] { display: none; }
+  p { margin: 0; flex: 1 1 280px; max-width: none; }
+  a { color: var(--accent); text-underline-offset: 3px; }
+  .actions { display: flex; gap: var(--space-1); }
+  button {
+    min-height: 44px; /* tap target */
+    padding: 0 var(--space-2);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--ink);
+    background: transparent;
+    border: 1.5px solid var(--ink);
+    border-radius: var(--radius);
+    cursor: pointer;
+  }
+  button:hover { color: var(--accent); border-color: var(--accent); }
+  button.accept { color: var(--paper); background: var(--ink); }
+  button.accept:hover { color: var(--paper); background: var(--accent); border-color: var(--accent); }
+</style>
+
+<script>
+  const box = document.querySelector<HTMLElement>('[data-cookie-notice]')!;
+  const read = () => { try { return localStorage.getItem('cookieConsent'); } catch { return null; } };
+  const write = (v: string) => { try { localStorage.setItem('cookieConsent', v); } catch {} };
+  const w = window as any;
+
+  // First visit, or storage unavailable: ask. Otherwise stay out of the way.
+  if (!read()) box.hidden = false;
+
+  box.querySelectorAll<HTMLButtonElement>('[data-cookie]').forEach((b) =>
+    b.addEventListener('click', () => {
+      const choice = b.dataset.cookie!;
+      write(choice);
+      if (choice === 'granted') w.loadAnalytics?.();
+      else w.stopAnalytics?.();
+      box.hidden = true;
+    })
+  );
+
+  // Footer "cookie settings": reopen the notice to change the choice
+  document.querySelectorAll('[data-cookie-settings]').forEach((el) =>
+    el.addEventListener('click', () => {
+      box.hidden = false;
+      box.querySelector<HTMLButtonElement>('[data-cookie]')?.focus();
+    })
+  );
+</script>
