@@ -263,13 +263,13 @@ next quarterly za betting &amp; casino research index</pre>
       <div class="split">
         <div>
           {plans.map((p) => (
-            <article class="panel plan" id={`plan-${p.id}`} role="tabpanel" aria-labelledby={`tab-${p.id}`} data-panel={p.id}>
+            <div class="panel plan" id={`plan-${p.id}`} role="tabpanel" aria-labelledby={`tab-${p.id}`} data-panel={p.id}>
               <p class="soft">{p.flag}</p>
               <p class="price"><span class="big amber">{p.price}</span><span class="soft">/mo</span></p>
               <p class="soft">{p.who}</p>
               <ul>{p.items.map((i) => <li>+ {i}</li>)}</ul>
               <a href="#apply" class="btn solid">$ apply · {SEATS_OPEN} seats open</a>
-            </article>
+            </div>
           ))}
         </div>
         <aside class="panel guarantee">
