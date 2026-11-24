@@ -19,6 +19,8 @@ export default defineConfig({
   site: 'https://bronson.co.za/',
   base: '/',
   output: 'static',
+  // Inline the (tiny) stylesheets so none block the first paint
+  build: { inlineStylesheets: 'always' },
   // The thank-you page is a conversion step, not content: kept out of the sitemap
   integrations: [
     sitemap({
