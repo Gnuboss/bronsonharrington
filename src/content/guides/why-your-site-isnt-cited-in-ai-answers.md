@@ -20,7 +20,7 @@ faq:
   - q: How long do changes take to show up?
     a: Recrawling and reindexing can take days to weeks, and AI answers also vary between runs. Judge progress over several months of monthly checks, not a few days.
   - q: Is this harder in regulated industries?
-    a: Usually, yes. Topics where mistakes can harm people, such as health, money and gambling, tend to get more cautious treatment, so clear authorship, accurate claims and visible compliance information matter more.
+    a: Usually, yes. Topics where mistakes can harm people, such as health, money and gambling, tend to get more cautious treatment, and accuracy matters more because offers and terms get quoted. Keep authorship, claims and compliance information accurate, dated and consistent across your pages.
 sources:
   - title: "Update: 38% of AI Overview Citations Pull From The Top 10"
     url: https://ahrefs.com/blog/ai-overview-citations-top-10/
@@ -82,23 +82,27 @@ Check indexing, noindex tags, robots.txt and snippet settings on every page you 
 
 For each key page, use a heading that matches the question, follow it with a 40 to 60 word answer, then give the detail. Break long pages into sections that each answer one question on their own.
 
-### 3. Define the category if it isn't obvious
+### 3. Keep what can be cited accurate
+
+State each fact that matters, such as an offer, its terms, a licence or a price, in one place, dated, and worded the same everywhere it appears. A system that quotes you will quote whichever version it finds, so a page that disagrees with itself or is out of date is a risk. Make these pages indexable, accessible to assistive technology as well as crawlers, and split into clearly headed sections that each stand alone.
+
+### 4. Define the category if it isn't obvious
 
 Publish one dedicated page that states what the term means, how it differs from the look-alike meaning, and who it is for. Write it as questions and answers, and give it a downloadable document that restates the definition. Keep the name, description and author details identical everywhere. This is the least obvious fix on the list, and it worked for me, as the next section shows.
 
-### 4. Make the answer visible to crawlers
+### 5. Make the answer visible to crawlers
 
 Serve the answer text in the HTML the server sends. If your platform can't do that, put the pages that matter on a layer that can.
 
-### 5. Build one consistent entity
+### 6. Build one consistent entity
 
 Use one brand name, one author bio and one short description everywhere you appear. Mark up the organisation and author with schema so the details match. It isn't required for Google's AI features, but it keeps the signals consistent for people and machines alike.
 
-### 6. Earn mentions where your buyers read
+### 7. Earn mentions where your buyers read
 
 Original data, useful tools and expert commentary get cited by others. Aim for a few mentions on sites your audience trusts rather than many on sites they don't.
 
-### 7. Track monthly
+### 8. Track monthly
 
 Keep the buyer-question log going. Note which pages are cited and what changed in the month before.
 
@@ -108,7 +112,7 @@ When I searched for "Growth Architect, Costa Rica", the results were filled with
 
 So I published a [Growth Architect, Costa Rica page](/growth-architect-costa-rica/) written in a question-and-answer style that defines the term, and attached a [PDF](/downloads/growth-architect-costa-rica-bronson-harrington.pdf) that restates it. The page has since built rankings in the category, helped define it, and I now appear in AI Overviews for the term.
 
-Two cautions. This is one site and one niche phrase, so I wouldn't expect the same result for a crowded keyword. And I made several changes together, so I can't say how much each one contributed.
+One example isn't a method, and the part that carries over is not the page type. In gaming and in any offer-led market, what gets cited has to be accurate, and the only way to influence that is to make your own pages accurate, indexable and accessible, with clear structure and content split into self-contained chunks, so they are eligible to be used at all. This is one site and one niche phrase, so I wouldn't expect the same result for a crowded keyword. I also made several changes together, so I can't say how much each contributed.
 
 At BetAnySports, where I was SEO lead, we added GEO and AEO implementation to a wider SEO programme and organic traffic grew 200%. That programme also covered technical fixes and content, so I don't credit the AI work alone.
 
