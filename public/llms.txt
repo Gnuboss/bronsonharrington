@@ -11,6 +11,8 @@ This site is his personal site: field notes, builds (lab) and the Growth OS fram
 - [About Bronson Harrington](https://bronson.co.za/about-me/): background, roles and results (Betcris, JazzSports, BetAnySports and others).
 - [Work with me](https://bronson.co.za/work-with-me/): available now for in-house roles, fractional or project work, and advisory calls, with results.
 - [Contact](https://bronson.co.za/contact/)
+- [Solutions](https://bronson.co.za/solutions/): common growth problems (traffic drops, missing from AI answers and more), each matched to a fix.
+- [Services](https://bronson.co.za/services/): the full menu of services, by problem, with no prices.
 
 ## Guides
 
