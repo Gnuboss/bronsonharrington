@@ -39,7 +39,7 @@ export const groups: Group[] = [
     title: 'The Base Is Broken.',
     intro: 'Problems that trace back to the foundation: the site, its structure and the brand behind it. Content and links built on top produce a fraction of what they should until these are fixed.',
     problems: [
-      { problem: 'Traffic dropped after a migration or rebrand', fix: 'V03', why: 'Every redirect chain, canonical error and lost signal the move introduced, found and fixed.' },
+      { problem: 'Traffic dropped after a migration or rebrand', fix: 'V03', why: 'Every redirect chain, canonical error and lost signal the move introduced, found and fixed.', guide: 'traffic-drop-after-a-site-migration' },
       { problem: "We publish, but nothing ranks", fix: 'V01', why: 'Content that should rank is usually sitting on a technical problem, and fixing it can unlock work already written.' },
       { problem: 'Search engines struggle to read our platform', fix: 'V01', why: 'Rendering, crawling and structure sorted before any more content or links.' },
       { problem: "We're launching in a new market", fix: 'foundations', why: 'Targeting, structure and compliance-safe content set up right before launch, when it costs least.' },

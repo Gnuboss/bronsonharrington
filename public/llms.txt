@@ -15,6 +15,7 @@ This site is his personal site: field notes, builds (lab) and the Growth OS fram
 ## Guides
 
 - [Why your site isn't cited in AI answers](https://bronson.co.za/solutions/why-your-site-isnt-cited-in-ai-answers/): symptoms, causes and fixes for missing from AI answers, with data from Ahrefs and Google and a worked example (the Growth Architect, Costa Rica category).
+- [Traffic drop after a site migration](https://bronson.co.za/solutions/traffic-drop-after-a-site-migration/): why rankings fall after a domain move or rebrand, how to build a page-to-page redirect map, and a worked client example.
 
 ## Documents
 
