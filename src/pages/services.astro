@@ -168,68 +168,12 @@ const schema = {
 </BaseLayout>
 
 <style>
-  .lede a {
-    color: var(--accent);
-  }
-  /* Section index */
-  .courses ol {
-    list-style: none;
-    margin: 0;
-    padding: var(--space-3) 0;
-    border-top: 0.5px solid var(--hairline);
-  }
-  .course-links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-1) var(--space-3);
-  }
-  .course-links a {
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    color: var(--ink);
-    text-decoration: none;
-  }
-  .course-links a:hover {
-    color: var(--accent);
-  }
-  .course-links .n {
-    color: var(--ink-faint);
-  }
-
   /* The before -> after line under each main course */
   .shift {
     font-family: var(--font-mono);
     font-size: var(--text-sm);
     color: var(--accent);
     margin-top: var(--space-2);
-  }
-
-  /* Menu: dish names are h3s for the outline, styled as the board's dish */
-  .menu {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    border-top: 2px solid var(--rule-strong);
-  }
-  .menu li {
-    padding: var(--space-2) 0;
-  }
-  .menu li + li {
-    border-top: 0.5px solid var(--hairline);
-  }
-  .menu h3.dish {
-    font-size: var(--text-base);
-    margin: 0;
-  }
-  .menu a.for {
-    text-decoration: none;
-  }
-  .menu a.for:hover {
-    color: var(--accent);
-  }
-  .menu .desc em {
-    font-style: normal;
-    color: var(--ink);
   }
 
   /* Chef's table */

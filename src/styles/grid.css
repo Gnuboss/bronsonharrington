@@ -143,14 +143,29 @@
   list-style: none;
   margin: 0;
   padding: 0;
+  border-top: 2px solid var(--rule-strong);
 }
 .menu li {
   display: flex;
   align-items: baseline;
   gap: var(--space-1);
-  padding: calc(var(--baseline) * 1.5) 0;
+  padding: var(--space-2) 0;
 }
+.menu li + li { border-top: 0.5px solid var(--hairline); }
 .menu .dish { color: var(--ink); font-weight: 500; }
+/* Dish names are h3s for the outline, set as mono bold like every small item title */
+.menu h3.dish {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: var(--text-base);
+  line-height: 1.3;
+  margin: 0;
+}
+.menu .read { margin: var(--space-1) 0 0; font-family: var(--font-mono); font-size: var(--text-sm); }
+.menu .read a { color: var(--accent); text-underline-offset: 3px; }
+.menu a.for { color: var(--accent); text-decoration: none; }
+.menu a.for:hover { text-decoration: underline; text-underline-offset: 3px; }
+.menu .desc em { font-style: normal; color: var(--ink); }
 .menu .leader {
   flex: 1;
   min-width: var(--space-3);
@@ -453,3 +468,24 @@ html.show-grid .grid-overlay { display: block; }
   .sec-head { margin-bottom: var(--space-4); }
   .tag { padding-top: 0; }
 }
+
+/* 6. SHARED PAGE PATTERNS (were repeated per page and drifted apart) */
+
+/* Inline links inside intros, ledes and rows read as accent */
+.lede a, .intro a, .rows a:not(.row):not(.hang-label) { color: var(--accent); }
+
+/* Answer text in a rows list sits flush and in soft ink */
+.rows .hang-body { margin: 0; color: var(--ink-soft); }
+
+/* Jump index of section links (services, solutions) */
+.index-links, .course-links { display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-3); }
+.index-links a, .course-links a { font-family: var(--font-mono); font-size: var(--text-sm); color: var(--ink); text-decoration: none; }
+.index-links a:hover, .course-links a:hover { color: var(--accent); }
+.index ol, .courses ol { list-style: none; margin: 0; padding: var(--space-3) 0; border-top: 0.5px solid var(--hairline); }
+
+/* "Prefer to write directly?" line: footer, thanks, work-with-me */
+.direct { margin-top: var(--space-3); font-size: var(--text-sm); color: var(--ink-muted); }
+/* Underlined: the accent sits too close to muted text for colour alone to mark a link */
+.direct a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.direct a:hover { text-decoration-thickness: 2px; }
+.direct .hang-body { margin: 0; color: var(--ink-muted); }
