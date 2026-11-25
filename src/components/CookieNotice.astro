@@ -36,6 +36,12 @@ const base = import.meta.env.BASE_URL;
     color: var(--ink);
   }
   .cookie-notice[hidden] { display: none; }
+  /* Phones in the radial-nav group: sit above the 60px menu button instead of covering it */
+  @media (max-width: 720px) {
+    :global(html[data-nav='radial']) .cookie-notice {
+      bottom: calc(60px + var(--space-2) * 2);
+    }
+  }
   p { margin: 0; flex: 1 1 280px; max-width: none; }
   a { color: var(--accent); text-underline-offset: 3px; }
   .actions { display: flex; gap: var(--space-1); }

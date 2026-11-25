@@ -120,13 +120,15 @@ const cols = [
     margin: var(--space-2) 0 0;
     padding: 0;
     display: grid;
-    gap: var(--space-1);
+    gap: 0;
   }
   .cols a {
     font-family: var(--font-mono);
     font-size: var(--text-sm);
     color: var(--ink-muted);
     text-decoration: none;
+    display: inline-block;
+    padding: 0.5rem 0; /* 44px tap target */
   }
   .cols a:hover { color: var(--accent); }
 
@@ -144,6 +146,8 @@ const cols = [
   }
   .quiet { color: var(--ink-faint); }
   .gacr {
+    display: inline-block;
+    padding: 0.65rem 0;
     color: inherit;
     text-underline-offset: 3px;
     text-decoration-color: var(--hairline);
@@ -155,7 +159,8 @@ const cols = [
     text-transform: inherit;
     background: none;
     border: 0;
-    padding: 0;
+    padding: 0.65rem 0; /* 44px tap target */
+    display: inline-block;
     cursor: pointer;
     text-decoration: underline;
     text-decoration-color: var(--hairline);

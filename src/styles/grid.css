@@ -285,7 +285,8 @@ html.show-grid .grid-overlay { display: block; }
 }
 .more {
   display: inline-block;
-  margin-top: var(--space-2);
+  padding: 0.6rem 0; /* tap target */
+  margin-top: var(--space-1);
   font-family: var(--font-mono);
   font-size: var(--text-sm);
   color: var(--accent);
@@ -479,7 +480,7 @@ html.show-grid .grid-overlay { display: block; }
 
 /* Jump index of section links (services, solutions) */
 .index-links, .course-links { display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-3); }
-.index-links a, .course-links a { font-family: var(--font-mono); font-size: var(--text-sm); color: var(--ink); text-decoration: none; }
+.index-links a, .course-links a { display: inline-block; padding: 0.6rem 0; font-family: var(--font-mono); font-size: var(--text-sm); color: var(--ink); text-decoration: none; }
 .index-links a:hover, .course-links a:hover { color: var(--accent); }
 .index ol, .courses ol { list-style: none; margin: 0; padding: var(--space-3) 0; border-top: 0.5px solid var(--hairline); }
 

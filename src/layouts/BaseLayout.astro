@@ -134,10 +134,11 @@ const { title, description } = Astro.props;
   </style>
 </head>
 <body>
+  <a class="skip-link" href="#main">Skip to content</a>
   <Background />
   <TopBar />
   <Header />
-  <main>
+  <main id="main" tabindex="-1">
     <slot />
   </main>
   <Footer />

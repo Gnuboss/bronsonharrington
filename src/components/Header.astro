@@ -38,6 +38,7 @@ const base = import.meta.env.BASE_URL;
     font-size: var(--text-base);
     text-decoration: none;
     color: var(--ink);
+    min-height: 44px;
   }
   .wordmark span {
     white-space: nowrap;
@@ -80,7 +81,8 @@ const base = import.meta.env.BASE_URL;
   /* Phones: stack the name above the nav */
   @media (max-width: 720px) {
     .inner { flex-direction: column; align-items: flex-start; gap: var(--space-1); }
-    nav ul { gap: var(--space-2); flex-wrap: wrap; }
+    nav ul { gap: 0 var(--space-2); flex-wrap: wrap; }
+    nav a { display: inline-block; padding: 0.8rem 0; } /* 44px tap target */
     nav a { font-size: var(--text-xs); }
     /* On phones the top bar already carries email and call, so contact goes back to a plain link */
     nav a.cta { background: none; color: var(--ink-muted); padding: 0; }

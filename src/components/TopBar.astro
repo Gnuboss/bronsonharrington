@@ -30,8 +30,8 @@ import { CONTACT } from '../config/site';
     align-items: center;
     justify-content: space-between;
     gap: var(--space-3);
-    padding-top: 0.45rem;
-    padding-bottom: 0.45rem;
+    padding-top: 0;
+    padding-bottom: 0;
   }
   .descriptor {
     margin: 0;
@@ -45,6 +45,8 @@ import { CONTACT } from '../config/site';
     color: var(--paper);
     text-decoration: none;
     white-space: nowrap;
+    display: inline-block;
+    padding: 0.8rem 0; /* 44px tap target */
   }
   .contacts a:hover {
     text-decoration: underline;
