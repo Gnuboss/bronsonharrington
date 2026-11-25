@@ -316,6 +316,17 @@ html.show-grid .grid-overlay { display: block; }
   line-height: 1.25;
   margin: 0;
 }
+/* FAQ question on the hang split: one shared style for every page.
+   Mono bold like the other small headings (VT323 has no bold weight, so a
+   pixel-face question would be faux-bolded), ink colour, body size. */
+.rows .q {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: var(--text-base);
+  line-height: 1.35;
+  color: var(--ink);
+  padding-top: 0;
+}
 .rows h3 a {
   text-decoration: none;
 }
