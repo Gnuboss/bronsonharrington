@@ -310,7 +310,10 @@ html.show-grid .grid-overlay { display: block; }
   padding-top: 0.3em;
 }
 .rows h3 {
+  font-family: var(--font-mono);
+  font-weight: 700;
   font-size: var(--text-lg);
+  line-height: 1.25;
   margin: 0;
 }
 .rows h3 a {
@@ -339,7 +342,10 @@ html.show-grid .grid-overlay { display: block; }
   flex-direction: column;
 }
 .card h3 {
+  font-family: var(--font-mono);
+  font-weight: 700;
   font-size: var(--text-lg);
+  line-height: 1.25;
   margin: var(--space-1) 0 0;
 }
 .card p {
@@ -360,12 +366,19 @@ html.show-grid .grid-overlay { display: block; }
   margin-top: 0;
 }
 .prose h2 {
-  font-size: var(--text-xl);
-  margin: var(--space-5) 0 var(--space-2);
+  /* VT323 runs small: 2.25-2.75rem reads about a third larger than the body
+     text, where the old 1.75rem barely cleared it */
+  font-size: clamp(2.25rem, 5vw, 2.75rem);
+  line-height: 1;
+  margin: var(--space-6) 0 var(--space-2);
 }
 .prose h3 {
-  font-size: var(--text-lg);
-  margin: var(--space-4) 0 var(--space-1);
+  font-size: 1.875rem;
+  line-height: 1.05;
+  margin: var(--space-5) 0 var(--space-1);
+}
+.prose h2 + h3 {
+  margin-top: var(--space-3);
 }
 .prose ul,
 .prose ol {
@@ -401,7 +414,7 @@ html.show-grid .grid-overlay { display: block; }
   padding-bottom: var(--space-5);
 }
 .hero h1 {
-  font-size: clamp(2.5rem, 6vw, var(--text-3xl));
+  font-size: clamp(2.75rem, 7vw, var(--text-3xl));
   letter-spacing: -0.02em;
 }
 .hero .subtitle {
