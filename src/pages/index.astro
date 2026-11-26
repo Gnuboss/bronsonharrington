@@ -454,7 +454,7 @@ next quarterly za betting &amp; casino research index</pre>
   .pick:hover, .pick[aria-pressed='true'] { border-color: var(--ink); color: var(--ink); background: var(--paper-dim); }
   .out { display: flex; flex-direction: column; gap: var(--space-2); min-height: 320px; }
   .diag p { margin-bottom: var(--space-2); }
-  .go { margin-top: auto; font-weight: 700; }
+  .go { margin-top: auto; font-weight: 700; display: inline-block; padding: 0.6rem 0; }
 
   /* Listings */
   .listing { list-style: none; margin: 0; font-size: var(--text-sm); }
@@ -509,8 +509,9 @@ next quarterly za betting &amp; casino research index</pre>
   /* Also here */
   .also { list-style: none; margin: 0 0 var(--space-4); padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--space-2); }
   .also li { display: flex; flex-direction: column; gap: 4px; border-top: 2px solid var(--rule-strong); padding-top: var(--space-2); }
-  .also a { font-weight: 700; }
+  .also a { font-weight: 700; padding: 0.5rem 0; } /* tap target */
   .notes { list-style: none; margin: 0; padding: 0; }
+  .notes a { display: inline-block; padding: 0.4rem 0; } /* tap target */
   .notes li { display: flex; gap: var(--space-3); padding: var(--space-1) 0; border-top: 1px dashed var(--hairline); flex-wrap: wrap; }
 
   /* Narrower screens: image on top, full width, copy underneath */

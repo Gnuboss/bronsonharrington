@@ -163,7 +163,7 @@
 }
 .menu .read { margin: var(--space-1) 0 0; font-family: var(--font-mono); font-size: var(--text-sm); }
 .menu .read a { color: var(--accent); text-underline-offset: 3px; }
-.menu a.for { color: var(--accent); text-decoration: none; }
+.menu a.for { color: var(--accent); text-decoration: none; padding: 0.6rem; margin: -0.6rem; } /* 44px tap target without growing the row */
 .menu a.for:hover { text-decoration: underline; text-underline-offset: 3px; }
 .menu .desc em { font-style: normal; color: var(--ink); }
 .menu .leader {
@@ -199,7 +199,7 @@
 }
 .pantry .code { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--accent); }
 .pantry .name { color: var(--ink); font-weight: 500; line-height: 1.25; }
-.pantry .shelf { margin-top: auto; font-family: var(--font-mono); font-size: 0.6875rem; color: var(--ink-faint); }
+.pantry .shelf { margin-top: auto; font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-faint); }
 
 /* 6. FIGURE: an oversized number spanning 4 columns beside 8 of text.
       Only for a real, sourced figure, never decoration. */
